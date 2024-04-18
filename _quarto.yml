@@ -1,6 +1,9 @@
 project:
   type: manuscript
 
+manuscript:
+  article: manuscript.qmd
+
 execute:
   freeze: auto
 

@@ -47,140 +47,87 @@ div.csl-indent {
 }</style>
 
 
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
-<script async="" src="https://hypothes.is/embed.js"></script>
-<script>
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    document.body.classList.add('hypothesis-enabled');
-  });
-</script>
+<script src="manuscript_files/libs/clipboard/clipboard.min.js"></script>
+<script src="manuscript_files/libs/quarto-html/quarto.js"></script>
+<script src="manuscript_files/libs/quarto-html/popper.min.js"></script>
+<script src="manuscript_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="manuscript_files/libs/quarto-html/anchor.min.js"></script>
+<link href="manuscript_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="manuscript_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="manuscript_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="manuscript_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="manuscript_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
 
-<meta name="citation_title" content="Harnessing AI to annotate the severity of all phenotypic abnormalities within the Human Phenotype Ontology">
-<meta name="citation_keywords" content="HPO,chatGPT,rare disease">
-<meta name="citation_author" content="Kitty B Murphy">
-<meta name="citation_author" content="Brian M Schilder">
-<meta name="citation_author" content="Nathan G Skene">
-<meta name="citation_language" content="en">
-<meta name="citation_reference" content="citation_title=The human phenotype ontology in 2024: Phenotypes around the world;,citation_abstract=The Human Phenotype Ontology (HPO) is a widely used resource that comprehensively organizes and defines the phenotypic features of human disease, enabling computational inference and supporting genomic and phenotypic analyses through semantic similarity and machine learning algorithms. The HPO has widespread applications in clinical diagnostics and translational research, including genomic diagnostics, gene-disease discovery, and cohort analytics. In recent years, groups around the world have developed translations of the HPO from English to other languages, and the HPO browser has been internationalized, allowing users to view HPO term labels and in many cases synonyms and definitions in ten languages in addition to English. Since our last report, a total of 2239 new HPO terms and 49235 new HPO annotations were developed, many in collaboration with external groups in the fields of psychiatry, arthrogryposis, immunology and cardiology. The Medical Action Ontology (MAxO) is a new effort to model treatments and other measures taken for clinical management. Finally, the HPO consortium is contributing to efforts to integrate the HPO and the GA4GH Phenopacket Schema into electronic health records (EHRs) with the goal of more standardized and computable integration of rare disease data in EHRs.;,citation_author=Michael A Gargano;,citation_author=Nicolas Matentzoglu;,citation_author=Ben Coleman;,citation_author=Eunice B Addo-Lartey;,citation_author=Anna V Anagnostopoulos;,citation_author=Joel Anderton;,citation_author=Paul Avillach;,citation_author=Anita M Bagley;,citation_author=Eduard Bakštein;,citation_author=James P Balhoff;,citation_author=Gareth Baynam;,citation_author=Susan M Bello;,citation_author=Michael Berk;,citation_author=Holli Bertram;,citation_author=Somer Bishop;,citation_author=Hannah Blau;,citation_author=David F Bodenstein;,citation_author=Pablo Botas;,citation_author=Kaan Boztug;,citation_author=Jolana Čady;,citation_author=Tiffany J Callahan;,citation_author=Rhiannon Cameron;,citation_author=Seth J Carbon;,citation_author=Francisco Castellanos;,citation_author=J Harry Caufield;,citation_author=Lauren E Chan;,citation_author=Christopher G Chute;,citation_author=Jaime Cruz-Rojo;,citation_author=Noémi Dahan-Oliel;,citation_author=Jon R Davids;,citation_author=Maud Dieuleveult;,citation_author=Vinicius Souza;,citation_author=Bert B A Vries;,citation_author=Esther Vries;,citation_author=J Raymond DePaulo;,citation_author=Beata Derfalvi;,citation_author=Ferdinand Dhombres;,citation_author=Claudia Diaz-Byrd;,citation_author=Alexander J M Dingemans;,citation_author=Bruno Donadille;,citation_author=Michael Duyzend;,citation_author=Reem Elfeky;,citation_author=Shahim Essaid;,citation_author=Carolina Fabrizzi;,citation_author=Giovanna Fico;,citation_author=Helen V Firth;,citation_author=Yun Freudenberg-Hua;,citation_author=Janice M Fullerton;,citation_author=Davera L Gabriel;,citation_author=Kimberly Gilmour;,citation_author=Jessica Giordano;,citation_author=Fernando S Goes;,citation_author=Rachel Gore Moses;,citation_author=Ian Green;,citation_author=Matthias Griese;,citation_author=Tudor Groza;,citation_author=Weihong Gu;,citation_author=Julia Guthrie;,citation_author=Benjamin Gyori;,citation_author=Ada Hamosh;,citation_author=Marc Hanauer;,citation_author=Kateřina Hanušová;,citation_author=Yongqun Oliver He;,citation_author=Harshad Hegde;,citation_author=Ingo Helbig;,citation_author=Kateřina Holasová;,citation_author=Charles Tapley Hoyt;,citation_author=Shangzhi Huang;,citation_author=Eric Hurwitz;,citation_author=Julius O B Jacobsen;,citation_author=Xiaofeng Jiang;,citation_author=Lisa Joseph;,citation_author=Kamyar Keramatian;,citation_author=Bryan King;,citation_author=Katrin Knoflach;,citation_author=David A Koolen;,citation_author=Megan L Kraus;,citation_author=Carlo Kroll;,citation_author=Maaike Kusters;,citation_author=Markus S Ladewig;,citation_author=David Lagorce;,citation_author=Meng-Chuan Lai;,citation_author=Pablo Lapunzina;,citation_author=Bryan Laraway;,citation_author=David Lewis-Smith;,citation_author=Xiarong Li;,citation_author=Caterina Lucano;,citation_author=Marzieh Majd;,citation_author=Mary L Marazita;,citation_author=Victor Martinez-Glez;,citation_author=Toby H McHenry;,citation_author=Melvin G McInnis;,citation_author=Julie A McMurry;,citation_author=Michaela Mihulová;,citation_author=Caitlin E Millett;,citation_author=Philip B Mitchell;,citation_author=Veronika Moslerová;,citation_author=Kenji Narutomi;,citation_author=Shahrzad Nematollahi;,citation_author=Julian Nevado;,citation_author=Andrew A Nierenberg;,citation_author=Nikola Novák Čajbiková;,citation_author=John I Nurnberger;,citation_author=Soichi Ogishima;,citation_author=Daniel Olson;,citation_author=Abigail Ortiz;,citation_author=Harry Pachajoa;,citation_author=Guiomar Perez de Nanclares;,citation_author=Amy Peters;,citation_author=Tim Putman;,citation_author=Christina K Rapp;,citation_author=Ana Rath;,citation_author=Justin Reese;,citation_author=Lauren Rekerle;,citation_author=Angharad M Roberts;,citation_author=Suzy Roy;,citation_author=Stephan J Sanders;,citation_author=Catharina Schuetz;,citation_author=Eva C Schulte;,citation_author=Thomas G Schulze;,citation_author=Martin Schwarz;,citation_author=Katie Scott;,citation_author=Dominik Seelow;,citation_author=Berthold Seitz;,citation_author=Yiping Shen;,citation_author=Morgan N Similuk;,citation_author=Eric S Simon;,citation_author=Balwinder Singh;,citation_author=Damian Smedley;,citation_author=Cynthia L Smith;,citation_author=Jake T Smolinsky;,citation_author=Sarah Sperry;,citation_author=Elizabeth Stafford;,citation_author=Ray Stefancsik;,citation_author=Robin Steinhaus;,citation_author=Rebecca Strawbridge;,citation_author=Jagadish Chandrabose Sundaramurthi;,citation_author=Polina Talapova;,citation_author=Jair A Tenorio Castano;,citation_author=Pavel Tesner;,citation_author=Rhys H Thomas;,citation_author=Audrey Thurm;,citation_author=Marek Turnovec;,citation_author=Marielle E Gijn;,citation_author=Nicole A Vasilevsky;,citation_author=Markéta Vlčková;,citation_author=Anita Walden;,citation_author=Kai Wang;,citation_author=Ron Wapner;,citation_author=James S Ware;,citation_author=Addo A Wiafe;,citation_author=Samuel A Wiafe;,citation_author=Lisa D Wiggins;,citation_author=Andrew E Williams;,citation_author=Chen Wu;,citation_author=Margot J Wyrwoll;,citation_author=Hui Xiong;,citation_author=Nefize Yalin;,citation_author=Yasunori Yamamoto;,citation_author=Lakshmi N Yatham;,citation_author=Anastasia K Yocum;,citation_author=Allan H Young;,citation_author=Zafer Yüksel;,citation_author=Peter P Zandi;,citation_author=Andreas Zankl;,citation_author=Ignacio Zarante;,citation_author=Miroslav Zvolský;,citation_author=Sabrina Toro;,citation_author=Leigh C Carmody;,citation_author=Nomi L Harris;,citation_author=Monica C Munoz-Torres;,citation_author=Daniel Danis;,citation_author=Christopher J Mungall;,citation_author=Sebastian Köhler;,citation_author=Melissa A Haendel;,citation_author=Peter N Robinson;,citation_publication_date=2024-01;,citation_cover_date=2024-01;,citation_year=2024;,citation_issue=D1;,citation_volume=52;,citation_journal_title=Nucleic Acids Res.;">
-<meta name="citation_reference" content="citation_title=Systematic classification of disease severity for evaluation of expanded carrier screening panels;,citation_abstract=Professional guidelines dictate that disease severity is a key criterion for carrier screening. Expanded carrier screening, which tests for hundreds to thousands of mutations simultaneously, requires an objective, systematic means of describing a given disease’s severity to build screening panels. We hypothesized that diseases with characteristics deemed to be of highest impact would likewise be rated as most severe, and diseases with characteristics of lower impact would be rated as less severe. We describe a pilot test of this hypothesis in which we surveyed 192 health care professionals to determine the impact of specific disease phenotypic characteristics on perceived severity, and asked the same group to rate the severity of selected inherited diseases. The results support the hypothesis: we identified four “Tiers” of disease characteristics (1-4). Based on these responses, we developed an algorithm that, based on the combination of characteristics normally seen in an affected individual, classifies the disease as Profound, Severe, Moderate, or Mild. This algorithm allows simple classification of disease severity that is replicable and not labor intensive.;,citation_author=Gabriel A Lazarin;,citation_author=Felicia Hawthorne;,citation_author=Nicholas S Collins;,citation_author=Elizabeth A Platt;,citation_author=Eric A Evans;,citation_author=Imran S Haque;,citation_publication_date=2014-12;,citation_cover_date=2014-12;,citation_year=2014;,citation_issue=12;,citation_volume=9;,citation_journal_title=PLoS One;">
 </head>
 
-<body>
+<body class="fullcontent">
 
-<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      <h1 class="title">Harnessing AI to annotate the severity of all phenotypic abnormalities within the Human Phenotype Ontology</h1>
-          </div>
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 
-    
-    <div class="quarto-title-meta-container">
-      <div class="quarto-title-meta-column-start">
-            <div class="quarto-title-meta-author">
-          <div class="quarto-title-meta-heading">Authors</div>
-          <div class="quarto-title-meta-heading">Affiliations</div>
-          
-                <div class="quarto-title-meta-contents">
-            <p class="author">Kitty B Murphy <a href="mailto:kitty.murphy@ukdri.ac.uk" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
-          </div>
-                <div class="quarto-title-meta-contents">
-                    <p class="affiliation">
-                        Department of Brain Sciences, Imperial College London, UK
-                      </p>
-                    <p class="affiliation">
-                        UK Dementia Research Institute at Imperial College London, UK
-                      </p>
-                  </div>
-                      <div class="quarto-title-meta-contents">
-            <p class="author">Brian M Schilder </p>
-          </div>
-                <div class="quarto-title-meta-contents">
-                    <p class="affiliation">
-                        Department of Brain Sciences, Imperial College London, UK
-                      </p>
-                    <p class="affiliation">
-                        UK Dementia Research Institute at Imperial College London, UK
-                      </p>
-                  </div>
-                      <div class="quarto-title-meta-contents">
-            <p class="author">Nathan G Skene </p>
-          </div>
-                <div class="quarto-title-meta-contents">
-                    <p class="affiliation">
-                        Department of Brain Sciences, Imperial College London, UK
-                      </p>
-                    <p class="affiliation">
-                        UK Dementia Research Institute at Imperial College London, UK
-                      </p>
-                  </div>
-                    </div>
-        
-        <div class="quarto-title-meta">
+<main class="content" id="quarto-document-content">
 
-                      
-          
-                
-              </div>
-      </div>
-      <div class="quarto-title-meta-column-end quarto-other-formats-target">
-      <div class="quarto-alternate-formats"><div class="quarto-title-meta-heading">Other Formats</div><div class="quarto-title-meta-contents"><p><a href="manuscript.docx"><i class="bi bi-file-word"></i>MS Word</a></p></div><div class="quarto-title-meta-contents"><p><a href="manuscript.pdf"><i class="bi bi-file-pdf"></i>PDF (agu)</a></p></div><div class="quarto-title-meta-contents"><p><a href="manuscript-meca.zip" data-meca-link="true"><i class="bi bi-archive"></i>MECA Bundle</a></p></div></div></div>
-    </div>
-
-
-    <div>
-      <div class="keywords">
-        <div class="block-title">Keywords</div>
-        <p>HPO, chatGPT, rare disease</p>
-      </div>
-    </div>
-
-    <div class="quarto-other-links-text-target">
-    </div>  </div>
-</header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
-<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
-  <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#abstract" id="toc-abstract" class="nav-link active" data-scroll-target="#abstract">Abstract</a></li>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
-  <ul class="collapse">
-  <li><a href="#annotating-the-hpo-using-openai-gpt-4" id="toc-annotating-the-hpo-using-openai-gpt-4" class="nav-link" data-scroll-target="#annotating-the-hpo-using-openai-gpt-4">Annotating the HPO using OpenAI GPT-4</a></li>
-  <li><a href="#quantifying-phenotypic-severity" id="toc-quantifying-phenotypic-severity" class="nav-link" data-scroll-target="#quantifying-phenotypic-severity">Quantifying phenotypic severity</a></li>
-  </ul></li>
-  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
-  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a>
-  <ul class="collapse">
-  <li><a href="#annotating-the-hpo-using-openai-gpt-4-1" id="toc-annotating-the-hpo-using-openai-gpt-4-1" class="nav-link" data-scroll-target="#annotating-the-hpo-using-openai-gpt-4-1">Annotating the HPO using OpenAI GPT-4</a></li>
-  <li><a href="#calculating-the-true-positive-rate" id="toc-calculating-the-true-positive-rate" class="nav-link" data-scroll-target="#calculating-the-true-positive-rate">Calculating the true positive rate</a></li>
-  <li><a href="#quantifying-phenotypic-severity-1" id="toc-quantifying-phenotypic-severity-1" class="nav-link" data-scroll-target="#quantifying-phenotypic-severity-1">Quantifying phenotypic severity</a></li>
-  </ul></li>
-  <li><a href="#supplementary-figures" id="toc-supplementary-figures" class="nav-link" data-scroll-target="#supplementary-figures">Supplementary figures</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
-  </ul>
-<div class="quarto-alternate-notebooks"><h2>Notebooks</h2><ul><li><a href="manuscript-preview.html"><i class="bi bi-journal-code"></i>Article Notebook</a></li></ul></div></nav>
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Harnessing AI to annotate the severity of all phenotypic abnormalities within the Human Phenotype Ontology</h1>
 </div>
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-</div>
-<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
-
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Authors</div>
+  <div class="quarto-title-meta-heading">Affiliations</div>
   
+    <div class="quarto-title-meta-contents">
+    <p class="author">Kitty B Murphy <a href="mailto:kitty.murphy@ukdri.ac.uk" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Department of Brain Sciences, Imperial College London, UK
+          </p>
+        <p class="affiliation">
+            UK Dementia Research Institute at Imperial College London, UK
+          </p>
+      </div>
+    <div class="quarto-title-meta-contents">
+    <p class="author">Brian M Schilder </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Department of Brain Sciences, Imperial College London, UK
+          </p>
+        <p class="affiliation">
+            UK Dementia Research Institute at Imperial College London, UK
+          </p>
+      </div>
+    <div class="quarto-title-meta-contents">
+    <p class="author">Nathan G Skene </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Department of Brain Sciences, Imperial College London, UK
+          </p>
+        <p class="affiliation">
+            UK Dementia Research Institute at Imperial College London, UK
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+  
+    
+  </div>
+  
+
+<div>
+  <div class="keywords">
+    <div class="block-title">Keywords</div>
+    <p>HPO, chatGPT, rare disease</p>
+  </div>
+</div>
+
+</header>
 
 
 <section id="abstract" class="level2">
@@ -198,22 +145,22 @@ div.csl-indent {
 <section id="annotating-the-hpo-using-openai-gpt-4" class="level3">
 <h3 class="anchored" data-anchor-id="annotating-the-hpo-using-openai-gpt-4">Annotating the HPO using OpenAI GPT-4</h3>
 <p>We employed the OpenAI GPT-4 model with Python to annotate 16,982 terms within the Human phenotype Ontology (HPO). Our annotation framework was developed based on previously defined criteria for classifying disease severity <span class="citation" data-cites="Lazarin2014-rz">Lazarin et al. (<a href="#ref-Lazarin2014-rz" role="doc-biblioref">2014</a>)</span>. We sought to evaluate the impact of phenotypes on outcomes including intellectual disability, death, impaired mobility, physical malformations, blindness, sensory impairments, immunodeficiency, cancer, reduced fertility, and congenital onset. Through prompt design we found that the performance of GPT-4 improved when we incorporated a scale associated with each effect and required a justification for each response. For each effect, we asked about the likelihood of its occurrence - whether it never, rarely, often, or always occurred. Furthermore, our prompt design revealed that the optimal trade-off between the number of phenotypes and performance was achieved when inputting no more than two or three phenotypes per prompt. An example prompt can be seen in Figure 1. The phenotype outcome occurrence varied by category. While &gt; 50% of annotated phenotypes never caused blindness, cancer, immunodeficiency, intellectual disability, reduced fertility, and sensory impairment, a similar proportion often or always had congenital onset (Fig. 1).</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><a href="manuscript_files/figure-html/occurence_plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="manuscript_files/figure-html/occurence_plot-1.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<a class="quarto-notebook-link" id="nblink-1" href="manuscript-preview.html">Source: Article Notebook</a></div>
 <p><img src="figures/clinical_characteristic_occurrence.png" class="img-fluid" alt="Figure 1: GPT-4 was able to annotate all human phenotypes based on whether they are always/often/rarely/never associated with different clinical characteristics. a An example of the prompt input given to to GPT-4. The phenotypes listed in the last sentence were changed to allow ~17,000 phenotypes to be annotated. b Stacked bar plot showing the proportion of the occurrence of each clinical characteristic across all ~17,000 phenotypes annotated.The terms shown on the X-axis are the clinical characteristics, for which GPT-4 was asked to determine whether each phenotype caused them. For example, it annotated ‘Respiratory arrest’ as always causing death. Only 75 phenotypes were annotated as always causing death, despite 9,544 phenotypes often or rarely causing it."> ### Annotation consistency and accuracy To assess annotation consistency, 793 phenotypes underwent duplicate annotations, with two metrics employed to determine the ‘consistency rate’. The first, less stringent metric, defined consistency as the duplicate annotations being either ‘always’ and ‘often’, or ‘never’ and ‘rarely’. The second, more stringent metric, required exact agreement in annotation occurrences, e.g.&nbsp;‘always’ and ‘always’. For the less stringent metric, duplicated phenotypes were annotated consistently at a rate of at least 80%, and for the more stringent metric, the lowest consistency rate was 57%, for congenital onset. An example of where annotations were inconsistent was for the HPO term ‘Acute leukaemia’. One time, GPT-4 annotated it as often causing impaired mobility, giving the justification that ‘weakness and fatigue from leukaemia and its treatment can impair mobility’. The other time, GPT-4 annotated it as rarely causing impaired mobility, giving the justification that ‘acute leukaemia rarely impairs mobility directly’. Despite specifying in the prompt for GPT-4 not to take into consideration indirect effects, here is an example of where it failed to do so.</p>
-<div id="cell-fig-checks" class="cell">
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The `facets` argument of `facet_grid()` is deprecated as of ggplot2 2.2.0.
+ℹ Please use the `rows` argument instead.
+ℹ The deprecated feature was likely used in the HPOExplorer package.
+  Please report the issue at
+  &lt;https://github.com/neurogenomics/HPOExplorer/issues&gt;.</code></pre>
+</div>
+</div>
+<div class="cell">
 <div class="cell-output-display">
 <div id="fig-checks" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-checks-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="manuscript_files/figure-html/fig-checks-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2"><img src="manuscript_files/figure-html/fig-checks-1.png" class="img-fluid figure-img" width="576"></a>
+<img src="manuscript_files/figure-html/fig-checks-1.png" class="img-fluid figure-img" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-checks-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: GPT-4 annotations are consistent and accurate across annotations. a Barplot showing the annotation consistency for 793 phenotypes that were annotated twice. On the left hand side, annotations were defined as consistent if the given phenotype was annotated to the same outcome occurrence both times, or if it was annotated to ‘always’ and ‘often’, or, ‘never’ and ’rarely. On the right hand side, annotations were only defined as consistent if the given phenotype was annotated to the same outcome occurrence both times. b Bar plot of the true positive rate for each annotation. The true positives were determined based on the assumption that all descendants of some HPO phenotypes should be related to those outcomes. For instance, all descendents of the HPO term for “Neoplasm” were considered to be true positives for cancer (an assumption which is not always the case, as GPT-4 detects, as some neoplasms are benign). The labels above each bar indicate the number of phenotypes tested.
@@ -221,19 +168,19 @@ Figure&nbsp;1: GPT-4 annotations are consistent and accurate across annotations.
 </figure>
 </div>
 </div>
-<a class="quarto-notebook-link" id="nblink-2" href="manuscript-preview.html#cell-fig-checks">Source: Article Notebook</a></div>
+</div>
 <p>In order to evaluate the accuracy of the annotations, we calculated a true positive rate. This involved identifying specific branches within the HPO that would contain phenotypes that would reliably indicate the presence of certain conditions. For instance, the phenotypes ‘decreased fertility in females’ and ‘decreased fertility in males’ should, in the annotations, often, if not always, cause reduced fertility. We observed an encouraging true positive rate exceeding 70% across all phenotype outcomes. The lowest rate was observed for cancer (73%), for which all descendants of the HPO term ‘Neoplasm’ were considered to be true positives. However, this assumption, as GPT-4 detects, is not always true as these abnormal tissue/cell growths can be either cancerous or benign. For example, the HPO term ‘multiple digital exostoses’, which are benign bone tumours, is a descendant of the HPO term ‘Neoplasm’, and GPT-4 annotated it as rarely causing cancer, giving the justification that ‘Bone growths may rarely become cancerous’. This high level of accuracy underscores the robustness of our annotations and the reliability of the HPO framework in capturing clinically relevant phenotypic information. However, we acknowledge that the number of testable phenotypes for some of these categories are low. Furthermore, some of the ‘true positive’ phenotypes are synonymous to the clinical characteristic itself, for instance, for testing the true positive rate of the characteristic ‘Intellectual disability’, the phenotype ‘Severe intellectual disability’ was used.</p>
 </section>
 <section id="quantifying-phenotypic-severity" class="level3">
 <h3 class="anchored" data-anchor-id="quantifying-phenotypic-severity">Quantifying phenotypic severity</h3>
 <p>Quantifying the severity of phenotypes can have important implications for diagnosis, prognosis, and treatment, for instance, guiding prioritisation of gene therapy trials for the most severe phenotypes. First, we created a dictionary to map each phenotype outcome (e.g.&nbsp;blindness) and its response (always, often, rarely, never) to numeric values from 0-4. Then, the phenotype outcome values were multiplied by their associated response values. Importantly, the values reflected the severity of each outcome based on both the outcome itself and the frequency of the response. For instance, a phenotype always causing death would have a higher multiplied value than a phenotype rarely causing reduced fertility. Next, we computed an average score for each phenotype by aggregating the multiplied values across all phenotype outcomes and then calculating the mean. This was then normalised by the theoretical maximum severity score, so that all phenotypes were on a 0-100 severity scale (where 100 is the most severe phenotype possible). This average normalised score represents the overall severity of the phenotype based on the severity of its individual outcomes.</p>
 <p>Based on these scores we evaluated the top 50 severe phenotypes. The most severe phenotype, with a score of 58, was ‘Anencephaly’ (HP:0002323). Anencephaly is a birth defect where the baby is born without a portion of its brain and skull, often these babies are stillborn. In fact, many of the most severe phenotypes were related to developmental brain and neural tube defects. Comparison of the severity scores for each response, across the phenotype outcomes annotated, revealed consistent trends: as the response of the phenotype outcome increased (from never to always), the severity score also increased (Supplementary Fig. 1). We also evaluated the severity score distribution by HPO branch and calculated the mean severity score using all phenotypes within a HPO branch (Fig. 4). After the term ‘Phenotypic abnormality’, the highest severity score was for the HPO branch ‘Abnormal cellular phenotype’, followed by ‘Abnormality of prenatal development or birth’, which would include the high severity scoring phenotypes seen in Fig. 3.</p>
-<div id="cell-fig-severity" class="cell">
+<div class="cell">
 <div class="cell-output-display">
 <div id="fig-severity" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-severity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="manuscript_files/figure-html/fig-severity-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-3" data-gallery="quarto-lightbox-gallery-3"><img src="manuscript_files/figure-html/fig-severity-1.png" class="img-fluid figure-img" width="576"></a>
+<img src="manuscript_files/figure-html/fig-severity-1.png" class="img-fluid figure-img" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-severity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: Quantifying the severity of HPO phenotype annotations highlights the most impactful conditions. Heatmap of the top (n = 15), mid-range (n = 15), and bottom (n = 15) HPO phenotypes based on severity score. Severity scores were calculated by multiplying the numeric values assigned to each clinical characteristic (death = 5, intellectual disability = 5, impaired mobility = 4, blindness = 4, congenital onset = 4, physical malformations = 3, sensory impairments = 3, immunodeficiency = 3, cancer = 3, reduced fertility = 1) by their corresponding response frequencies (Always = 4, Often = 3, Rarely = 2, Never = 0). The average normalised score, representing overall phenotype severity on a 0-100 scale, was calculated by aggregating the multiplied values and normalising by the theoretical maximum severity score. The x-axis is scaled by the severity of the clinical characterisation.
@@ -241,7 +188,7 @@ Figure&nbsp;2: Quantifying the severity of HPO phenotype annotations highlights 
 </figure>
 </div>
 </div>
-<a class="quarto-notebook-link" id="nblink-3" href="manuscript-preview.html#cell-fig-severity">Source: Article Notebook</a></div>
+</div>
 </section>
 </section>
 <section id="discussion" class="level2">
@@ -314,29 +261,103 @@ Figure&nbsp;2: Quantifying the severity of HPO phenotype annotations highlights 
 <section id="quantifying-phenotypic-severity-1" class="level3">
 <h3 class="anchored" data-anchor-id="quantifying-phenotypic-severity-1">Quantifying phenotypic severity</h3>
 <p>The GPT-4 generated annotation occurrences were converted into a semi-quantitative scoring system, with ‘always’ corresponding to 3, ‘often’ to 2, ‘rarely’ to 1, and ‘never’ to 0. These scores were then weighted by a severity metric on a scale of 1-5, with 5 representing the highest severity, as determined by the provided annotations (Table 2). Subsequently, the weighted scores underwent normalisation to yield a final quantitative severity score ranging from 0-100, with 100 signifying the maximum severity score attainable.</p>
-<div class="line-block">Clinical characteristic | Always (4) | Often (3) | Rarely (2) | Never (0) |<br>
-Intellectual_disability (5) | 20 | 15 | 10 | 0 |<br>
-Impaired_mobility (5) | 20 | 15 | 10 | 0 |<br>
-Blindness (4) | 16 | 12 | 8 | 0 |<br>
-Congenital onset (4) | 16 | 12 | 8 | 0 |<br>
-Physical_malformations (3) | 12 | 9 | 6 | 0 |<br>
-Sensory_impairments (3) | 12 | 9 | 6 | 0 |<br>
-Immunodeficiency (3) | 12 | 9 | 6 | 0 |<br>
-Cancer (3) | 12 | 9 | 6 | 0 |<br>
-Reduced_fertility (1) | 4 | 3 | 2 | 0 |</div>
+<table class="table">
+<colgroup>
+<col style="width: 41%">
+<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 15%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Clinical characteristic</th>
+<th>Always (4)</th>
+<th>Often (3)</th>
+<th>Rarely (2)</th>
+<th>Never (0)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Intellectual_disability (5)</td>
+<td>20</td>
+<td>15</td>
+<td>10</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>Impaired_mobility (5)</td>
+<td>20</td>
+<td>15</td>
+<td>10</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>Blindness (4)</td>
+<td>16</td>
+<td>12</td>
+<td>8</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>Congenital onset (4)</td>
+<td>16</td>
+<td>12</td>
+<td>8</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>Physical_malformations (3)</td>
+<td>12</td>
+<td>9</td>
+<td>6</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>Sensory_impairments (3)</td>
+<td>12</td>
+<td>9</td>
+<td>6</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>Immunodeficiency (3)</td>
+<td>12</td>
+<td>9</td>
+<td>6</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>Cancer (3)</td>
+<td>12</td>
+<td>9</td>
+<td>6</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>Reduced_fertility (1)</td>
+<td>4</td>
+<td>3</td>
+<td>2</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 <section id="supplementary-figures" class="level2">
 <h2 class="anchored" data-anchor-id="supplementary-figures">Supplementary figures</h2>
 <div class="cell">
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="manuscript_files/figure-html/supp_figure_1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="manuscript_files/figure-html/supp_figure_1-1.png" class="img-fluid figure-img" width="672"></a></p>
+<p><img src="manuscript_files/figure-html/supp_figure_1-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>The distribution of phenotypic severity scores across various branches of the HPO. The histogram plots show the frequency of severity scores for all phenotypes descending from the specified HPO branches. The x-axis represents the severity scores, and the y-axis indicates the count of phenotypes corresponding to each score. The average severity score for each HPO branch is highlighted in red.</figcaption>
 </figure>
 </div>
 </div>
-<a class="quarto-notebook-link" id="nblink-4" href="manuscript-preview.html">Source: Article Notebook</a></div>
+</div>
 </section>
 <section id="references" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
@@ -347,10 +368,6 @@ Gargano, Michael A, Nicolas Matentzoglu, Ben Coleman, Eunice B Addo-Lartey, Anna
 <div id="ref-Lazarin2014-rz" class="csl-entry" role="listitem">
 Lazarin, Gabriel A, Felicia Hawthorne, Nicholas S Collins, Elizabeth A Platt, Eric A Evans, and Imran S Haque. 2014. <span>“Systematic Classification of Disease Severity for Evaluation of Expanded Carrier Screening Panels.”</span> <em>PLoS One</em> 9 (12): e114391.
 </div>
-</div>
-<div class="hidden" aria-hidden="true">
-<span class="glightbox-desc lightbox-desc-2">Figure&nbsp;1: GPT-4 annotations are consistent and accurate across annotations. a Barplot showing the annotation consistency for 793 phenotypes that were annotated twice. On the left hand side, annotations were defined as consistent if the given phenotype was annotated to the same outcome occurrence both times, or if it was annotated to ‘always’ and ‘often’, or, ‘never’ and ’rarely. On the right hand side, annotations were only defined as consistent if the given phenotype was annotated to the same outcome occurrence both times. b Bar plot of the true positive rate for each annotation. The true positives were determined based on the assumption that all descendants of some HPO phenotypes should be related to those outcomes. For instance, all descendents of the HPO term for “Neoplasm” were considered to be true positives for cancer (an assumption which is not always the case, as GPT-4 detects, as some neoplasms are benign). The labels above each bar indicate the number of phenotypes tested.</span>
-<span class="glightbox-desc lightbox-desc-3">Figure&nbsp;2: Quantifying the severity of HPO phenotype annotations highlights the most impactful conditions. Heatmap of the top (n = 15), mid-range (n = 15), and bottom (n = 15) HPO phenotypes based on severity score. Severity scores were calculated by multiplying the numeric values assigned to each clinical characteristic (death = 5, intellectual disability = 5, impaired mobility = 4, blindness = 4, congenital onset = 4, physical malformations = 3, sensory impairments = 3, immunodeficiency = 3, cancer = 3, reduced fertility = 1) by their corresponding response frequencies (Always = 4, Often = 3, Rarely = 2, Never = 0). The average normalised score, representing overall phenotype severity on a 0-100 scale, was calculated by aggregating the multiplied values and normalising by the theoretical maximum severity score. The x-axis is scaled by the severity of the clinical characterisation.</span>
 </div>
 </section>
 
@@ -766,31 +783,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"selector":".lightbox","openEffect":"zoom","descPosition":"bottom","loop":false,"closeEffect":"zoom"});
-window.onload = () => {
-  lightboxQuarto.on('slide_before_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    const href = trigger.getAttribute('href');
-    if (href !== null) {
-      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-      if (imgEl !== null) {
-        const srcAttr = imgEl.getAttribute("src");
-        if (srcAttr && srcAttr.startsWith("data:")) {
-          slideConfig.href = srcAttr;
-        }
-      }
-    } 
-  });
-
-  lightboxQuarto.on('slide_after_load', (data) => {
-    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-    if (window.Quarto?.typesetMath) {
-      window.Quarto.typesetMath(slideNode);
-    }
-  });
-
-};
-          </script>
 
 
 
