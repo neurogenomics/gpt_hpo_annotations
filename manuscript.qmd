@@ -39,8 +39,15 @@ keywords:
   - HPO
   - chatGPT
   - rare disease 
-bibliography: bibliography.bib
+bibliography: references.bib
 ---
+
+```{r setup}
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(HPOExplorer)
+```
 
 ## Abstract
 
@@ -273,52 +280,39 @@ dat_all$variable <- factor(dat_all$variable, levels = annotation_order)
 #| fig-width: 6
 
 
-p1 <- ggplot2::ggplot(data = dat_top,
+p1 <- ggplot2::ggplot(data = dat_all,
                       ggplot2::aes(x=variable, y=hpo_name, fill=value)) +
+  ggplot2::geom_tile(colour = "white", lwd = 0.5, linetype =1) +
+  ggplot2::scale_y_discrete(limits=rev) +
+  scale_fill_brewer(palette = "GnBu", direction = -1) +
+  ggplot2::theme_classic() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+                 legend.position = 'right',
+                 text = element_text(size=16)) +
+  labs(x = "Clinical characteristic",
+       y = "HPO term",
+       fill = "") +
+  ggplot2::facet_grid(position ~ ., scales = "free_y")
+
+p2 <- ggplot2::ggplot(data = dat_all,
+                      ggplot2::aes(x="severity_score_gpt", y=hpo_name,
+                                   fill=severity_score_gpt)) +
   ggplot2::geom_tile() +
   ggplot2::scale_y_discrete(limits=rev) +
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1) +
-  ggplot2::theme_bw() +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
-                 legend.position = 'right', 
-                 text = element_text(size=16)) + 
-  labs(x = "Annotation",
-       y = "HPO term", 
-       fill = "")
+  scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = "reverse") +
+  ggplot2::labs(x=NULL, y=NULL, fill = "Severity score") +
+  ggplot2::theme_void() +
+  ggplot2::theme(axis.text.y = ggplot2::element_blank(),
+                 axis.ticks.y = ggplot2::element_blank(),
+                 legend.position = 'right') +
+  guides(fill = guide_colorbar(reverse = TRUE))
 
-# Heatmap of severity scores for top phenotypes
-p2 <- ggplot2::ggplot(data = dat_middle,
-                      ggplot2::aes(x=variable, y=hpo_name, fill=value)) +
-  ggplot2::geom_tile() +
-  ggplot2::scale_y_discrete(limits=rev) +
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1) +
-  ggplot2::theme_bw() +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
-                 legend.position = 'right', 
-                 text = ggplot2::element_text(size=16)) + 
-  ggplot2::labs(x = "Annotation",
-                y = "HPO term", 
-                fill = "")
+p3 <- patchwork::wrap_plots(p1, p2, ncol = 2,
+                            widths = c(1,.2),
+                            guides = "collect")
 
-# Heatmap of severity scores for top phenotypes
-p3 <- ggplot2::ggplot(data = dat_bottom,
-                      ggplot2::aes(x=variable, y=hpo_name, fill=value)) +
-  ggplot2::geom_tile() +
-  ggplot2::scale_y_discrete(limits=rev) +
-  scale_fill_ghibli_d("YesterdayMedium", direction = -1) +
-  ggplot2::theme_bw() +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
-                 legend.position = 'right', 
-                 text = ggplot2::element_text(size=16)) + 
-  ggplot2::labs(x = "Annotation",
-                y = "HPO term", 
-                fill = "")
+print(p3)
 
-# Combine the plots
-p_combined <- patchwork::wrap_plots(p1, p2, p3, ncol = 3)
-
-# Print the combined plot
-print(p_combined)
 ```
 
 ## Discussion
