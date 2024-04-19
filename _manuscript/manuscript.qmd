@@ -2,7 +2,7 @@
 title: Harnessing AI to annotate the severity of all phenotypic abnormalities within the Human Phenotype Ontology
 author:
   - name: Kitty B Murphy
-    orcid: 
+    orcid: 0000-0002-8669-3076
     corresponding: true
     email: kitty.murphy@ukdri.ac.uk
     roles:
@@ -14,8 +14,9 @@ author:
       - Department of Brain Sciences, Imperial College London, UK 
       - UK Dementia Research Institute at Imperial College London, UK
   - name: Brian M Schilder
-    orcid: 
-    corresponding: true
+    orcid: 0000-0001-5949-2191
+    corresponding: false
+    email: brian_schilder@alumni.brown.edu
     roles: 
       - Investigation
       - Project administration
@@ -25,7 +26,8 @@ author:
       - Department of Brain Sciences, Imperial College London, UK 
       - UK Dementia Research Institute at Imperial College London, UK
   - name: Nathan G Skene
-    orcid: 
+    orcid: 0000-0002-6807-3180
+    email: n.skene@imperial.ac.uk
     corresponding: true
     roles: 
       - Investigation
@@ -36,49 +38,102 @@ author:
       - Department of Brain Sciences, Imperial College London, UK 
       - UK Dementia Research Institute at Imperial College London, UK
 keywords:
-  - HPO
-  - chatGPT
-  - rare disease 
+  - Ontology
+  - Human Phenotype Ontology
+  - Large Language Model
+  - GPT-4
+  - Artificial intelligence
+  - Generative AI
+  - Rare disease 
+  - Automation
+  - Medicine
 bibliography: references.bib
+date: last-modified
+citation:
+  container-title: medRxiv
 ---
 
-```{r setup}
-#| echo: false
-#| warning: false
-
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE}
 library(dplyr)
 library(ggplot2)
+library(ggtext)
 library(patchwork)
 library(HPOExplorer)
+library(KGExplorer)
+library(data.table)
+```
+
+```{r import-data}
+#### Load HPO data
+tag <- "v2024-02-08"
+save_dir <- "data"
+keep_descendants <- "Phenotypic abnormality"
+p2g <- HPOExplorer::load_phenotype_to_genes(tag = tag,
+                                            save_dir=save_dir)
+hpo <- HPOExplorer::get_hpo(method="github",
+                            tag=tag, 
+                            save_dir=save_dir)
+hpo <- KGExplorer::filter_ontology(ont = hpo, 
+                                   keep_descendants = keep_descendants)
+#### Read HPO GPT annotations 
+gpt_annot <- HPOExplorer::gpt_annot_read(hpo = hpo)
+#### Compute IDs counts
+ids_matched <- intersect(c(hpo@terms,names(hpo@alternative_terms)), 
+                         gpt_annot$hpo_id)
+names_matched <- intersect(hpo@elementMetadata$name,
+                           trimws(gsub("obsolete","",gpt_annot$hpo_name, ignore.case = TRUE)))
+
+n_ids_hpo <- hpo@n_terms
+n_ids_gpt <- length(unique(fcoalesce(gpt_annot$hpo_name,gpt_annot$hpo_id)))
+```
+
+```{r gpt_annot_check}
+query_hits <- HPOExplorer::search_hpo(search_cols = c("name"),
+                                      hpo = hpo)
+#### Run annotation checks
+checks <- HPOExplorer::gpt_annot_check(annot = gpt_annot, 
+                                       query_hits = query_hits)
+# checks$true_pos_rate
+```
+
+```{r gpt_annot_codify}
+res_coded <- HPOExplorer::gpt_annot_codify(annot = gpt_annot)
+annot_melt <- HPOExplorer::gpt_annot_melt(res_coded = res_coded)
+```
+
+```{r gpt_annot_plot}
+gpt_annot_plot_out <- HPOExplorer::gpt_annot_plot(
+  annot = gpt_annot[hpo_name!=keep_descendants],
+  keep_descendants = keep_descendants, 
+  width = 10)
 ```
 
 ## Abstract
 
-The Human phenotype Ontology (HPO) has played a crucial role in defining, diagnosing, prognosing, and treating human diseases by providing a standardised database for phenotypic abnormalities. However, there is currently no information pertaining to the severity of each phenotype, making systematic analyses and prioritisation of results difficult. With 18,082 abnormalities now corresponding to over 10,000 rare diseases, manual curation of such phenotypic annotations by experts would be labor-intensive and time-consuming. Leveraging advances in artificial intelligence, we employed the OpenAI GPT-4 model with Python to systematically annotate the severity of ~ 17,000 phenotypic abnormalities in the HPO. By checking that phenotypes with guaranteed outcomes were appropriately annotated, we demonstrate the potential for natural language processing technologies to automate the curation process accurately. For example, phenotypes such as "decreased male fertility" were used to compute a true positive rate, as they would be expected to be annotated as often, if not always, causing reduced fertility. Across the annotated outcomes, we observed > 73 % annotation accuracy. Using a novel approach, we developed a severity scoring system that incorporates both the nature of the phenotype outcome and the frequency of its occurrence. These severity metrics will enable efforts to systematically prioritise which human phenotypes are most detrimental to human well being, and best targets for therapeutic intervention. 
+The Human Phenotype Ontology (HPO) has played a crucial role in defining, diagnosing, prognosing, and treating human diseases by providing a standardised framework for describing phenotypic abnormalities. However, documentation on the severity of each phenotype is currently very sparse, making systematic analyses and prioritisation of results challenging. With \>`r format(round(n_ids_hpo/100)*100, scientific = FALSE)` phenotypic abnormalities across \>`r format(round(length(unique(p2g$disease_id))/100)*100, scientific = FALSE)` rare diseases, manual curation of such phenotypic annotations by experts would be exceedingly labour-intensive and time-consuming. Leveraging advances in artificial intelligence, we employed the OpenAI GPT-4 large language model (LLM) to systematically annotate the severity of all phenotypic abnormalities in the HPO. First, we benchmarked the generative LLM annotations against ground-truth labels within the HPO (e.g. phenotypes in the 'Cancer' HPO branch were annotating as causing cancer by GPT-4). True positive recall rates across different annotations ranged from `r round(min(checks$true_pos_rate)*100)`-`r round(max(checks$true_pos_rate)*100)`% (mean=`r round(mean(checks$true_pos_rate)*100)`%), clearly demonstrating the ability of GPT-4 to automate the curation process with a high degree of fidelity. Using a novel approach, we developed a severity scoring system that incorporates both the nature of the phenotype outcome and the frequency of its occurrence. These severity metrics will enable efforts to systematically prioritise which human phenotypes are most detrimental to human health, and best targets for therapeutic intervention.
 
 ## Introduction
 
-Comprehensive annotation of phenotypic abnormalities is invaluable for defining, diagnosing, prognosing, and treating human disease. Since 2008, the Human phenotype Ontology (HPO) has been instrumental to this, by providing a standardised database for the description and analysis of human phenotypes @Gargano2024-nj. Through developing open community resources, the depth and breadth of the HPO has continued to expand and there are now ~ 18,000 phenotypic abnormalities, corresponding to > 10,000 rare diseases, described. In recent years, the HPO has expanded its disease annotations so that each HPO term can have metadata including typical age of onset and frequency. In addition, there are the Clinical modifier (put this in italics) and Clinical course (also italics) subontologies, which contains terms to describe factors including severity and triggers, and mortality and progression, respectively. Describing the severity-related attributes of a disease is crucial for attaining significant objectives in rare diseases. This includes enhancing diagnostic capabilities, as well as prioritising and guiding gene therapy trials.
+Comprehensive annotation of phenotypic abnormalities is invaluable for defining, diagnosing, prognosing, and treating human disease. Since 2008, the Human Phenotype Ontology (HPO) has been instrumental to this, by providing a standardised database for the description and analysis of human phenotypes [@kohlerHumanPhenotypeOntology2021; @garganoHumanPhenotypeOntology2024]. Through developing open community resources, the depth and breadth of the HPO has continued to expand and there are now \>`r format(round(n_ids_hpo/100)*100, scientific = FALSE)` phenotypic abnormalities across \>`r format(round(length(unique(p2g$disease_id))/100)*100, scientific = FALSE)` diseases, described. In recent years, the HPO has expanded its disease annotations so that each HPO term can have metadata including typical age of onset and frequency. In addition, there are the *Clinical modifier* and *Clinical course* subontologies, which contains terms to describe factors including severity, triggers, mortality and progression, respectively. Describing the severity-related attributes of a disease is crucial for both research and clinical care of individuals with rare diseases. This includes enhancing diagnostic capabilities, as well as prioritising and guiding gene therapy trials.
 
-To date, the HPO has largely been manually curated by experts including clinicians, clinical geneticists, and researchers. Although this approach ensures the quality and accuracy of the ontology, it is time-consuming and labour-intensive. As a result, less than 1% of terms within the HPO have metadata pertaining to their features such as time course and severity. As artificial intelligence (AI) capabilities advance, there is an opportunity to integrate natural language processing technologies into assisting in the curation process. Here, we have used the OpenAI GPT-4 model (https://openai.com/) with Python to systematically annotate the severity of > 17,000 phenotypic abnormalities within the HPO. Our severity annotation framework was developed based on previously defined criteria developed through consultation with clinicians 2. The authors consulted 192 healthcare professionals for their opinions on the relative severity of various clinical characteristics: they used this to create a system for categorising the severity of  diseases. Briefly, each healthcare professional was sent a survey asking them to first rate how important a disease characteristic was for determining disease severity, and then to rate the severity of a set of given disease. Using the responses, the authors were able to categorise clinical characteristics into 4 ‘severity tiers’. While characteristics such as shortened lifespan in infancy and intellectual disability were identified as highly severe and placed into tier 1, sensory impairment and reduced lifespan were categorised as less severe and placed into tier 4. Being able to quickly ascribe severity measures based on those criteria to HPO phenotypes, will assist with interpreting phenome-wide studies. 
+To date, the HPO has largely relied on manual curation by experts including clinicians, clinical geneticists and researchers. Although this approach ensures the quality and accuracy of the ontology, it is time-consuming and labour-intensive. As a result, less than 1% of terms within the HPO have metadata pertaining to their features such as time course and severity. Artificial intelligence (AI) capabilities have advanced considerably in recent years, presenting new opportunities to integrate natural language processing technologies into assisting in the curation process. Specifically, there have recently been considerable advances in large language model (LLM) and their application to biomedical problems, in some cases performing as well or better than human clinicians on standardised medical exams and patient diagnosis tasks [@vanveenAdaptedLargeLanguage2024; @boltonBioMedLM7BParameter2024; @zhangBiomedGPTUnifiedGeneralist2023; @labrakBioMistralCollectionOpenSource2024; @guDomainSpecificLanguageModel2021; @singhalLargeLanguageModels2023; @shinBioMegatronLargerBiomedical2020; @chengExploringPotentialGPT42023; @singhalLargeLanguageModels2023; @oneilPhenomicsAssistantInterface2024; @luoBioGPTGenerativePretrained2022; @mcduffAccurateDifferentialDiagnosis2023; @singhalExpertLevelMedicalQuestion2023]. Recent work has demonstrated that the Generative Pre-trained Transformer 4 (GPT-4) foundation model [@openaiGPT4TechnicalReport2024], when combined with strategic prompt engineering, can outperform even specialist LLMs that are explicitly fine-tuned for biomedical tasks [@noriCanGeneralistFoundation2023]. In a landmark achievement, GPT-4 was the first LLM to surpass a score of 90% in the United States Medical Licensing Examination (USML) [@noriCanGeneralistFoundation2023].
 
-Almost 800 phenotypes were annotated twice to evaluate annotation consistency, and a true positive rate of annotations was calculated to assess annotation accuracy. Additionally, based on the clinical characteristics and their occurrence, we have quantified the severity of each phenotype, providing an example of how these clinical characteristic annotations can be used to guide prioritisation of gene therapy trials. Ultimately, we hope that our resource will be of utility to those working in rare diseases, as well as the wider rare disease community.
+Here, we have used GPT-4 to systematically annotate the severity of `r n_ids_gpt` / `r n_ids_hpo` (`r round(n_ids_gpt/n_ids_hpo*100,1)`%) phenotypic abnormalities within the HPO. Our severity annotation framework was adapted from previously defined criteria developed through consultation with clinicians [@Lazarin2014-rz]. The authors consulted 192 healthcare professionals for their opinions on the relative severity of various clinical characteristics: they used this to create a system for categorising the severity of diseases. Briefly, each healthcare professional was sent a survey asking them to first rate how important a disease characteristic was for determining disease severity, and then to rate the severity of a set of given disease. Using the responses, the authors were able to categorise clinical characteristics into 4 'severity tiers'. While characteristics such as shortened lifespan in infancy and intellectual disability were identified as highly severe and placed into tier 1, sensory impairment and reduced lifespan were categorised as less severe and placed into tier 4. Standardised metrics of severity allow clinicians to quickly assess the urgency of treating a given phenotype, as well as prognosing what outcomes might be expected.
 
-## Results 
+`r checks$consistency_count[[1]]` phenotypes were annotated multiple times to evaluate the consistency of responses generated by GPT-4. For a subset of phenotypes with known expected annotations, true positive rates were calculated to assess recall. Additionally, based on the clinical characteristics and their occurrence, we have quantified the severity of each phenotype, providing an example of how these clinical characteristic annotations can be used to guide prioritisation of gene therapy trials. Ultimately, we hope that our resource will be of utility to those working in rare diseases, as well as the wider healthcare community.
 
-### Annotating the HPO using OpenAI GPT-4
-We employed the OpenAI GPT-4 model with Python to annotate 16,982 terms within the Human phenotype Ontology (HPO). Our annotation framework was developed based on previously defined criteria for classifying disease severity @Lazarin2014-rz. We sought to evaluate the impact of phenotypes on outcomes including intellectual disability, death, impaired mobility, physical malformations, blindness, sensory impairments, immunodeficiency, cancer, reduced fertility, and congenital onset. Through prompt design we found that the performance of GPT-4 improved when we incorporated a scale associated with each effect and required a justification for each response. For each effect, we asked about the likelihood of its occurrence - whether it never, rarely, often, or always occurred. Furthermore, our prompt design revealed that the optimal trade-off between the number of phenotypes and performance was achieved when inputting no more than two or three phenotypes per prompt. An example prompt can be seen in Figure 1. The phenotype outcome occurrence varied by category. While > 50% of annotated phenotypes never caused blindness, cancer, immunodeficiency, intellectual disability, reduced fertility, and sensory impairment, a similar proportion often or always had congenital onset (Fig. 1).
+## Results
 
-```{r occurence_plot}
-#| echo: false
-#| warning: false
-#| message: false
+### Annotating the HPO using GPT-4
 
-# read in hpo gpt annotations 
-hpo_annot <- HPOExplorer::gpt_annot_read()
+```{r fig-occurrence}
+#| label: fig-occurrence
+#| fig-cap: GPT-4 was able to annotate all human phenotypes based on whether they are always/often/rarely/never associated with different clinical characteristics. **a**, An example of the prompt input given to to GPT-4. The phenotypes listed in the second to last sentence (*italicised*) were changed to allow all HPO phenotypes to be annotated. **b**, Stacked bar plot showing the proportion of the occurrence of each clinical characteristic across all annotated HPO phenotypes. The terms shown on the x-axis are the clinical characteristics for which GPT-4 was asked to determine whether each phenotype caused them. 
+#| fig-height: 7
+#| fig-width: 8
 
 # subset to clinical characteristics 
-occurr_df <- hpo_annot[,c("hpo_name", "intellectual_disability", "death", "impaired_mobility", "blindness",
+occurr_df <- gpt_annot[,c("hpo_name", "intellectual_disability", "death", "impaired_mobility", "blindness",
                           "sensory_impairments", "immunodeficiency", "cancer", "reduced_fertility",
                           "congenital_onset")]
 
@@ -89,59 +144,105 @@ count_df <- data.frame(matrix(0, nrow = length(cols_of_interest), ncol = 4))
 colnames(count_df) <- c("always", "often", "rarely", "never")
 rownames(count_df) <- cols_of_interest
 
-# Loop through each column of interest and count the occurrences of 'always', 'often', 'rarely', 'never'
+## Loop through each column of interest and count the occurrences of:
+## 'always', 'often', 'rarely', 'never'
 for (col in cols_of_interest) {
   counts <- table(occurr_df[[col]])
   count_df[col, ] <- counts[match(colnames(count_df), names(counts))]
 }
 
-count_df_long <- tidyr::gather(count_df, key = "condition", value = "count", always:never)
+count_df_long <- tidyr::gather(count_df,
+                               key = "condition",
+                               value = "count", 
+                               always:never)
 count_df_long$category <- rownames(count_df)
 
 count_df_long$category <- gsub("_", " ", count_df_long$category)
-count_df_long$condition <- factor(count_df_long$condition, levels=c("always", "often", "rarely", "never"))
+count_df_long$condition <- factor(count_df_long$condition, 
+                                  levels=c("always", "often", "rarely", "never"))
 
-count_df_long <- count_df_long %>%
-  dplyr::group_by(category) %>%
+count_df_long <- count_df_long |>
+  dplyr::group_by(category) |>
   dplyr::mutate(percentage = count / sum(count) * 100)
 
 # set annotation order for plots 
 annotation_order <- c("death", "intellectual disability", "impaired mobility", "blindness", 
                       "congenital onset", "physical malformations", "sensory impairments", 
                       "immunodeficiency", "cancer", "reduced fertility")
+count_df_long$category <- factor(count_df_long$category, 
+                                 levels = annotation_order)
+ 
 
-count_df_long$category <- factor(count_df_long$category, levels = annotation_order)
+# Load the prompt generation function 
+source("code/prompt_gen.R")
+prompts <- prompt_gen_table(hpo = hpo)
+txt_prompt <- prompts$prompt[1688]
+for(x in prompts$terms[[1688]]){
+  txt_prompt <- sub(x,paste0("*",x,"*"),txt_prompt)
+}
+for(x in c(
+  eval(formals(prompt_gen_table)$effects),
+  eval(formals(prompt_gen_table)$responses),
+  "justification")){
+  txt_prompt <- sub(x,paste0("**",x,"**"),txt_prompt)
+}
+## Subplot a: Example prompt
+f1a <- ggplot() + 
+  labs(title="Example GPT-4 prompt") +
+  ggtext::geom_textbox(aes(x=.5,y=1),
+                       box.padding = margin(20, 10, 20, 10),
+                       box.margin = margin(0, 0, 0, 0),
+                       box.r = grid::unit(30, "pt"),
+                       width = unit(.8, "npc"),
+                       halign=.5,
+                       fill="grey90",
+                       label=txt_prompt) +
+  theme_void() +
+  theme(plot.title = element_text(hjust=0.5))
 
-# Stacked bar plot of clinical characteristic occurrence
-figure1 <- ggplot(count_df_long, aes(x = category, y = count, fill = condition)) +
+## Subplot b: Stacked bar plot of clinical characteristic occurrence.
+f1b <- ggplot(count_df_long, aes(x = category, y = count, fill = condition)) +
   geom_bar(stat = "identity") +
   labs(title = "Clinical characteristic occurrence",
        x = "", y = "HPO phenotypes (n)", fill = NULL) +
   theme_minimal() +
-  theme(legend.position = "right", plot.title = element_text(hjust=0.5), 
-        text = element_text(size=16),
-        axis.text.x = element_text(angle=45, size=16, hjust=1), 
-        title = element_text(size=15)) +
+  theme(legend.position = "right", 
+        plot.title = element_text(hjust=0.5),  
+        axis.text.x = element_text(angle=45, hjust=1),  
+        ) +
   scale_fill_brewer(palette = "GnBu", direction = -1)
 
+(
+  f1a| 
+    (f1b/plot_spacer() ) + plot_layout(heights = c(1, .1))
+) + 
+  patchwork::plot_layout(widths = c(2,1)) +
+  patchwork::plot_annotation(tag_levels = letters) 
 ```
 
-![Figure 1: GPT-4 was able to annotate all human phenotypes based on whether they are always/often/rarely/never associated with different clinical characteristics. a An example of the prompt input given to to GPT-4. The phenotypes listed in the last sentence were changed to allow ~17,000 phenotypes to be annotated. b Stacked bar plot showing the proportion of the occurrence of each clinical characteristic across all ~17,000 phenotypes annotated.The terms shown on the X-axis are the clinical characteristics, for which GPT-4 was asked to determine whether each phenotype caused them. For example, it annotated ‘Respiratory arrest’ as always causing death. Only 75 phenotypes were annotated as always causing death, despite 9,544 phenotypes often or rarely causing it.](figures/clinical_characteristic_occurrence.png)
-### Annotation consistency and accuracy
-To assess annotation consistency, 793 phenotypes underwent duplicate annotations, with two metrics employed to determine the 'consistency rate'. The first, less stringent metric, defined consistency as the duplicate annotations being either 'always' and 'often', or 'never' and 'rarely'. The second, more stringent metric, required exact agreement in annotation occurrences, e.g. 'always' and 'always'. For the less stringent metric, duplicated phenotypes were annotated consistently at a rate of at least 80%, and for the more stringent metric, the lowest consistency rate was 57%, for congenital onset. An example of where annotations were inconsistent was for the HPO term ‘Acute leukaemia’. One time, GPT-4 annotated it as often causing impaired mobility, giving the justification that ‘weakness and fatigue from leukaemia and its treatment can impair mobility’. The other time, GPT-4 annotated it as rarely causing impaired mobility, giving the justification that ‘acute leukaemia rarely impairs mobility directly’. Despite specifying in the prompt for GPT-4 not to take into consideration indirect effects, here is an example of where it failed to do so. 
+We employed the OpenAI GPT-4 model with Python to annotate `r length(unique(gpt_annot$hpo_name))` terms within the HPO (`r tag`) [@kohlerHumanPhenotypeOntology2021; @garganoHumanPhenotypeOntology2024]. Our annotation framework was developed based on previously defined criteria for classifying disease severity [@Lazarin2014-rz]. We sought to evaluate the impact of phenotypes on factors including intellectual disability, death, impaired mobility, physical malformations, blindness, sensory impairments, immunodeficiency, cancer, reduced fertility, and congenital onset. Through prompt design we found that the performance of GPT-4 improved when we incorporated a scale associated with each effect and required a justification for each response. For each effect, we asked about the likelihood of its occurrence - whether it never, rarely, often, or always occurred.
+
+```{r always_death}
+never_thresh <- 50
+never_dt <- subset(count_df_long, condition=="never" & percentage>=never_thresh)
+always_death <- gpt_annot[,list(always_death=all(death=="always"),
+                                hpo_name=hpo_name[1]),
+                          by="hpo_id"][always_death==TRUE,]
+```
+
+Phenotype outcome occurrence varied across annotation categories. \>`r never_thresh`% of phenotypes never caused `r paste(never_dt$category[-1], collapse=", ")` or `r never_dt$category[1]`. Only a minority of phenotypes (`r round(sum(subset(count_df_long, condition %in% c("never") & category=="congenital onset")$percentage),1)`%) never had a congenital onset, which is expected as rare disorders tend to be early onset genetic conditions [Fig. @fig-occurrence].
+
+Less than `r ceiling(subset(count_df_long, condition=="always" & category=="death")$percentage)`% of phenotype always directly resulted in death, such as 'Stillbirth', 'Anencephaly' and 'Bilateral lung agenesis'. Only `r uniqueN(gpt_annot[death=="always"]$hpo_name)` phenotypes were annotated as always causing death, while `r uniqueN(gpt_annot[death %in% c("often","rarely")]$hpo_name)` phenotypes were annotated as often or rarely causing death. `r uniqueN(gpt_annot[death %in% c("never")]$hpo_name)` phenotypes were annotated as never causing death. This included `r sum(grepl("syndactyly",gpt_annot[death %in% c("never")]$hpo_name, ignore.case = TRUE))` unique forms of syndactyly, a non-lethal condition that causes fused or webbed fingers (occurring 1 in 1,200–15,000 live births). While not life-threatening itself, syndactyly is a symptom of genetic disorders that can cause life-threatening cardiovascular and neurodevelopmental defects, such as Apert Syndrome [@garagnaniSyndromesAssociatedSyndactyly2013]. This example highlights the ability of GPT-4 to successfully distinguish between phenotypes that directly cause lethality, and those that are often associated with diseases that cause lethality.
+
+### Annotation consistency and recall
+
+To assess annotation consistency, `r checks$consistency_count[[1]]` phenotypes underwent duplicate annotations. We employed two different metrics to determine the *consistency rate*. The first, less stringent metric, defined consistency as the duplicate annotations being either 'always' and 'often', or 'never' and 'rarely'. The second, more stringent metric, required exact agreement in annotation occurrences, e.g. 'always' and 'always'. For the less stringent metric, duplicated phenotypes were annotated consistently at a rate of at least `r floor(min(checks$consistency_rate)*100)`%, and for the more stringent metric, the lowest consistency rate was `r round(min(checks$consistency_stringent_rate)*100)`% for congenital onset. An example of where annotations were inconsistent was for the HPO term 'Acute leukaemia'. One time, GPT-4 annotated it as often causing impaired mobility, giving the justification that 'weakness and fatigue from leukaemia and its treatment can impair mobility'. The other time, GPT-4 annotated it as rarely causing impaired mobility, giving the justification that 'acute leukaemia rarely impairs mobility directly'. Despite specifying in the prompt for GPT-4 not to take into consideration indirect effects, here is an example of where it failed to do so.
 
 ```{r annot_checks}
-#| echo: false
-#| message: false
-
-# Annotation checks
-checks <- HPOExplorer::gpt_annot_check()
-
 # Define items to be checked
 items <- c("consistency_count", "consistency_rate",
            "consistency_stringent_count", "consistency_stringent_rate",
            "true_pos_count", "true_pos_rate")
-
 metric_types <- c("Rate", "Count")[1]
 
 # Get data frame with checks values
@@ -173,106 +274,119 @@ check_df$annotation <- gsub("_", " ", check_df$annotation)
 annotation_order <- unique(check_df$annotation)
 check_df$annotation <- factor(check_df$annotation, levels = annotation_order)
 check_df$metric_category <- gsub("_", " ", check_df$metric_category)
-
-metric_categories <- c("consistency", "consistency stringent")
-
-``` 
-
-```{r figure_2}
-#| echo: false
-#| message: false
-#| label: fig-checks
-#| fig-cap: GPT-4 annotations are consistent and accurate across annotations. a Barplot showing the annotation consistency for 793 phenotypes that were annotated twice. On the left hand side, annotations were defined as consistent if the given phenotype was annotated to the same outcome occurrence both times, or if it was annotated to ‘always’ and ‘often’, or, ‘never’ and ‘rarely. On the right hand side, annotations were only defined as consistent if the given phenotype was annotated to the same outcome occurrence both times. b Bar plot of the true positive rate for each annotation. The true positives were determined based on the assumption that all descendants of some HPO phenotypes should be related to those outcomes. For instance, all descendents of the HPO term for “Neoplasm” were considered to be true positives for cancer (an assumption which is not always the case, as GPT-4 detects, as some neoplasms are benign). The labels above each bar indicate the number of phenotypes tested. 
-#| fig-height: 7
-#| fig-width: 10
-consistency_plot <- ggplot(check_df[metric_type %in% metric_types & metric_category %in% metric_categories, ],
-                           aes(x = annotation, y = value,
-                               fill = metric_category,
-                               label = round(value, 2))) +
-  geom_bar(stat = "identity", show.legend = TRUE) +
-  facet_grid(facets = ~metric_category, scales = "free") +
-  theme_bw() +
-  labs(x = "", y = "Value") +
-  ggtitle("Annotation consistency") +
-  scale_fill_manual(values = c("#C3DAEAFF", "#ECE28BFF")) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 16),
-        legend.position = "none",
-        text = element_text(size = 16),
-        title = element_text(size = 15),
-        plot.title = element_text(hjust = 0.5)) +
-  geom_text(aes(x = 7.5, y = 1.05, label = "N phenotypes = 793"), size = 4)
-
-
-metric_categories <- "true pos"
-
-accuracy_plot <- ggplot(check_df[metric_type %in% metric_types & metric_category %in% metric_categories, ],
-                        aes(x = annotation, y = value,
-                            fill = metric_category,
-                            label = n)) +
-  geom_bar(stat = "identity", show.legend = TRUE) +
-  theme_bw() +
-  labs(x = "", y = "Value") +
-  ggtitle("True positive rate") +
-  scale_fill_manual(values = c("#B1D5BBFF")) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 16),
-        legend.position = "none",
-        text = element_text(size = 16),
-        title = element_text(size = 15),
-        plot.title = element_text(hjust = 0.5)) +
-  geom_label(fill = "white", size = 4)
-
-consistency_plot + accuracy_plot + plot_layout(widths = c(1, 0.7)) +
-  plot_annotation(tag_levels = 'a') & theme(plot.tag = element_text(size = 18, face = "bold"))
+check_df[metric_category=="consistency",metric_category:="consistency lenient"]
 ```
 
-In order to evaluate the accuracy of the annotations, we calculated a true positive rate. This involved identifying specific branches within the HPO that would contain phenotypes that would reliably indicate the presence of certain conditions. For instance, the phenotypes 'decreased fertility in females' and 'decreased fertility in males' should, in the annotations, often, if not always, cause reduced fertility. We observed an encouraging true positive rate exceeding 70% across all phenotype outcomes. The lowest rate was observed for cancer (73%), for which all descendants of the HPO term ‘Neoplasm’ were considered to be true positives. However, this assumption, as GPT-4 detects, is not always true as these abnormal tissue/cell growths can be either cancerous or benign. For example, the HPO term ‘multiple digital exostoses’, which are benign bone tumours, is a descendant of the HPO term ‘Neoplasm’, and GPT-4 annotated it as rarely causing cancer, giving the justification that ‘Bone growths may rarely become cancerous’. This high level of accuracy underscores the robustness of our annotations and the reliability of the HPO framework in capturing clinically relevant phenotypic information. However, we acknowledge that the number of testable phenotypes for some of these categories are low. Furthermore, some of the ‘true positive’ phenotypes are synonymous to the clinical characteristic itself, for instance, for testing the true positive rate of the characteristic ‘Intellectual disability’, the phenotype ‘Severe intellectual disability’ was used. 
+```{r fig-checks}
+#| label: fig-checks
+#| fig-cap: GPT-4 annotations are consistent and accurate across annotations. **a**, Barplot showing the annotation consistency within phenotypes that were annotated more than once. In the lenient metric, annotations were collapsed into two groups ('always'/'often' and 'never'/'rarely'). For a given clinical characteristic within a given phenotype, if an annotation was always within the same group it was considered consistent. In the stringent metric, all four annotation categories were considered to be different from one another. Thus, annotations were only defined as consistent if they were all identical. The blue dashed line indicates the probability of two annotations being consistent by chance in the lenient metric (~1/2). The gold dashed line is the probability of two annotations being consistent by chance in the stringent metric (~1/4). **b**, Bar plot of the true positive rate for each annotation. The labels above each bar indicate the number of phenotypes tested. 
+#| fig-height: 5
+#| fig-width: 6
+
+lab_size <- 3
+consistency_plot <- ggplot(check_df[metric_type %in% metric_types &
+                                    grepl("consistency",metric_category)],
+                           aes(x = annotation, y = value,
+                               fill = stringr::str_to_sentence(
+                                 gsub("consistency ", "", metric_category)
+                                 ),
+                               label = round(value, 2))) +
+  geom_bar(stat = "identity",position = "dodge") +
+  labs(title="Annotation consistency",
+       x = NULL, y = "Mean consistency", 
+       fill=NULL) +
+  scale_fill_manual(values = c("#C3DAEAFF", "#ECE28BFF")) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "top", 
+        strip.background = element_rect(fill="white"),
+        plot.title = element_text(hjust = 0.5)) +
+  geom_text(aes(x = 1, y = 1, label = paste0("n=",n," phenotypes")),
+            size=lab_size,
+            check_overlap=TRUE, hjust=0) +
+  ## Compute the empirical probability of annotations being consistent by chance 
+  ## with 2 options and N duplicates
+  geom_hline(yintercept = mean(1/2^checks$annot$pheno_count), 
+             color="dodgerblue", linetype="dashed")+
+  ## Compute the empirical probability of annotations being consistent by chance 
+  ## with 4 options and N duplicates
+  geom_hline(yintercept = mean(1/4^checks$annot$pheno_count), 
+             color="gold3", linetype="dashed")
+
+recall_plot <- ggplot(check_df[metric_type %in% metric_types &
+                               metric_category %in% c("true pos"), ],
+                        aes(x = annotation, y = value,
+                            fill = metric_category,
+                            label = n#paste0("n\n=\n",n)
+                        )
+                      ) +
+  geom_bar(stat = "identity", show.legend = TRUE) +
+  theme_bw() +
+  labs(x = NULL, y = "Recall") +
+  ggtitle("True positive rate") +
+  scale_fill_manual(values = c("#B1D5BBFF")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none", 
+        plot.title = element_text(hjust = 0.5)) +
+  geom_label(fill = alpha("white",1),
+            size = lab_size)
+
+consistency_plot + recall_plot + 
+  plot_layout(widths = c(1, 1)) +
+  plot_annotation(tag_levels = 'a')
+```
+
+In order to evaluate the validity of the annotations, we calculated a true positive rate. This involved identifying specific branches within the HPO that would contain phenotypes that would reliably indicate the presence of certain conditions. For instance, the phenotypes 'Decreased fertility in females' and 'Decreased fertility in males' should often or always cause reduced fertility. We observed an encouraging true positive rate exceeding `r floor(min(checks$true_pos_rate)*100)`% across in every clinical characteristic and achieving perfect recall (100%) in `r sum(checks$true_pos_rate==1)`/`r length(checks$true_pos_rate)` characteristics.
+
+```{r}
+lowest_recall <- names(checks$true_pos_rate)[checks$true_pos_rate==min(checks$true_pos_rate)]
+lowest_recall_dt <- checks$annot[get(lowest_recall)=="never" & hpo_id %in% query_hits[[lowest_recall]]]
+```
+
+The lowest true positive rate was observed for `r gsub("_"," ",lowest_recall)`, with `r round(checks$true_pos_rate[[lowest_recall]]*100,1)`% recall across `r checks$true_pos_count[[lowest_recall]]` HPO phenotypes. Some cases in which the GPT-4 annotations disagreed with the HPO ground truth included: `r paste(shQuote(head(lowest_recall_dt$hpo_name, 6)), collapse=", ")`. In the case of `r shQuote(lowest_recall_dt$hpo_name[1])` it provided the justification that `r shQuote(lowest_recall_dt$physical_malformations_justification[1])`. In another instance, GPT-4 noted that `r shQuote(lowest_recall_dt$hpo_name[2])` is `r shQuote(lowest_recall_dt$physical_malformations_justification[2])`. This indicates that while technically incorrect according to our predefined benchmarks, a case could in fact be made that mild skin conditions do not rise to the level of physical malformations.
+
+This high level of recall underscores the robustness of our annotations and the reliability of the HPO framework in capturing clinically relevant phenotypic information. However, we acknowledge that the number of testable true positive phenotypes for some of these categories are low, especially `r shQuote(names(checks$checkable_count)[checks$checkable_count==min(checks$checkable_count)])` for which there is only `r min(checks$checkable_count)` phenotype in the HPO (after excluding terms pertaining to colour or night blindness). Furthermore, some of the true positive phenotypes are lexically similar to the name of the clinical characteristic itself. In these cases, annotating 'Severe intellectual disability' as always causing intellectual disability is a relatively trivial task. Nevertheless, even these scenarios provide a clear and interpretable benchmark for the model's performance. In addition, were numerous phenotypes with lexically non-obvious relationships to the clinical characteristic that were annotated correctly by GPT-4. For example, 'Molar tooth sign on MRI' was correctly annotated as causing intellectual disability.
 
 ### Quantifying phenotypic severity
-Quantifying the severity of phenotypes can have important implications for diagnosis, prognosis, and treatment, for instance, guiding prioritisation of gene therapy trials for the most severe phenotypes. First, we created a dictionary to map each phenotype outcome (e.g. blindness) and its response (always, often, rarely, never) to numeric values from 0-4. Then, the phenotype outcome values were multiplied by their associated response values. Importantly, the values reflected the severity of each outcome based on both the outcome itself and the frequency of the response. For instance, a phenotype always causing death would have a higher multiplied value than a phenotype rarely causing reduced fertility. Next, we computed an average score for each phenotype by aggregating the multiplied values across all phenotype outcomes and then calculating the mean. This was then normalised by the theoretical maximum severity score, so that all phenotypes were on a 0-100 severity scale (where 100 is the most severe phenotype possible). This average normalised score represents the overall severity of the phenotype based on the severity of its individual outcomes.
 
-Based on these scores we evaluated the top 50 severe phenotypes. The most severe phenotype, with a score of 58, was ‘Anencephaly’ (HP:0002323). Anencephaly is a birth defect where the baby is born without a portion of its brain and skull, often these babies are stillborn. In fact, many of the most severe phenotypes were related to developmental brain and neural tube defects. Comparison of the severity scores for each response, across the phenotype outcomes annotated, revealed consistent trends: as the response of the phenotype outcome increased (from never to always), the severity score also increased (Supplementary Fig. 1). We also evaluated the severity score distribution by HPO branch and calculated the mean severity score using all phenotypes within a HPO branch (Fig. 4). After the term ‘Phenotypic abnormality’, the highest severity score was for the HPO branch ‘Abnormal cellular phenotype’, followed by ‘Abnormality of prenatal development or birth’, which would include the high severity scoring phenotypes seen in Fig. 3. 
+```{r anenceph_dt}
+anenceph_dt <- res_coded$annot_weighted[hpo_name=='Anencephaly',]
+```
+
+Quantifying the severity of phenotypes can have important implications for diagnosis, prognosis, and treatment, for instance, guiding prioritisation of gene therapy trials for the most severe phenotypes. First, we created a dictionary to map each phenotype outcome (e.g. blindness) and its response (always, often, rarely, never) to numeric values from 0-3. Then, the phenotype outcome values were multiplied by their associated response values. Importantly, the values reflected the severity of each outcome based on both the outcome itself and the frequency of the response. For instance, a phenotype always causing death would have a higher multiplied value than a phenotype rarely causing reduced fertility (see @tbl-metric-weights). Next, we computed an average score for each phenotype by aggregating the multiplied values across all phenotype outcomes and then calculating the mean. This was then normalised by the theoretical maximum severity score, so that all phenotypes were on a 0-100 severity scale (where 100 is the most severe phenotype possible). This average normalised score represents the overall severity of the phenotype based on the severity of its individual outcomes.
+
+Based on these scores we evaluated the top 50 severe phenotypes. One of the most severe phenotype was `r shQuote(anenceph_dt$hpo_name)` (`r anenceph_dt$hpo_id`) with a composite severity score of `r round(anenceph_dt$severity_score_gpt, 1)`. Anencephaly is a birth defect where the baby is born without a portion of its brain and skull, often these babies are stillborn. In fact, many of the most severe phenotypes were related to developmental brain and neural tube defects. Comparison of the severity scores for each response, across the phenotype outcomes annotated, revealed consistent trends: as the response of the phenotype outcome increased (from never to always), the severity score also increased ([Supplementary Fig. @fig-severity-boxplot]). We also evaluated the severity score distribution by HPO branch and calculated the mean severity score using all phenotypes within each major HPO branch ([Fig. @fig-severity-histo]). The HPO branch with the greatest mean severity score was `r shQuote(unique(gpt_annot_plot_out$data$dat2$ancestor_name)[1])` (mean=`r round(unique(gpt_annot_plot_out$data$dat2$mean_severity_score_gpt)[1],1)`), followed by `r shQuote(unique(gpt_annot_plot_out$data$dat2$ancestor_name)[2])` (mean=`r round(unique(gpt_annot_plot_out$data$dat2$mean_severity_score_gpt)[2],1)`), which would include the highly ranked phenotypes seen in @fig-top-phenos.
 
 ```{r severity_scoring}
-#| echo: false
-#| message: false
-
+## code adapted from HPOExplorer::gpt_annot_plot()
 # get all descendants of the term phenotypic abnormality 
-keep_descendants="Phenotypic abnormality"
 keep_ont_levels=seq(3,17)
-
-ancestor_name <- variable <- hpo_id <- hpo_name <-
-  value <- severity_score_gpt <- mean_severity_score_gpt <- NULL;
-
-#### Prepare annotation results ####
-gpt_annot <- HPOExplorer::gpt_annot_read()
-res_coded <- HPOExplorer::gpt_annot_codify(annot = gpt_annot)
-dat1 <- HPOExplorer:::gpt_annot_melt(res_coded = res_coded)
-
+ 
 #### Filter out ont levels ####
-dat1 <- add_ancestor(dat1,
-                     keep_descendants = keep_descendants)
-data.table::setorderv(dat1,"severity_score_gpt",-1)
+annot_melt <- HPOExplorer::add_ancestor(annot_melt,
+                                        keep_descendants = keep_descendants)
+data.table::setorderv(annot_melt,"severity_score_gpt",-1)
 
-dat1 <- HPOExplorer::add_ont_lvl(dat1, keep_ont_levels = keep_ont_levels)
-dat1$variable <- gsub("_", " ", dat1$variable)
+annot_melt <- HPOExplorer::add_ont_lvl(annot_melt, keep_ont_levels = keep_ont_levels)
+annot_melt$variable <- gsub("_", " ", annot_melt$variable)
 
 # get all unique phenotypes
-total_unique <- length(unique(dat1$hpo_id))
+total_unique <- length(unique(annot_melt$hpo_id))
 
 # get the top N phenotypes
-top_n=15
-dat_top <- dat1[hpo_id %in% unique(dat1$hpo_id)[seq(top_n)]]
+top_n <- 15
+dat_top <- annot_melt[hpo_id %in% unique(annot_melt$hpo_id)[seq(top_n)]]
 
 # Get the bottom N phenotypes
 bottom_n <- 15
-dat_bottom <- dat1[hpo_id %in% unique(dat1$hpo_id)[seq(total_unique - bottom_n + 1, total_unique)]]
+dat_bottom <- annot_melt[hpo_id %in% unique(annot_melt$hpo_id)[seq(total_unique - bottom_n + 1, total_unique)]]
 
 # Define the range for selecting phenotypes from the middle
 start_index <- ceiling(total_unique / 2)  
 end_index <- start_index + 12
 
 # Get phenotypes from the middle
-dat_middle <- dat1[hpo_id %in% unique(dat1$hpo_id)[seq(start_index, end_index)]]
+dat_middle <- annot_melt[hpo_id %in% unique(annot_melt$hpo_id)[seq(start_index, end_index)]]
 
 # define labels
 dat_top$position <- "Top"
@@ -280,19 +394,15 @@ dat_middle$position <- "Middle"
 dat_bottom$position <- "Bottom"
 
 dat_all <- rbind(dat_top, dat_middle, dat_bottom)
-dat_all$position <- factor(dat_all$position, levels=c("Top", "Middle", "Bottom"))
-
+dat_all$position <- factor(dat_all$position, levels=unique(dat_all$position))
 dat_all$variable <- factor(dat_all$variable, levels = annotation_order)
 ```
 
-```{r figure_3}
-#| echo: false
-#| message: false
-#| label: fig-severity
-#| fig-cap: Quantifying the severity of HPO phenotype annotations highlights the most impactful conditions. Heatmap of the top (n = 15), mid-range (n = 15), and bottom (n = 15) HPO phenotypes based on severity score. Severity scores were calculated by multiplying the numeric values assigned to each clinical characteristic (death = 5, intellectual disability = 5, impaired mobility = 4, blindness = 4, congenital onset = 4, physical malformations = 3, sensory impairments = 3, immunodeficiency = 3,  cancer = 3, reduced fertility = 1) by their corresponding response frequencies (Always = 4, Often = 3, Rarely = 2, Never = 0). The average normalised score, representing overall phenotype severity on a 0-100 scale, was calculated by aggregating the multiplied values and normalising by the theoretical maximum severity score. The x-axis is scaled by the severity of the clinical characterisation.
-#| fig-height: 11
-#| fig-width: 10
-
+```{r fig-top-phenos}
+#| label: fig-top-phenos
+#| fig-cap: Quantifying the severity of HPO phenotype annotations highlights the most impactful conditions. Heatmap of the top (n = 15), mid-range (n = 15), and bottom (n = 15) HPO phenotypes based on severity score. Severity scores were calculated by multiplying the numeric values assigned to each clinical characteristic according to @tbl-metric-weights. The average normalised score, representing overall phenotype severity on a 0-100 scale, was calculated by aggregating the multiplied values and normalising by the theoretical maximum severity score. The x-axis is scaled by the severity of the clinical characterisation.
+#| fig-height: 7.5
+#| fig-width: 8
 
 p1 <- ggplot2::ggplot(data = dat_all,
                       ggplot2::aes(x=variable, y=hpo_name, fill=value)) +
@@ -301,11 +411,10 @@ p1 <- ggplot2::ggplot(data = dat_all,
   scale_fill_brewer(palette = "GnBu", direction = -1) +
   ggplot2::theme_classic() +
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
-                 legend.position = 'right',
-                 text = element_text(size=16)) +
+                 legend.position = 'right') +
   labs(x = "Clinical characteristic",
-       y = "HPO term",
-       fill = "") +
+       y = "HPO phenotype",
+       fill = "Occurrence") +
   ggplot2::facet_grid(position ~ ., scales = "free_y")
 
 p2 <- ggplot2::ggplot(data = dat_all,
@@ -314,117 +423,212 @@ p2 <- ggplot2::ggplot(data = dat_all,
   ggplot2::geom_tile() +
   ggplot2::scale_y_discrete(limits=rev) +
   scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = "reverse") +
-  ggplot2::labs(x=NULL, y=NULL, fill = "Severity score") +
+  ggplot2::labs(x=NULL, y=NULL, fill = "Severity\nscore") +
   ggplot2::theme_void() +
+  guides(fill = guide_colorbar(reverse = TRUE)) +
   ggplot2::theme(axis.text.y = ggplot2::element_blank(),
                  axis.ticks.y = ggplot2::element_blank(),
-                 legend.position = 'right') +
-  guides(fill = guide_colorbar(reverse = TRUE))
+                 legend.position = 'right')
 
 p3 <- patchwork::wrap_plots(p1, p2, ncol = 2,
                             widths = c(1,.2),
                             guides = "collect")
 
-print(p3)
-
+methods::show(p3)
 ```
 
 ## Discussion
 
-Here, we present a novel approach leveraging the OpenAI GPT-4 model, to systematically annotate the severity of 17,000 phenotypic abnormalities within the HPO. Our findings highlight the potential of natural language processing technologies in significantly contributing to the automation and refinement of the curation process in genomics and rare disease research.
-Manual curation of ontologies has traditionally relied on expert input, a process that is both time-consuming and labor-intensive. By employing advanced AI capabilities, we have demonstrated the feasibility of automating this process, significantly enhancing efficiency without compromising accuracy. Our validation approach yielded a high true positive rate exceeding 73% across the phenotypes tested. Furthermore, our approach can be readily adapted and scaled to accommodate the growing volume of phenotypic data.
+The creation and annotation of biomedical knowledge has traditionally relied on manual or semi-manual curation by human experts [@putmanMonarchInitiative20242024; @ochoaOpenTargetsPlatform2021; @mungallMonarchInitiativeIntegrative2017a; @kohlerHumanPhenotypeOntology2021; @garganoHumanPhenotypeOntology2024]. Performing such manual curation and review tasks at scale is often infeasible for human biomedical experts given limited time and resources. LLMs have the capacity to effectively encode, retrieve, and synthesise vast amounts of diverse information in a highly scalable manner [@vanveenAdaptedLargeLanguage2024; @singhalLargeLanguageModels2023; @openaiGPT4TechnicalReport2024]. This makes them powerful tools that can be applied in a rapidly expanding variety of scenarios, including medical practice, research and data curation [@singhalLargeLanguageModels2023; @toroDynamicRetrievalAugmented2023; @panLargeLanguageModels2023; @oneilPhenomicsAssistantInterface2024; @caufieldStructuredPromptInterrogation2023].
 
-A key contribution of our study is the development of a severity scoring system that integrates both the nature of the phenotype outcome and the frequency of its occurrence. By quantifying the phenotypic severity this way, we highlight the most impactful conditions and provide a comprehensive framework for prioritising gene therapy trials and guiding clinical decision-making in rare diseases.
+Here, we introduce a novel framework to leverage the current best-in-class LLM, GPT-4 [@openaiGPT4TechnicalReport2024], to systematically annotate the severity of `r n_ids_gpt` phenotypic abnormalities within the HPO. By employing advanced AI capabilities, we have demonstrated the feasibility of automating this process, significantly enhancing efficiency without substantially compromising accuracy. Our validation approach yielded a high true positive rate exceeding `r floor(min(checks$true_pos_rate)*100)`% across the phenotypes tested. Furthermore, our approach can be readily adapted and scaled to accommodate the growing volume of phenotypic data.
 
-** Brian to pick examples from severity scoring ** 
+Throughout this study, we observed that GPT-4 was capable of reliably recovering deep semantic relationships from the medical domain, far beyond making superficial inferences based on lexical similarities. An excellent example of this is the phenotype 'Molar tooth sign on MRI' (`r res_coded$annot_weighted[hpo_name=='Molar tooth sign on MRI']$hpo_id`; severity score=`r res_coded$annot_weighted[hpo_name=='Molar tooth sign on MRI']$severity_score_gpt`), which GPT-4 annotated as causing intellectual disability. At first glance, we ourselves assumed this was a false positive as the term appeared to be related to dentition. However, upon further inspection we realised that molar tooth sign is in fact a pattern of abnormal brain morphology that happens to bear some resemblance to molar dentition when observed in radiological scans. This phenotype is a known sign of neurodevelopmental defects that can indeed cause severe intellectual disability [@gleesonMolarToothSign2004].
 
-Given its scalability it can be easily applied as more phenotypes are added to the HPO, but can also be extended to include different annotations and to be used with other ontologies. For instance, we could have also tried to use GPT-4 to annotate how prevalent a phenotype is in the human population, or what the cost to the health system is of a phenotype. Currently there are no systematic annotations of these on a phenotypic level. However, it’s unclear whether GPT-4 could currently be applied for such annotations, or whether they require much more extensive data collection. 
+In addition to rapidly synthesising and summarising vast amounts of information, LLMs can also be steered to provide justifications for each particular response. This makes LLMs amenable to direct interrogation as a means of recovering explainability, especially when designed to retain information about previous requests and interactions as they use these to iteratively improve and update their predictions [@janikAspectsHumanMemory2024]. This represents a categorical advance over traditional natural language processing models based on more shallow forms of statistical or machine learning (e.g. Term Frequency-Inverse Document Frequency [@jonesStatisticalInterpretationTerm1972], Word2vec [@mikolovEfficientEstimationWord2013]) which lack the ability to provide chains of causal reasoning to justify their predictions. This highlights the fundamental trade-off between simpler models with high explainability (the ability humans to understand the inner workings of the model) but low interpretability (the ability of humans to trace the decision process of the model, analogous to human 'reasoning'), and deeper more complex models with low explainability but high interpretability [@marcinkevicsInterpretabilityExplainabilityMachine2023].
 
-Importantly, there are additional factors that need to be considered when trying to prioritise phenotypes for their suitability for gene therapy development. First, our scoring is in some sense subjective, for instance, one could ask is something that always causes death, always worse than something which causes a lifetime of other severe clinical characteristics. In terms of viability for a clinical trial, a phenotype which causes a lifetime of expensive burden on the medical system may be a better target than a phenotype which causes a quick death with little or no other clinical characteristics before. It would be worth exploring whether GPT-4 could estimate such costs. Another factor that affects the viability of developing a treatment for a therapy is how quickly a clinical trial can be run. For instance, measuring a high risk of respiratory failure over ten years would require a long trial. However, testing for total reversal of an existing severe phenotype would be much faster. As AI capabilities continue to advance, perhaps this is something GPT-4 and other models of the like could test for. 
+A key contribution of our study is the introduction of a quantitative severity scoring system that integrates both the nature of the phenotype outcome and the frequency of its occurrence. By encoding the concept of severity in this way, we are able to prioritise phenotypes based on their impact on patients. The methodology allowed us to transition from low-throughput qualitative assessments of severity (e.g. @Lazarin2014-rz) to high-throughput quantitative assessments of severity. One of the most severe phenotypes in the HPO is 'Fetal akinesia sequence' (FAS; `r annot_melt[hpo_name=='Fetal akinesia sequence']$hpo_id[1]`, severity score= `r round(annot_melt[hpo_name=='Fetal akinesia sequence']$severity_score_gpt[1],1)`), and extremely rare condition that is almost always lethal. FAS is a complex, multi-system phenotype that can be caused by at least `r uniqueN(p2g[hpo_name=='Fetal akinesia sequence']$disease_id)` different genetic disorders. Despite the complex and heterogenous aetiology of this phenotype, GPT-4 was able to provide accurate annotations alongside explainable justifications for those annotations (see @tbl-fas). For example, this phenotype almost always results in death, either *in utero* or shortly after birth. Not only did GPT-4 correctly provide the annotation death as `r shQuote(gpt_annot[hpo_name=='Fetal akinesia sequence']$death)`, when asked whether FAS causes sensory impairments it provided the response `r shQuote(gpt_annot[hpo_name=='Fetal akinesia sequence']$sensory_impairments)` with the justification `r shQuote(gpt_annot[hpo_name=='Fetal akinesia sequence']$sensory_impairments_justification)` Neurodevelopmental disruption is indeed a hallmark component of FAS (e.g. hydrocephalus, cerebellar hypoplasia) that causes severe impairments across multiple sensory systems [@chenPrenatalDiagnosisGenetic2012]. This demonstrates that GPT-4 was able to recover the correct chain of causality from phenotype to clinical outcome.
 
-An additional annotation that we didn’t take into consideration here is that GPT-4 might be aware of whether there are existing treatments for these phenotypes. Therefore, some of the top-ranking severe phenotype we have identified may already have treatment options available. It would therefore be useful to know whether a phenotype, although highly severe, is currently treatable, and also whether there exist known clinical endpoints for clinical trial testing. GPT-4 does seem to take into account quality of care, i.e. the degree to which health services increase the likelihood of desired outcomes (World Health Organization). For example, many of the cancer phenotypes are justified as always or often causing death unless treated or caught early. On the other hand, some cancers are justified as rarely causing death if appropriate treatment is provided, which may not always be the case for individuals or populations with access to less advanced medical systems. In future efforts, we might want to ask GPT-4 more explicitly to distinguish between whether a phenotype would cause death without treatment, or with best available standard of care. 
+Our findings highlight the potential of this next generation of natural language processing technologies in significantly contributing to the automation and refinement of data curation in biomedical research. These results have a large number of useful real-world applications, such as prioritising gene therapy candidates [@murphyIdentificationCellTypespecific2023] and guiding clinical decision-making in rare diseases. As the HPO continues to grow over time, this approach can easily be repeated to keep pace with the rapidly evolving biomedical landscape. Furthermore, this approach can be extended to produce different sets of annotations or be used with any other ontology. Additional use cases include gathering data on the prevalence of each phenotype to approximate their social and financial costs.
+
+One key limitation of our study is the fact that we did not explicitly interrogate GPT-4 to assess how the availability of treatments affected the annotations it produced. For example, there are some very severe conditions for which highly effective treatments and early detection screens are widely available (e.g. syphilis, some forms of melanoma), thus rendering them fully treatable or even curable provided access to modern healthcare. It would therefore be useful to further interrogate GPT-4 to uncover how the availability of treatments influences its responses. Many of our findings here seem to indicate that GPT-4 does take into account quality of care to the extent that health services increase the likelihood of desired outcomes. For example, many of the cancer phenotypes are justified as always or often causing death unless detected and treated early in the disease course. On the other hand, some cancers are justified as rarely causing death if appropriate treatment is provided, which may not always be the case for individuals or populations with access to less access to quality healthcare services. Future efforts could more explicitly ask GPT-4 whether the phenotype would cause death with no or suboptimal treatment.
+
+In addition to these technical challenges, there are multiple factors that need to be considered when trying to prioritise phenotypes for their suitability for gene therapy development. First, while we have attempted to formalise severity here, this is an inherently subjective concept that may vary considerably across different individuals and contexts. For instance, one could ask whether a condition that always causes death is worse than a condition that causes a lifetime of severe disability (e.g. paralysis, blindness, intellectual disability). Metrics such as quality-adjusted life years (QALYs) have been proposed in the past to address these dilemmas by defining health as a function of both the length and quality of life [@prietoProblemsSolutionsCalculating2003]. With regards to the financial burden of diseases, in some situations phenotypes which require many years of expensive medical care may be prioritised over those that result in extremely early onset lethality and little opportunity for therapeutic intervention. Another factor that affects the viability of a therapeutic program is the speed, cost and other practical considerations of a clinical trial. For instance, measuring risk of ageing-related respiratory failure over a ten-year period may be impractical in some cases. However, testing for total reversal of an existing severe phenotype could potentially yield faster and more immediately impactful results. If performed in close collaboration with medical ethicists, governmental organisations, advocacy groups and patient families, such cost/benefit assessments could be aided by LLMs through the scalable gathering of relevant data. As AI capabilities continue to advance, the range of applications in which they can be used effectively will continue to grow.
 
 While our study demonstrates the feasibility and utility of AI-driven phenotypic annotation, several limitations must be acknowledged. The reliance on computational algorithms may introduce biases or inaccuracies inherent to the training data, necessitating ongoing validation and refinement of our approach. Additionally, our severity scoring system, while comprehensive, may not capture the full spectrum of phenotypic variability or account for complex gene-environment interactions. Future research should focus on further optimising AI-driven annotation methodologies, incorporating additional data modalities such as genomic and clinical data to enhance accuracy.
 
-In conclusion, our study represents a significant step towards harnessing the power of AI to advance phenotypic annotation and severity assessment in rare diseases. This resource aims to provide researchers and clinicians with actionable insights that can inform rare disease research and improve the lives of individuals affected by rare diseases.
+In conclusion, our study represents a significant step towards harnessing the power of AI to advance phenotypic annotation and severity assessment across all rare diseases. This resource aims to provide researchers and clinicians with actionable insights that can inform rare disease research and improve the lives of individuals affected by rare diseases.
 
-## Methods 
+## Methods
 
 ### Annotating the HPO using OpenAI GPT-4
-We employed the OpenAI GPT-4 model with Python to annotate 16,982 terms within the Human phenotype Ontology (HPO). Our annotation framework was developed based on previously defined criteria for classifying disease severity (Lazarin et al., 2014). We sought to evaluate the impact of phenotypes on factors including intellectual disability, death, impaired mobility, physical malformations, blindness, sensory impairments, immunodeficiency, cancer, reduced fertility, and congenital onset. Through prompt design we found that the performance of GPT-4 improved when we incorporated a scale associated with each effect and required a justification for each response. For each effect, we asked about the likelihood of its occurrence - whether it never, rarely, often, or always occurred.
+
+We wrote a Python script to iteratively query GPT-4 via the OpenAI application programming interface (API). The ultimately yielded consistently formatted annotations for `r n_ids_gpt` terms within the HPO. Our annotation framework was developed based on previously defined criteria for classifying disease severity [@Lazarin2014-rz]. We sought to evaluate whether each phenotype directly caused a given severity-related clinical characteristic, including: intellectual disability, death, impaired mobility, physical malformations, blindness, sensory impairments, immunodeficiency, cancer, reduced fertility, and/or had a congenital onset. Through prompt engineering we found that the performance of GPT-4 improved when we incorporated a scale associated with each effect and required a justification for each response. We asked how frequently the given phenotype directly causes each clinical characteristic - whether it never, rarely, often, or always occurred. Furthermore, our prompt design revealed that the optimal trade-off between the number of phenotypes and performance (in terms of producing the desired annotations, and adhering to the formatting requirements) was achieved when inputting no more than two or three phenotypes per prompt. An example prompt can be seen in @fig-occurrence. Only 2 phenotypes were included per prompt in order to 1) avoid exceeding per-query token limits, and 2) prevent the breakdown of GPT-4 performance due to long-form text input, which is presently a known limitation common to many LLMs including GPT-4 [@weiLongformFactualityLarge2024].
 
 ### Calculating the true positive rate
-A true positive rate was calculated as a measure of the accuracy of the GPT-4 annotations. This was achieved by identifying specific branches within the HPO that would contain phenotypes that would reliably indicate the occurrence of certain clinical characteristics, and using all descendants of this HPO branch as true positives. For example, all descendants of the terms Abnormal central motor function and abnormality of movement should always or often cause impaired mobility (Table 1). 
 
-| Clinical characteristics | True positive HPO branch |
-| ------------------------ | ------------------------ |
-| Intellectual disability  | Intellectual disability (HP:0001249)
-| Impaired mobility.       | Abnormal central motor function (HP:0011442) and Abnormality of movement (HP:0100022)
-| Physical malformations   | Malformation (string search)
-| Blindness                | Blindness (HP:0000618)
-| Sensory impairments      | Abnormality of vision (HP:0000504), Abnormality of the sense of smell (HP:0004408), Abnormality of taste sensation (HP:0000223), Somatic sensory dysfunction (HP:0003474), and Hearing abnormality (HP:0000364)
-| Immunodeficiency         | Immunodeficiency (HP:0002721)
-| Cancer                   | Neoplasm (HP:0002664)
-| Reduced fertility        | Decreased fertility (HP:0000144)
+```{r tbl-true-positives}
+#| label: tbl-true-positives
+#| tbl-cap: For each clinical characteristic, any terms that matched 
+
+queries <- eval(formals(HPOExplorer::search_hpo)$queries)
+query_hits_dt <- data.table(
+  "Clinical characteristic"=stringr::str_to_sentence(gsub("_"," ",names(queries))),
+  "HPO queries"=trimws(gsub("^","",sapply(queries, paste, collapse="; <br>"), fixed = TRUE)),
+  "True positive HPO IDs"=sapply(query_hits[names(queries)], data.table::uniqueN)
+)
+knitr::kable(as.data.frame(query_hits_dt))
+```
+
+A true positive rate was calculated as a measure of the recall of the GPT-4 annotations. This was achieved by identifying specific branches within the HPO that would contain phenotypes that would reliably indicate the occurrence of certain clinical characteristics, and using all descendants of this HPO branch as true positives. For example, all descendants of the terms 'Intellectual disability' (HP:0001249) or 'Mental deterioration' (HP:0001268) should be annotated as always or often causing intellectual disability (@tbl-true-positives).
 
 ### Quantifying phenotypic severity
-The GPT-4 generated annotation occurrences were converted into a semi-quantitative scoring system, with ‘always’ corresponding to 3, ‘often’ to 2, ‘rarely’ to 1, and ‘never’ to 0. These scores were then weighted by a severity metric on a scale of 1-5, with 5 representing the highest severity, as determined by the provided annotations (Table 2). Subsequently, the weighted scores underwent normalisation to yield a final quantitative severity score ranging from 0-100, with 100 signifying the maximum severity score attainable.
 
-| Clinical characteristic     | Always (4) | Often (3) | Rarely (2) | Never (0) |
-| --------------------------- | ---------- | --------- | ---------- | --------- |
-| Intellectual_disability (5) |     20     |     15    |    10      |     0     | 
-| Impaired_mobility (5)       |     20     |     15    |    10      |     0     | 
-| Blindness (4)               |     16     |     12    |    8       |     0     | 
-| Congenital onset (4)        |     16     |     12    |    8       |     0     | 
-| Physical_malformations (3)  |     12     |     9     |    6       |     0     | 
-| Sensory_impairments (3)     |     12     |     9     |    6       |     0     | 
-| Immunodeficiency (3)        |     12     |     9     |    6       |     0     | 
-| Cancer (3)                  |     12     |     9     |    6       |     0     | 
-| Reduced_fertility (1)       |     4      |     3     |    2       |     0     | 
+The GPT-4 generated annotation occurrences were converted into a semi-quantitative scoring system, with 'always' corresponding to 3, 'often' to 2, 'rarely' to 1, and 'never' to 0. These scores were then weighted by a severity metric on a scale of 1-5, with 5 representing the highest severity, as determined by the provided annotations (@tbl-metric-weights). Subsequently, the weighted scores underwent normalisation to yield a final quantitative severity score ranging from 0-100, with 100 signifying the maximum severity score attainable.
 
+Let us denote:
 
-## Supplementary figures
+-   $p$ : a phenotype in the HPO.
 
-```{r supp_figure_1}
-#| echo: false
-#| message: false
-#| fig-cap: The distribution of phenotypic severity scores across various branches of the HPO. The histogram plots show the frequency of severity scores for all phenotypes  descending from the specified HPO branches. The x-axis represents the severity scores, and the y-axis indicates the count of phenotypes corresponding to each score. The average severity score for each HPO branch is highlighted in red.
-#| fig-height: 10
-#| fig-width: 10
-dat2 <- HPOExplorer:::gpt_annot_melt(res_coded = res_coded)
-dat2 <- add_ancestor(dat2,
-                     keep_descendants = keep_descendants)
-dat2[,mean_severity_score_gpt:=mean(severity_score_gpt, na.rm=TRUE),
-     by="ancestor_name"] |>
-  data.table::setorderv("mean_severity_score_gpt", -1, na.last = TRUE)
-dat2[,ancestor_name:=factor(ancestor_name,
-                            levels = unique(dat2$ancestor_name),
-                            ordered = TRUE)]
+-   $j$ : the identity of a given annotation metric (i.e. clinical characteristic, such as 'intellectual disability' or 'congenital onset').
 
-ggplot2::ggplot(dat2, ggplot2::aes(x=severity_score_gpt
-                                   # fill=factor(congenital_onset)
-)) +
-  ggplot2::geom_histogram(bins = 50, fill="slateblue") +
-  ggplot2::geom_vline(ggplot2::aes(xintercept=mean_severity_score_gpt),
-                      color="red") +
-  ggplot2::geom_label(data = unique(
-    dat2[,list(mean_severity_score_gpt), by="ancestor_name"]
-  ),
-  ggplot2::aes(x=mean_severity_score_gpt,
-               y=Inf,
-               label=round(mean_severity_score_gpt,2)),
-  color="red", size=3, hjust = 0, vjust = 1.5, alpha=.65) +
-  ggplot2::facet_wrap(facets = "ancestor_name~.", scales = "free_y",
-                      ncol = 3) +
-  ggplot2::labs(y="Frequency", x="Severity score") +
-  ggplot2::theme_bw() +
-  ggplot2::theme(strip.background = ggplot2::element_rect(
-    fill = "transparent"), 
-    text = element_text(size=16))
+-   $W_j$: the assigned weight of metric $j$.
+
+-   $F_j$: the maximum possible value for metric $j$ (equivalent across all $j$).
+
+-   $F_{pj}$ : the numerically encoded value of annotation metric $j$ for phenotype $p$.
+
+-   $NSS_p$: the final composite severity score for phenotype $p$ after applying normalisation to align values to a 0-100 scale and ensure equivalent meaning regardless of which other phenotypes are being analysed in addition to $p$. This allows for direct comparability of severity scores across studies with different sets of phenotypes.
+
+::: {#eq-gpt .content-hidden unless-format="html"}
+![](figures/eq5.png){height="300px"}
+
+Computing normalised severity score from encoded GPT-4 annotations.
+:::
+
+\
+\
+
+::: {.content-visible unless-format="html"}
+```{=tex}
+\begin{equation*}
+  \eqnmarkbox[Brown4]{nss}{NSS_p}
+  =
+  \frac{ 
+    \eqnmarkbox[Goldenrod]{nss2}{\sum_{j=1}^{m}} 
+    (
+      \eqnmarkbox[Goldenrod4]{nss3}{F_{pj}}
+      \times 
+      \eqnmarkbox[IndianRed4]{nss4}{W_j}
+    )
+    }{
+    \eqnmarkbox[Tan]{nss5}{\sum_{j=1}^{m}(\max\{F_j\} \times W_j)} 
+  } \times 100
+\end{equation*}
+\annotate[yshift=1em]{left}{nss}{Normalised Severity Score \\for each phenotype}
+\annotate[yshift=3em]{left}{nss2}{Sum of weighted annotation values \\across all metrics}
+\annotate[yshift=3em]{right}{nss3}{Numerically encoded annotation value \\of metric $j$ for phenotype $p$}
+\annotate[yshift=1em]{right}{nss4}{Weight for metric $j$} 
+\annotate[yshift=-1em]{below,right}{nss5}{Theoretical maximum severity score}
 ```
+:::
+
+\
+
+```{r tbl-metric-weights}
+#| label: tbl-metric-weights
+#| tbl-cap: Weighted scores for each clinical characteristic and GPT-4 response category.
+
+## Get weights from HPOExplorer::gpt_annot_codify function defaults
+args <- formals(HPOExplorer::gpt_annot_codify)
+code_dict <- eval(args$code_dict)|>sort(decreasing = TRUE)
+names(code_dict) <- paste0(stringr::str_to_sentence(names(code_dict)),
+                           " (",code_dict,")")
+tiers_dict <- eval(args$tiers_dict)|>unlist()|>sort(decreasing = TRUE)
+names(tiers_dict) <- paste0(stringr::str_to_sentence(gsub("_"," ",names(tiers_dict))),
+                           " (",tiers_dict,")")
+## Create the outer product of the two weight vectors
+tbl_metric_weights <- as.data.table(outer(tiers_dict,code_dict, "*"),
+                                    keep.rownames = "Clinical characteristic")
+
+knitr::kable(as.data.frame(tbl_metric_weights))
+```
+
+## Data and code availability statement
+
+All code and data used in this study are available on GitHub at:
+
+<https://github.com/neurogenomics/gpt_hpo_annotations>
+
+The GPT-4 annotations for all HPO phenotypes are made available through the R function `HPOExplorer::gpt_annot_read` or in CSV format at:
+
+<https://github.com/neurogenomics/gpt_hpo_annotations/tree/master/data>
+
+A fully reproducible version of this Quarto manuscript can be found at:
+
+<https://github.com/neurogenomics/gpt_hpo_annotations/blob/master/manuscript.qmd>
+
+## Acknowledgements
+
+We would like to thank members of the Monarch Initiative for their insight and feedback throughout this project. In particular, Peter Robinson.
+
+### Funding
+
+This work was supported by a UK Dementia Research Institute (UK DRI) Future Leaders Fellowship \[MR/T04327X/1\] and the UK DRI which receives its funding from UK DRI Ltd, funded by the UK Medical Research Council, Alzheimer’s Society and Alzheimer's Research UK.
 
 ## References {.unnumbered}
 
-:::{#refs}
-
+::: {#refs}
 :::
+
+{{< pagebreak >}}
+
+## Supplementary Materials
+
+### Supplementary Figures
+
+```{r fig-severity-histo}
+#| label: fig-severity-histo
+#| fig-cap: Distribution of the composite GPT-4 severity score of the severity scores for all HPO terms.
+#| fig-height: 8
+#| fig-width: 10
+
+gpt_annot_plot_out$gp3 +
+  labs(x="Severity score") 
+```
+
+```{r fig-severity-boxplot}
+#| label: fig-severity-boxplot
+#| fig-cap: Boxplot showing the relationship between composite severity score (y-axis) and the frequency response categories within each annotation type.
+#| fig-height: 5
+#| fig-width: 8
+
+gpt_annot_plot_out$gp2 +
+  scale_fill_brewer(palette = "GnBu", direction = -1) +
+  labs(y="Severity score") 
+```
+
+{{< pagebreak >}}
+
+### Supplementary Tables
+
+```{r tbl-fas}
+#| label: tbl-fas
+#| tbl-cap: Severity nnotations generated for GPT-4 annotations for the HPO phenotype 'Fetal akinesia sequence' (HP:000198).
+
+annot_cols <- setdiff(grep("justification",names(gpt_annot), 
+                       value = TRUE, invert = TRUE),
+                       c("hpo_name","hpo_id","pheno_count"))
+tbl_fas <- gpt_annot[hpo_name=='Fetal akinesia sequence',]|>
+  data.table::melt.data.table(id.vars = c("hpo_name","hpo_id"), 
+                              measure.vars = list(
+                                Annotation=annot_cols,
+                                Justification=grep("justification",names(gpt_annot), 
+                                                   value = TRUE)
+                                )
+                              )
+tbl_fas[,"Clinical characteristic":=stringr::str_to_sentence(gsub("_"," ",annot_cols))]
+knitr::kable(
+  as.data.frame(tbl_fas[,c("Clinical characteristic","Annotation","Justification")])
+  )
+```
