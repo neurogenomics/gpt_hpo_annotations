@@ -15,6 +15,7 @@ format:
   # docx: 
   #   notebook-links: false
   agu-pdf: 
+    dpi: 200
     notebook-links: false
     header-includes:
       - \usepackage{annotate-equations}

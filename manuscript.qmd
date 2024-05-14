@@ -61,6 +61,10 @@ library(patchwork)
 library(HPOExplorer)
 library(KGExplorer)
 library(data.table)
+library(Hmisc)
+library(corrplot)
+library(ggstatsplot)
+options("knitr.table.format"="pipe")
 ```
 
 ```{r import-data}
@@ -84,7 +88,7 @@ names_matched <- intersect(hpo@elementMetadata$name,
                            trimws(gsub("obsolete","",gpt_annot$hpo_name, ignore.case = TRUE)))
 
 n_ids_hpo <- hpo@n_terms
-n_ids_gpt <- length(unique(fcoalesce(gpt_annot$hpo_name,gpt_annot$hpo_id)))
+n_ids_gpt <- length(unique(data.table::fcoalesce(gpt_annot$hpo_name,gpt_annot$hpo_id)))
 ```
 
 ```{r gpt_annot_check}
@@ -99,6 +103,15 @@ checks <- HPOExplorer::gpt_annot_check(annot = gpt_annot,
 ```{r gpt_annot_codify}
 res_coded <- HPOExplorer::gpt_annot_codify(annot = gpt_annot)
 annot_melt <- HPOExplorer::gpt_annot_melt(res_coded = res_coded)
+```
+
+```{r gpt_annot_class, results='hide'}
+res_class <- HPOExplorer::gpt_annot_class(annot_coded = res_coded$annot_coded)
+res_class <- merge(res_class,
+                   res_coded$annot_weighted[,c("hpo_name","severity_score_gpt")])
+fig_severity_class <- ggstatsplot::ggbetweenstats(res_class,
+                            x="severity_class", y="severity_score_gpt")
+fig_severity_class_dt <- MSTExplorer:::get_ggstatsplot_stats(fig_severity_class)
 ```
 
 ```{r gpt_annot_plot}
@@ -129,16 +142,15 @@ Here, we have used GPT-4 to systematically annotate the severity of `r n_ids_gpt
 ```{r fig-occurrence}
 #| label: fig-occurrence
 #| fig-cap: GPT-4 was able to annotate all human phenotypes based on whether they are always/often/rarely/never associated with different clinical characteristics. **a**, An example of the prompt input given to to GPT-4. The phenotypes listed in the second to last sentence (*italicised*) were changed to allow all HPO phenotypes to be annotated. **b**, Stacked bar plot showing the proportion of the occurrence of each clinical characteristic across all annotated HPO phenotypes. The terms shown on the x-axis are the clinical characteristics for which GPT-4 was asked to determine whether each phenotype caused them. 
-#| fig-height: 7
-#| fig-width: 8
+#| fig-height: 6
+#| fig-width: 10
 
 # subset to clinical characteristics 
-occurr_df <- gpt_annot[,c("hpo_name", "intellectual_disability", "death", "impaired_mobility", "blindness",
-                          "sensory_impairments", "immunodeficiency", "cancer", "reduced_fertility",
-                          "congenital_onset")]
-
+annotation_order <- c("death", "intellectual disability", "impaired mobility", "blindness", 
+                      "congenital onset", "physical malformations", "sensory impairments", 
+                      "immunodeficiency", "cancer", "reduced fertility")
+occurr_df <- gpt_annot[,c("hpo_name",gsub(" ", "_", annotation_order)),with=FALSE]
 cols_of_interest <- names(occurr_df)[-1]
-
 # Create an empty dataframe to store the counts
 count_df <- data.frame(matrix(0, nrow = length(cols_of_interest), ncol = 4))
 colnames(count_df) <- c("always", "often", "rarely", "never")
@@ -166,9 +178,6 @@ count_df_long <- count_df_long |>
   dplyr::mutate(percentage = count / sum(count) * 100)
 
 # set annotation order for plots 
-annotation_order <- c("death", "intellectual disability", "impaired mobility", "blindness", 
-                      "congenital onset", "physical malformations", "sensory impairments", 
-                      "immunodeficiency", "cancer", "reduced fertility")
 count_df_long$category <- factor(count_df_long$category, 
                                  levels = annotation_order)
  
@@ -189,14 +198,16 @@ for(x in c(
 ## Subplot a: Example prompt
 f1a <- ggplot() + 
   labs(title="Example GPT-4 prompt") +
-  ggtext::geom_textbox(aes(x=.5,y=1),
+  ggtext::geom_textbox(aes(x=.5,y=.7),
                        box.padding = margin(20, 10, 20, 10),
                        box.margin = margin(0, 0, 0, 0),
                        box.r = grid::unit(30, "pt"),
                        width = unit(.8, "npc"),
+                       size=3,
                        halign=.5,
                        fill="grey90",
                        label=txt_prompt) +
+  ylim(c(0,1)) +
   theme_void() +
   theme(plot.title = element_text(hjust=0.5))
 
@@ -204,10 +215,10 @@ f1a <- ggplot() +
 f1b <- ggplot(count_df_long, aes(x = category, y = count, fill = condition)) +
   geom_bar(stat = "identity") +
   labs(title = "Clinical characteristic occurrence",
-       x = "", y = "HPO phenotypes (n)", fill = NULL) +
+       x = NULL, y = "HPO phenotypes (n)", fill = NULL) +
   theme_minimal() +
   theme(legend.position = "right", 
-        plot.title = element_text(hjust=0.5),  
+        plot.title = element_text(hjust=0.5, vjust=-1),  
         axis.text.x = element_text(angle=45, hjust=1),  
         ) +
   scale_fill_brewer(palette = "GnBu", direction = -1)
@@ -216,7 +227,7 @@ f1b <- ggplot(count_df_long, aes(x = category, y = count, fill = condition)) +
   f1a| 
     (f1b/plot_spacer() ) + plot_layout(heights = c(1, .1))
 ) + 
-  patchwork::plot_layout(widths = c(2,1)) +
+  patchwork::plot_layout(widths = c(1,1)) +
   patchwork::plot_annotation(tag_levels = letters) 
 ```
 
@@ -236,7 +247,30 @@ Less than `r ceiling(subset(count_df_long, condition=="always" & category=="deat
 
 ### Annotation consistency and recall
 
-To assess annotation consistency, `r checks$consistency_count[[1]]` phenotypes underwent duplicate annotations. We employed two different metrics to determine the *consistency rate*. The first, less stringent metric, defined consistency as the duplicate annotations being either 'always' and 'often', or 'never' and 'rarely'. The second, more stringent metric, required exact agreement in annotation occurrences, e.g. 'always' and 'always'. For the less stringent metric, duplicated phenotypes were annotated consistently at a rate of at least `r floor(min(checks$consistency_rate)*100)`%, and for the more stringent metric, the lowest consistency rate was `r round(min(checks$consistency_stringent_rate)*100)`% for congenital onset. An example of where annotations were inconsistent was for the HPO term 'Acute leukaemia'. One time, GPT-4 annotated it as often causing impaired mobility, giving the justification that 'weakness and fatigue from leukaemia and its treatment can impair mobility'. The other time, GPT-4 annotated it as rarely causing impaired mobility, giving the justification that 'acute leukaemia rarely impairs mobility directly'. Despite specifying in the prompt for GPT-4 not to take into consideration indirect effects, here is an example of where it failed to do so.
+```{r ontLvl-vs-consistency}
+consist <- checks$annot_stringent_mean
+consist <- HPOExplorer::add_hpo_id(consist, hpo = hpo)
+consist <- HPOExplorer::add_ont_lvl(consist, hpo = hpo)
+# consist_vs_lvl <- Hmisc::rcorr(as.matrix(consist[!is.na(ontLvl)][,-c("hpo_name","hpo_id")]))
+# corrplot::corrplot(consist_vs_lvl$r)
+
+consist_vs_ontLvl <- consist|>
+  data.table::melt.data.table(id.vars = c("hpo_name","hpo_id","ontLvl"), 
+                              variable.name = "metric", 
+                              value.name = "Consistent\n(stringent)")|>
+  # ggstatsplot::ggscatterstats(x = "consistency",
+  #                             y = "ontLvl")
+  # ggstatsplot::ggbetweenstats(x = "consistency", 
+  #                             y = "ontLvl", type = "parametric")
+  ggstatsplot::ggbarstats(x = "Consistent\n(stringent)", 
+                          y = "ontLvl") +
+  ggplot2::labs(title = "Consistency of GPT-4 annotations by HPO level")
+consist_vs_ontLvl_dt <- MSTExplorer:::get_ggstatsplot_stats(consist_vs_ontLvl)
+```
+
+To assess annotation consistency, `r checks$consistency_count[[1]]` we queried GPT-4 with a subset of the HPO phenotypes multiple times. We employed two different metrics to determine the *consistency rate*. The first, less stringent metric, defined consistency as the duplicate annotations being either 'always' and 'often', or 'never' and 'rarely'. The second, more stringent metric, required exact agreement in annotation occurrences, e.g. 'always' and 'always'. For the less stringent metric, duplicated phenotypes were annotated consistently at a rate of at least `r floor(min(checks$consistency_rate)*100)`%, and for the more stringent metric, the lowest consistency rate was `r round(min(checks$consistency_stringent_rate)*100)`% for congenital onset. An example of where annotations were inconsistent was for the HPO term 'Acute leukaemia'. One time, GPT-4 annotated it as often causing impaired mobility, giving the justification that 'weakness and fatigue from leukaemia and its treatment can impair mobility'. The other time, GPT-4 annotated it as rarely causing impaired mobility, giving the justification that 'acute leukaemia rarely impairs mobility directly'. Despite specifying in the prompt for GPT-4 not to take into consideration indirect effects, this is an example of where it failed to do so.
+
+We also reasoned that GPT-4 would be better able to give consistent answers for more specific phenotypes lower in the ontology, as they are more likely to have a single cause. We found that the stringent consistency rate did indeed significantly improve with greater HPO ontology depth ($X_{Pearson}^2$=`r round(consist_vs_ontLvl_dt$summary_data$statistic,2)`, $\hat{V}_{Cramer}$=`r round(consist_vs_ontLvl_dt$summary_data$estimate,2)`, p=`r format(consist_vs_ontLvl_dt$summary_data$p.value, digits = 1)`). See @fig-consist-vs-ontLvl for a visual representation of this relationship.
 
 ```{r annot_checks}
 # Define items to be checked
@@ -361,7 +395,6 @@ Based on these scores we evaluated the top 50 severe phenotypes. One of the most
 ## code adapted from HPOExplorer::gpt_annot_plot()
 # get all descendants of the term phenotypic abnormality 
 keep_ont_levels=seq(3,17)
- 
 #### Filter out ont levels ####
 annot_melt <- HPOExplorer::add_ancestor(annot_melt,
                                         keep_descendants = keep_descendants)
@@ -437,6 +470,44 @@ p3 <- patchwork::wrap_plots(p1, p2, ncol = 2,
 methods::show(p3)
 ```
 
+### Severity classes
+
+While the continuous severity score is a helpful metric, there may be some use cases where a categorical classification of severity is more immediately useful. In work by @Lazarin2014-rz, the authors defined severity classed using a simple decision tree based on the individual severity annotations. We approximated this approach using our GPT-4 annotations. This categorical approach showed a strong degree of positive correspondence with the continuous severity score ($\hat{\omega_{p}^2}$=`r round(fig_severity_class_dt$summary_data$estimate,2)`, p<`r format(.Machine$double.xmin, digits = 2)`). In other words, severity score increased with severity class level (mild < moderate < severe < profound) as expected. The distribution of severity classes is shown in @fig-severity-class. 
+
+
+### Correlations between severity metrics
+
+```{r cor-metrics}
+cor_metrics <- Hmisc::rcorr(as.matrix(res_coded$annot_weighted[,-c("hpo_id","hpo_name")]))
+cor_composite <- sort(cor_metrics$r["severity_score_gpt",], decreasing = TRUE)[-1]
+```
+
+We found that some severity metrics were correlated with one another, with a mean Pearson correlation of `r round(mean(cor_metrics$r[-nrow(cor_metrics$r),-ncol(cor_metrics$r)]),2)` across all individual metrics (see @fig-metric-corplot). In particular, blindness and sensory impairment were highly correlated with one another (r=`r round(cor_metrics$r["blindness","sensory_impairments"],2)`, p=`r round(cor_metrics$P["blindness","sensory_impairments"],4)`). Some metrics drove the composite severity score more than other, which is a reflection of both our per-metric weighting scheme, response type frequencies, and the correlation structure between metrics. Overall, `r gsub("_"," ",names(cor_composite[1]))` seemed to be the strongest driver of the composite severity score with a Pearson correlation of `r mean(cor_composite[1],2)`, followed by `r gsub("_"," ",names(cor_composite[2]))` (r=`r round(cor_composite[2],2)`) and `r gsub("_"," ",names(cor_composite[3]))` (r=`r round(cor_composite[3],2)`). 
+
+```{r, eval=FALSE}
+### Correlation with QALY
+ihme <- data.table::fread("~/Downloads/IHME-GBD_2019_DATA-e678e00e-1/IHME-GBD_2019_DATA-e678e00e-1.csv")
+ihme[,nm:=tolower(cause_name)]
+
+res_coded$annot_weighted[,nm:=tolower(hpo_name)]
+ihme_merged <- merge(data.table::dcast.data.table(ihme, 
+                             formula = "nm~measure_name+metric_name", 
+                             value.var = "val",
+                             fun.aggregate = mean, na.rm=TRUE), 
+                     res_coded$annot_weighted)
+metric_cols <- list(
+  IHME=grep(paste(paste0("_",
+                         "Percent",
+                         # unique(ihme$metric_name)[1],
+                         "$"),collapse = "|"),names(ihme_merged), value = TRUE),
+  GPT=setdiff(names(res_coded$annot_weighted),c("hpo_id","hpo_name","nm"))
+)
+
+Xcor <- cor(ihme_merged[,unlist(metric_cols),with=FALSE], use="complete.obs")
+heatmaply::heatmaply(Xcor[metric_cols$IHME,metric_cols$GPT])
+```
+
+
 ## Discussion
 
 The creation and annotation of biomedical knowledge has traditionally relied on manual or semi-manual curation by human experts [@putmanMonarchInitiative20242024; @ochoaOpenTargetsPlatform2021; @mungallMonarchInitiativeIntegrative2017a; @kohlerHumanPhenotypeOntology2021; @garganoHumanPhenotypeOntology2024]. Performing such manual curation and review tasks at scale is often infeasible for human biomedical experts given limited time and resources. LLMs have the capacity to effectively encode, retrieve, and synthesise vast amounts of diverse information in a highly scalable manner [@vanveenAdaptedLargeLanguage2024; @singhalLargeLanguageModels2023; @openaiGPT4TechnicalReport2024]. This makes them powerful tools that can be applied in a rapidly expanding variety of scenarios, including medical practice, research and data curation [@singhalLargeLanguageModels2023; @toroDynamicRetrievalAugmented2023; @panLargeLanguageModels2023; @oneilPhenomicsAssistantInterface2024; @caufieldStructuredPromptInterrogation2023].
@@ -447,7 +518,7 @@ Throughout this study, we observed that GPT-4 was capable of reliably recovering
 
 In addition to rapidly synthesising and summarising vast amounts of information, LLMs can also be steered to provide justifications for each particular response. This makes LLMs amenable to direct interrogation as a means of recovering explainability, especially when designed to retain information about previous requests and interactions as they use these to iteratively improve and update their predictions [@janikAspectsHumanMemory2024]. This represents a categorical advance over traditional natural language processing models based on more shallow forms of statistical or machine learning (e.g. Term Frequency-Inverse Document Frequency [@jonesStatisticalInterpretationTerm1972], Word2vec [@mikolovEfficientEstimationWord2013]) which lack the ability to provide chains of causal reasoning to justify their predictions. This highlights the fundamental trade-off between simpler models with high explainability (the ability humans to understand the inner workings of the model) but low interpretability (the ability of humans to trace the decision process of the model, analogous to human 'reasoning'), and deeper more complex models with low explainability but high interpretability [@marcinkevicsInterpretabilityExplainabilityMachine2023].
 
-A key contribution of our study is the introduction of a quantitative severity scoring system that integrates both the nature of the phenotype outcome and the frequency of its occurrence. By encoding the concept of severity in this way, we are able to prioritise phenotypes based on their impact on patients. The methodology allowed us to transition from low-throughput qualitative assessments of severity (e.g. @Lazarin2014-rz) to high-throughput quantitative assessments of severity. One of the most severe phenotypes in the HPO is 'Fetal akinesia sequence' (FAS; `r annot_melt[hpo_name=='Fetal akinesia sequence']$hpo_id[1]`, severity score= `r round(annot_melt[hpo_name=='Fetal akinesia sequence']$severity_score_gpt[1],1)`), and extremely rare condition that is almost always lethal. FAS is a complex, multi-system phenotype that can be caused by at least `r uniqueN(p2g[hpo_name=='Fetal akinesia sequence']$disease_id)` different genetic disorders. Despite the complex and heterogenous aetiology of this phenotype, GPT-4 was able to provide accurate annotations alongside explainable justifications for those annotations (see @tbl-fas). For example, this phenotype almost always results in death, either *in utero* or shortly after birth. Not only did GPT-4 correctly provide the annotation death as `r shQuote(gpt_annot[hpo_name=='Fetal akinesia sequence']$death)`, when asked whether FAS causes sensory impairments it provided the response `r shQuote(gpt_annot[hpo_name=='Fetal akinesia sequence']$sensory_impairments)` with the justification `r shQuote(gpt_annot[hpo_name=='Fetal akinesia sequence']$sensory_impairments_justification)` Neurodevelopmental disruption is indeed a hallmark component of FAS (e.g. hydrocephalus, cerebellar hypoplasia) that causes severe impairments across multiple sensory systems [@chenPrenatalDiagnosisGenetic2012]. This demonstrates that GPT-4 was able to recover the correct chain of causality from phenotype to clinical outcome.
+A key contribution of our study is the introduction of a quantitative severity scoring system that integrates both the nature of the phenotype outcome and the frequency of its occurrence. By encoding the concept of severity in this way, we are able to prioritise phenotypes based on their impact on patients. The methodology allowed us to transition from low-throughput qualitative assessments of severity (e.g. @Lazarin2014-rz) to high-throughput quantitative assessments of severity. One of the most severe phenotypes in the HPO is 'Fetal akinesia sequence' (FAS; `r annot_melt[hpo_name=='Fetal akinesia sequence']$hpo_id[1]`, severity score= `r round(annot_melt[hpo_name=='Fetal akinesia sequence']$severity_score_gpt[1],1)`), and extremely rare condition that is almost always lethal. FAS is a complex, multi-system phenotype that can be caused by at least `r uniqueN(p2g[hpo_name=='Fetal akinesia sequence']$disease_id)` different genetic disorders. Despite the complex and heterogeneous aetiology of this phenotype, GPT-4 was able to provide accurate annotations alongside explainable justifications for those annotations (see @tbl-fas). For example, this phenotype almost always results in death, either *in utero* or shortly after birth. Not only did GPT-4 correctly provide the annotation death as `r shQuote(gpt_annot[hpo_name=='Fetal akinesia sequence']$death)`, when asked whether FAS causes sensory impairments it provided the response `r shQuote(gpt_annot[hpo_name=='Fetal akinesia sequence']$sensory_impairments)` with the justification `r shQuote(gpt_annot[hpo_name=='Fetal akinesia sequence']$sensory_impairments_justification)` Neurodevelopmental disruption is indeed a hallmark component of FAS (e.g. hydrocephalus, cerebellar hypoplasia) that causes severe impairments across multiple sensory systems [@chenPrenatalDiagnosisGenetic2012]. This demonstrates that GPT-4 was able to recover the correct chain of causality from phenotype to clinical outcome.
 
 Our findings highlight the potential of this next generation of natural language processing technologies in significantly contributing to the automation and refinement of data curation in biomedical research. These results have a large number of useful real-world applications, such as prioritising gene therapy candidates [@murphyIdentificationCellTypespecific2023] and guiding clinical decision-making in rare diseases. As the HPO continues to grow over time, this approach can easily be repeated to keep pace with the rapidly evolving biomedical landscape. Furthermore, this approach can be extended to produce different sets of annotations or be used with any other ontology. Additional use cases include gathering data on the prevalence of each phenotype to approximate their social and financial costs.
 
@@ -470,11 +541,14 @@ We wrote a Python script to iteratively query GPT-4 via the OpenAI application p
 ```{r tbl-true-positives}
 #| label: tbl-true-positives
 #| tbl-cap: For each clinical characteristic, any terms that matched 
+#| tbl-colwidths: [40,40,20]
 
 queries <- eval(formals(HPOExplorer::search_hpo)$queries)
 query_hits_dt <- data.table(
   "Clinical characteristic"=stringr::str_to_sentence(gsub("_"," ",names(queries))),
-  "HPO queries"=trimws(gsub("^","",sapply(queries, paste, collapse="; <br>"), fixed = TRUE)),
+  "HPO queries"=trimws(gsub("^","",
+                            sapply(queries, function(x){paste(shQuote(x),collapse="; ")}), 
+                            fixed = TRUE)),
   "True positive HPO IDs"=sapply(query_hits[names(queries)], data.table::uniqueN)
 )
 knitr::kable(as.data.frame(query_hits_dt))
@@ -544,15 +618,27 @@ args <- formals(HPOExplorer::gpt_annot_codify)
 code_dict <- eval(args$code_dict)|>sort(decreasing = TRUE)
 names(code_dict) <- paste0(stringr::str_to_sentence(names(code_dict)),
                            " (",code_dict,")")
-tiers_dict <- eval(args$tiers_dict)|>unlist()|>sort(decreasing = TRUE)
-names(tiers_dict) <- paste0(stringr::str_to_sentence(gsub("_"," ",names(tiers_dict))),
-                           " (",tiers_dict,")")
+weights_dict <- eval(args$weights_dict)|>unlist()|>sort(decreasing = TRUE)
+names(weights_dict) <- paste0(stringr::str_to_sentence(gsub("_"," ",names(weights_dict))),
+                           " (",weights_dict,")")
 ## Create the outer product of the two weight vectors
-tbl_metric_weights <- as.data.table(outer(tiers_dict,code_dict, "*"),
+tbl_metric_weights <- as.data.table(outer(weights_dict,code_dict, "*"),
                                     keep.rownames = "Clinical characteristic")
 
 knitr::kable(as.data.frame(tbl_metric_weights))
 ```
+
+### Severity classes
+
+```{r tiers_dict}
+tiers_dict <- unlist(eval(formals(HPOExplorer::gpt_annot_class)$tiers_dict))
+```
+
+The decision tree algorithm used in @Lazarin2014-rz was adapted here for use with the GPT-4 annotations. This algorithm first assigned each annotation metric to a tier, where Tier 1 indicated the most severe annotation metrics and Tier 4 indicated the least severe annotation metrics (`r paste(paste0(shQuote(gsub("_"," ",names(tiers_dict))),"=",tiers_dict), collapse = ", ")`). If a phenotype often or always caused more than one Tier 1 annotation, it was assigned a severity class of "Profound". If the phenotype often or always caused only one Tier 1 annotation, it was assigned a severity class of "Severe". A "Severe" class assignment was also assigned if the phenotype often or always caused three or more Tier 2 and Tier3 annotations. If the phenotype often or always caused at least one Tier 2 annotation, it was assigned a severity class of "Moderate". All remaining phenotypes were was assigned a severity class of "Mild". In cases where the phenotype mapped to more than one class, only the most severe class was used. This procedure is implemented within the function `HPOExplorer::gpt_annot_class`.
+
+### Correlations between severity metrics
+
+To assess the correlation structure between each severity metric, as well as between the composite severity score and each metric, we computed Pearson correlation coefficients for all pairwise combinations of these variables using the numerically encoded metric values. The correlation matrix was visualised using a heatmap, with the colour intensity representing the strength of the correlation (@fig-metric-corplot).
 
 ## Data and code availability statement
 
@@ -587,6 +673,17 @@ This work was supported by a UK Dementia Research Institute (UK DRI) Future Lead
 
 ### Supplementary Figures
 
+```{r fig-consist-vs-ontLvl}
+#| label: fig-consist-vs-ontLvl
+#| fig-cap: Relationship between the consistency of GPT-4 annotations (using the stringent criterion) and the level of each phenotype within the HPO ontology (with the number of phenotypes in parentheses). Greater ontology levels (x-axis) indicate more specific phenotypes. The subtitle indicates summary statistics for the overall relationship between HPO level and the proportion of phenotypes that were annotated consistently. The p-values above each bar indicate whether the distribution of consistent/inconsistent annotations, within a given HPO level, significantly deviate from the expected null distribution.
+#| fig-height: 6
+#| fig-width: 12
+
+consist_vs_ontLvl$labels$caption <- NULL
+consist_vs_ontLvl
+```
+
+
 ```{r fig-severity-histo}
 #| label: fig-severity-histo
 #| fig-cap: Distribution of the composite GPT-4 severity score of the severity scores for all HPO terms.
@@ -608,6 +705,35 @@ gpt_annot_plot_out$gp2 +
   labs(y="Severity score") 
 ```
 
+```{r fig-metric-corplot}
+#| label: fig-metric-corplot
+#| fig-cap: Pearson correlations between each individual severity metric and the composite severity score ('severity_score_gpt').
+#| fig-height: 8
+#| fig-width: 8
+
+diag(cor_metrics$P) <- 0
+corrplot::corrplot(cor_metrics$r,
+                   method = c("circle", "square", "ellipse", "number", "shade", "color", "pie")[2],
+                   tl.srt = 45,
+                   tl.col = "grey20",
+                    # insig='blank',
+                   addCoef.col ='grey20', number.cex = 0.8,
+                   order="hclust",
+                   addCoefasPercent=TRUE,
+                   p.mat = cor_metrics$P)
+```
+
+
+```{r fig-severity-class}
+#| label: fig-severity-class
+#| fig-cap: Distribution of the composite GPT-4 severity score introduced in this paper (y-axis) by an approximation of the severity class system introduced @Lazarin2014-rz (x-axis). While these are different schemes for ranking phenotype severity, there is a strong correspondence between them (see summary statistics in subtitle). The sample size (number of phenotypes) is shown in parentheses along the x-axis. 
+#| fig-height: 6
+#| fig-width: 8
+
+fig_severity_class
+```
+
+
 {{< pagebreak >}}
 
 ### Supplementary Tables
@@ -615,6 +741,7 @@ gpt_annot_plot_out$gp2 +
 ```{r tbl-fas}
 #| label: tbl-fas
 #| tbl-cap: Severity nnotations generated for GPT-4 annotations for the HPO phenotype 'Fetal akinesia sequence' (HP:000198).
+#| tbl-colwidths: [20,20,60]
 
 annot_cols <- setdiff(grep("justification",names(gpt_annot), 
                        value = TRUE, invert = TRUE),

@@ -255,16 +255,17 @@ curation process. Specifically, there have recently been considerable
 advances in large language model (LLM) and their application to
 biomedical problems, in some cases performing as well or better than
 human clinicians on standardised medical exams and patient diagnosis
-tasks (Bolton et al., n.d.; Cheng et al., 2023; Gu et al., 2021; Labrak
-et al., n.d.; Luo et al., 2022; McDuff et al., n.d.; O'Neil et al.,
-n.d.; Shin et al., 2020; Singhal et al., n.d., 2023, 2023; Van Veen et
-al., 2024; Zhang et al., n.d.). Recent work has demonstrated that the
-Generative Pre-trained Transformer 4 (GPT-4) foundation model (OpenAI et
-al., n.d.), when combined with strategic prompt engineering, can
-outperform even specialist LLMs that are explicitly fine-tuned for
-biomedical tasks (Nori et al., n.d.). In a landmark achievement, GPT-4
-was the first LLM to surpass a score of 90\% in the United States
-Medical Licensing Examination (USML) (Nori et al., n.d.).
+tasks (Bolton et al., 2024; Cheng et al., 2023; Gu et al., 2021; Labrak
+et al., 2024; Luo et al., 2022; McDuff et al., 2023; O'Neil et al.,
+2024; Shin et al., 2020; Singhal, Azizi, et al., 2023, 2023; Singhal,
+Tu, et al., 2023; Van Veen et al., 2024; Zhang et al., 2023). Recent
+work has demonstrated that the Generative Pre-trained Transformer 4
+(GPT-4) foundation model (OpenAI et al., 2024), when combined with
+strategic prompt engineering, can outperform even specialist LLMs that
+are explicitly fine-tuned for biomedical tasks (Nori et al., 2023). In a
+landmark achievement, GPT-4 was the first LLM to surpass a score of 90\%
+in the United States Medical Licensing Examination (USML) (Nori et al.,
+2023).
 
 Here, we have used GPT-4 to systematically annotate the severity of
 17502 / 17548 (99.7\%) phenotypic abnormalities within the HPO. Our
@@ -359,11 +360,11 @@ diseases that cause lethality.
 \subsubsection{Annotation consistency and
 recall}\label{annotation-consistency-and-recall}
 
-To assess annotation consistency, 793 phenotypes underwent duplicate
-annotations. We employed two different metrics to determine the
-\emph{consistency rate}. The first, less stringent metric, defined
-consistency as the duplicate annotations being either `always' and
-`often', or `never' and `rarely'. The second, more stringent metric,
+To assess annotation consistency, 793 we queried GPT-4 with a subset of
+the HPO phenotypes multiple times. We employed two different metrics to
+determine the \emph{consistency rate}. The first, less stringent metric,
+defined consistency as the duplicate annotations being either `always'
+and `often', or `never' and `rarely'. The second, more stringent metric,
 required exact agreement in annotation occurrences, e.g.~`always' and
 `always'. For the less stringent metric, duplicated phenotypes were
 annotated consistently at a rate of at least 80\%, and for the more
@@ -375,8 +376,16 @@ from leukaemia and its treatment can impair mobility'. The other time,
 GPT-4 annotated it as rarely causing impaired mobility, giving the
 justification that `acute leukaemia rarely impairs mobility directly'.
 Despite specifying in the prompt for GPT-4 not to take into
-consideration indirect effects, here is an example of where it failed to
+consideration indirect effects, this is an example of where it failed to
 do so.
+
+We also reasoned that GPT-4 would be better able to give consistent
+answers for more specific phenotypes lower in the ontology, as they are
+more likely to have a single cause. We found that the stringent
+consistency rate did indeed significantly improve with greater HPO
+ontology depth (\(X_{Pearson}^2\)=22.17, \(\hat{V}_{Cramer}\)=0.03,
+p=0.05). See Figure~\ref{fig-consist-vs-ontLvl} for a visual
+representation of this relationship.
 
 \phantomsection\label{cell-fig-checks}
 \begin{figure}[H]
@@ -504,6 +513,36 @@ clinical characterisation.}
 
 \end{figure}%
 
+\subsubsection{Severity classes}\label{severity-classes}
+
+While the continuous severity score is a helpful metric, there may be
+some use cases where a categorical classification of severity is more
+immediately useful. In work by Lazarin et al. (2014), the authors
+defined severity classed using a simple decision tree based on the
+individual severity annotations. We approximated this approach using our
+GPT-4 annotations. This categorical approach showed a strong degree of
+positive correspondence with the continuous severity score
+(\(\hat{\omega_{p}^2}\)=0.87, p\textless2.2e-308). In other words,
+severity score increased with severity class level (mild \textless{}
+moderate \textless{} severe \textless{} profound) as expected. The
+distribution of severity classes is shown in
+Figure~\ref{fig-severity-class}.
+
+\subsubsection{Correlations between severity
+metrics}\label{correlations-between-severity-metrics}
+
+We found that some severity metrics were correlated with one another,
+with a mean Pearson correlation of 0.2 across all individual metrics
+(see Figure~\ref{fig-metric-corplot}). In particular, blindness and
+sensory impairment were highly correlated with one another (r=0.62,
+p=0). Some metrics drove the composite severity score more than other,
+which is a reflection of both our per-metric weighting scheme, response
+type frequencies, and the correlation structure between metrics.
+Overall, impaired mobility seemed to be the strongest driver of the
+composite severity score with a Pearson correlation of 0.6138757,
+followed by intellectual disability (r=0.6) and sensory impairments
+(r=0.54).
+
 \subsection{Discussion}\label{discussion}
 
 The creation and annotation of biomedical knowledge has traditionally
@@ -513,14 +552,15 @@ al., 2024; Köhler et al., 2021; Mungall et al., 2017; Ochoa et al.,
 tasks at scale is often infeasible for human biomedical experts given
 limited time and resources. LLMs have the capacity to effectively
 encode, retrieve, and synthesise vast amounts of diverse information in
-a highly scalable manner (OpenAI et al., n.d.; Singhal et al., 2023; Van
-Veen et al., 2024). This makes them powerful tools that can be applied
-in a rapidly expanding variety of scenarios, including medical practice,
-research and data curation (Caufield et al., n.d.; O'Neil et al., n.d.;
-Pan et al., n.d.; Singhal et al., 2023; Toro et al., n.d.).
+a highly scalable manner (OpenAI et al., 2024; Singhal, Azizi, et al.,
+2023; Van Veen et al., 2024). This makes them powerful tools that can be
+applied in a rapidly expanding variety of scenarios, including medical
+practice, research and data curation (Caufield et al., 2023; O'Neil et
+al., 2024; Pan et al., 2023; Singhal, Azizi, et al., 2023; Toro et al.,
+2023).
 
 Here, we introduce a novel framework to leverage the current
-best-in-class LLM, GPT-4 (OpenAI et al., n.d.), to systematically
+best-in-class LLM, GPT-4 (OpenAI et al., 2024), to systematically
 annotate the severity of 17502 phenotypic abnormalities within the HPO.
 By employing advanced AI capabilities, we have demonstrated the
 feasibility of automating this process, significantly enhancing
@@ -547,18 +587,18 @@ information, LLMs can also be steered to provide justifications for each
 particular response. This makes LLMs amenable to direct interrogation as
 a means of recovering explainability, especially when designed to retain
 information about previous requests and interactions as they use these
-to iteratively improve and update their predictions (Janik, n.d.). This
+to iteratively improve and update their predictions (Janik, 2024). This
 represents a categorical advance over traditional natural language
 processing models based on more shallow forms of statistical or machine
 learning (e.g.~Term Frequency-Inverse Document Frequency (Jones, 1972),
-Word2vec (Mikolov et al., n.d.)) which lack the ability to provide
+Word2vec (Mikolov et al., 2013)) which lack the ability to provide
 chains of causal reasoning to justify their predictions. This highlights
 the fundamental trade-off between simpler models with high
 explainability (the ability humans to understand the inner workings of
 the model) but low interpretability (the ability of humans to trace the
 decision process of the model, analogous to human `reasoning'), and
 deeper more complex models with low explainability but high
-interpretability (Marcinkevičs \& Vogt, n.d.).
+interpretability (Marcinkevičs \& Vogt, 2023).
 
 A key contribution of our study is the introduction of a quantitative
 severity scoring system that integrates both the nature of the phenotype
@@ -571,7 +611,7 @@ the most severe phenotypes in the HPO is `Fetal akinesia sequence' (FAS;
 HP:0001989, severity score= 50.7), and extremely rare condition that is
 almost always lethal. FAS is a complex, multi-system phenotype that can
 be caused by at least 24 different genetic disorders. Despite the
-complex and heterogenous aetiology of this phenotype, GPT-4 was able to
+complex and heterogeneous aetiology of this phenotype, GPT-4 was able to
 provide accurate annotations alongside explainable justifications for
 those annotations (see Table~\ref{tbl-fas}). For example, this phenotype
 almost always results in death, either \emph{in utero} or shortly after
@@ -589,7 +629,7 @@ Our findings highlight the potential of this next generation of natural
 language processing technologies in significantly contributing to the
 automation and refinement of data curation in biomedical research. These
 results have a large number of useful real-world applications, such as
-prioritising gene therapy candidates (Murphy et al., n.d.) and guiding
+prioritising gene therapy candidates (Murphy et al., 2023) and guiding
 clinical decision-making in rare diseases. As the HPO continues to grow
 over time, this approach can easily be repeated to keep pace with the
 rapidly evolving biomedical landscape. Furthermore, this approach can be
@@ -689,15 +729,15 @@ prompt. An example prompt can be seen in Figure~\ref{fig-occurrence}.
 Only 2 phenotypes were included per prompt in order to 1) avoid
 exceeding per-query token limits, and 2) prevent the breakdown of GPT-4
 performance due to long-form text input, which is presently a known
-limitation common to many LLMs including GPT-4 (Wei et al., n.d.).
+limitation common to many LLMs including GPT-4 (Wei et al., 2024).
 
 \subsubsection{Calculating the true positive
 rate}\label{calculating-the-true-positive-rate}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1194}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.7711}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1095}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4000}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2000}}@{}}
 
 \caption{\label{tbl-true-positives}For each clinical characteristic, any
 terms that matched}
@@ -716,19 +756,19 @@ True positive HPO IDs
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Intellectual disability & Intellectual disability; Mental deterioration
-& 19 \\
-Impaired mobility & Gait disturbance; Diminished movement; mobility &
-319 \\
-Physical malformations & malformation & 78 \\
-Blindness & blindness & 1 \\
-Sensory impairments & Abnormality of vision; Abnormality of the sense of
-smell; Abnormality of taste sensation; Somatic sensory dysfunction;
-Hearing abnormality & 252 \\
-Immunodeficiency & Immunodeficiency; Impaired antigen-specific response
-& 29 \\
-Cancer & Cancer; malignant; carcinoma & 56 \\
-Reduced fertility & Decreased fertility; Hypogonadism & 9 \\
+Intellectual disability & `Intellectual disability'; `Mental
+deterioration' & 19 \\
+Impaired mobility & `Gait disturbance'; `Diminished movement'; '
+mobility' & 319 \\
+Physical malformations & `malformation' & 78 \\
+Blindness & `blindness' & 1 \\
+Sensory impairments & `Abnormality of vision'; `Abnormality of the sense
+of smell'; `Abnormality of taste sensation'; `Somatic sensory
+dysfunction'; `Hearing abnormality' & 252 \\
+Immunodeficiency & `Immunodeficiency'; `Impaired antigen-specific
+response' & 29 \\
+Cancer & `Cancer'; `malignant'; `carcinoma' & 56 \\
+Reduced fertility & `Decreased fertility'; `Hypogonadism' & 9 \\
 
 \end{longtable}
 
@@ -772,7 +812,7 @@ Let us denote:
   \(F_{pj}\) : the numerically encoded value of annotation metric \(j\)
   for phenotype \(p\).
 \item
-  \(NSS_p\): The final composite severity score for phenotype \(p\)
+  \(NSS_p\): the final composite severity score for phenotype \(p\)
   after applying normalisation to align values to a 0-100 scale and
   ensure equivalent meaning regardless of which other phenotypes are
   being analysed in addition to \(p\). This allows for direct
@@ -846,6 +886,38 @@ Congenital onset (1) & 3 & 2 & 1 & 0 \\
 
 \end{longtable}
 
+\subsubsection{Severity classes}\label{severity-classes-1}
+
+The decision tree algorithm used in Lazarin et al. (2014) was adapted
+here for use with the GPT-4 annotations. This algorithm first assigned
+each annotation metric to a tier, where Tier 1 indicated the most severe
+annotation metrics and Tier 4 indicated the least severe annotation
+metrics (`death'=1, `intellectual disability'=1, `impaired mobility'=2,
+`physical malformations'=2, `blindness'=3, `sensory impairments'=3,
+`immunodeficiency'=3, `cancer'=3, `reduced fertility'=4). If a phenotype
+often or always caused more than one Tier 1 annotation, it was assigned
+a severity class of ``Profound''. If the phenotype often or always
+caused only one Tier 1 annotation, it was assigned a severity class of
+``Severe''. A ``Severe'' class assignment was also assigned if the
+phenotype often or always caused three or more Tier 2 and Tier3
+annotations. If the phenotype often or always caused at least one Tier 2
+annotation, it was assigned a severity class of ``Moderate''. All
+remaining phenotypes were was assigned a severity class of ``Mild''. In
+cases where the phenotype mapped to more than one class, only the most
+severe class was used. This procedure is implemented within the function
+\texttt{HPOExplorer::gpt\_annot\_class}.
+
+\subsubsection{Correlations between severity
+metrics}\label{correlations-between-severity-metrics-1}
+
+To assess the correlation structure between each severity metric, as
+well as between the composite severity score and each metric, we
+computed Pearson correlation coefficients for all pairwise combinations
+of these variables using the numerically encoded metric values. The
+correlation matrix was visualised using a heatmap, with the colour
+intensity representing the strength of the correlation
+(Figure~\ref{fig-metric-corplot}).
+
 \subsection{Data and code availability
 statement}\label{data-and-code-availability-statement}
 
@@ -885,14 +957,15 @@ Council, Alzheimer's Society and Alzheimer's Research UK.
 
 \bibitem[\citeproctext]{ref-boltonBioMedLM7BParameter2024}
 Bolton, E., Venigalla, A., Yasunaga, M., Hall, D., Xiong, B., Lee, T.,
-et al. (n.d.). BioMedLM: A 2.7B parameter language model trained on
-biomedical text. \url{https://doi.org/10.48550/arXiv.2403.18421}
+et al. (2024). BioMedLM: A 2.7B parameter language model trained on
+biomedical text. \emph{arXiv}.
+\url{https://doi.org/10.48550/arXiv.2403.18421}
 
 \bibitem[\citeproctext]{ref-caufieldStructuredPromptInterrogation2023}
 Caufield, J. H., Hegde, H., Emonet, V., Harris, N. L., Joachimiak, M.
-P., Matentzoglu, N., et al. (n.d.). Structured prompt interrogation and
+P., Matentzoglu, N., et al. (2023). Structured prompt interrogation and
 recursive extraction of semantics (SPIRES): A method for populating
-knowledge bases using zero-shot learning.
+knowledge bases using zero-shot learning. \emph{arXiv}.
 \url{https://doi.org/10.48550/arXiv.2304.02711}
 
 \bibitem[\citeproctext]{ref-chenPrenatalDiagnosisGenetic2012}
@@ -936,8 +1009,8 @@ Healthcare}, \emph{3}(1), 2:1--2:23.
 \url{https://doi.org/10.1145/3458754}
 
 \bibitem[\citeproctext]{ref-janikAspectsHumanMemory2024}
-Janik, R. A. (n.d.). Aspects of human memory and large language models.
-\url{https://doi.org/10.48550/arXiv.2311.03839}
+Janik, R. A. (2024). Aspects of human memory and large language models.
+\emph{arXiv}. \url{https://doi.org/10.48550/arXiv.2311.03839}
 
 \bibitem[\citeproctext]{ref-jonesStatisticalInterpretationTerm1972}
 Jones, K. S. (1972). A statistical interpretation of term specificity
@@ -952,8 +1025,8 @@ D., Vasilevsky, N. A., et al. (2021). The human phenotype ontology in
 
 \bibitem[\citeproctext]{ref-labrakBioMistralCollectionOpenSource2024}
 Labrak, Y., Bazoge, A., Morin, E., Gourraud, P.-A., Rouvier, M., \&
-Dufour, R. (n.d.). BioMistral: A collection of open-source pretrained
-large language models for medical domains.
+Dufour, R. (2024). BioMistral: A collection of open-source pretrained
+large language models for medical domains. \emph{arXiv}.
 \url{https://doi.org/10.48550/arXiv.2402.10373}
 
 \bibitem[\citeproctext]{ref-Lazarin2014-rz}
@@ -969,18 +1042,19 @@ generation and mining. \emph{Briefings in Bioinformatics}, \emph{23}(6),
 bbac409. \url{https://doi.org/10.1093/bib/bbac409}
 
 \bibitem[\citeproctext]{ref-marcinkevicsInterpretabilityExplainabilityMachine2023}
-Marcinkevičs, R., \& Vogt, J. E. (n.d.). Interpretability and
-explainability: A machine learning zoo mini-tour.
+Marcinkevičs, R., \& Vogt, J. E. (2023). Interpretability and
+explainability: A machine learning zoo mini-tour. \emph{arXiv}.
 \url{https://doi.org/10.48550/arXiv.2012.01805}
 
 \bibitem[\citeproctext]{ref-mcduffAccurateDifferentialDiagnosis2023}
 McDuff, D., Schaekermann, M., Tu, T., Palepu, A., Wang, A., Garrison,
-J., et al. (n.d.). Towards accurate differential diagnosis with large
-language models. \url{https://doi.org/10.48550/arXiv.2312.00164}
+J., et al. (2023). Towards accurate differential diagnosis with large
+language models. \emph{arXiv}.
+\url{https://doi.org/10.48550/arXiv.2312.00164}
 
 \bibitem[\citeproctext]{ref-mikolovEfficientEstimationWord2013}
-Mikolov, T., Chen, K., Corrado, G., \& Dean, J. (n.d.). Efficient
-estimation of word representations in vector space.
+Mikolov, T., Chen, K., Corrado, G., \& Dean, J. (2013). Efficient
+estimation of word representations in vector space. \emph{arXiv}.
 \url{https://doi.org/10.48550/arXiv.1301.3781}
 
 \bibitem[\citeproctext]{ref-mungallMonarchInitiativeIntegrative2017a}
@@ -992,20 +1066,20 @@ species. \emph{Nucleic Acids Research}, \emph{45}(D1), D712--D722.
 
 \bibitem[\citeproctext]{ref-murphyIdentificationCellTypespecific2023}
 Murphy, K. B., Gordon-Smith, R., Chapman, J., Otani, M., Schilder, B.
-M., \& Skene, N. G. (n.d.). Identification of cell type-specific gene
+M., \& Skene, N. G. (2023). Identification of cell type-specific gene
 targets underlying thousands of rare diseases and subtraits.
-\url{https://doi.org/10.1101/2023.02.13.23285820}
+\emph{medRxiv}. \url{https://doi.org/10.1101/2023.02.13.23285820}
 
 \bibitem[\citeproctext]{ref-noriCanGeneralistFoundation2023}
 Nori, H., Lee, Y. T., Zhang, S., Carignan, D., Edgar, R., Fusi, N., et
-al. (n.d.). Can generalist foundation models outcompete special-purpose
-tuning? Case study in medicine.
+al. (2023). Can generalist foundation models outcompete special-purpose
+tuning? Case study in medicine. \emph{arXiv}.
 \url{https://doi.org/10.48550/arXiv.2311.16452}
 
 \bibitem[\citeproctext]{ref-oneilPhenomicsAssistantInterface2024}
 O'Neil, S. T., Schaper, K., Elsarboukh, G., Reese, J. T., Moxon, S. A.
-T., Harris, N. L., et al. (n.d.). Phenomics assistant: An interface for
-LLM-based biomedical knowledge graph exploration.
+T., Harris, N. L., et al. (2024). Phenomics assistant: An interface for
+LLM-based biomedical knowledge graph exploration. \emph{bioRxiv}.
 \url{https://doi.org/10.1101/2024.01.31.578275}
 
 \bibitem[\citeproctext]{ref-ochoaOpenTargetsPlatform2021}
@@ -1017,13 +1091,13 @@ Acids Research}, \emph{49}(D1), D1302--D1310.
 
 \bibitem[\citeproctext]{ref-openaiGPT4TechnicalReport2024}
 OpenAI, Achiam, J., Adler, S., Agarwal, S., Ahmad, L., Akkaya, I., et
-al. (n.d.). GPT-4 technical report.
+al. (2024). GPT-4 technical report. \emph{arXiv}.
 \url{https://doi.org/10.48550/arXiv.2303.08774}
 
 \bibitem[\citeproctext]{ref-panLargeLanguageModels2023}
 Pan, J. Z., Razniewski, S., Kalo, J.-C., Singhania, S., Chen, J.,
-Dietze, S., et al. (n.d.). Large language models and knowledge graphs:
-Opportunities and challenges.
+Dietze, S., et al. (2023). Large language models and knowledge graphs:
+Opportunities and challenges. \emph{arXiv}.
 \url{https://doi.org/10.48550/arXiv.2308.06374}
 
 \bibitem[\citeproctext]{ref-prietoProblemsSolutionsCalculating2003}
@@ -1047,20 +1121,21 @@ of the 2020 conference on empirical methods in natural language
 processing (EMNLP)} (pp. 4700--4706). Association for Computational
 Linguistics. \url{https://doi.org/10.18653/v1/2020.emnlp-main.379}
 
-\bibitem[\citeproctext]{ref-singhalExpertLevelMedicalQuestion2023}
-Singhal, K., Tu, T., Gottweis, J., Sayres, R., Wulczyn, E., Hou, L., et
-al. (n.d.). Towards expert-level medical question answering with large
-language models. \url{https://doi.org/10.48550/arXiv.2305.09617}
-
 \bibitem[\citeproctext]{ref-singhalLargeLanguageModels2023}
 Singhal, K., Azizi, S., Tu, T., Mahdavi, S. S., Wei, J., Chung, H. W.,
 et al. (2023). Large language models encode clinical knowledge.
 \emph{Nature}, 1--9. \url{https://doi.org/10.1038/s41586-023-06291-2}
 
+\bibitem[\citeproctext]{ref-singhalExpertLevelMedicalQuestion2023}
+Singhal, K., Tu, T., Gottweis, J., Sayres, R., Wulczyn, E., Hou, L., et
+al. (2023). Towards expert-level medical question answering with large
+language models. \emph{arXiv}.
+\url{https://doi.org/10.48550/arXiv.2305.09617}
+
 \bibitem[\citeproctext]{ref-toroDynamicRetrievalAugmented2023}
 Toro, S., Anagnostopoulos, A. V., Bello, S., Blumberg, K., Cameron, R.,
-Carmody, L., et al. (n.d.). Dynamic retrieval augmented generation of
-ontologies using artificial intelligence (DRAGON-AI).
+Carmody, L., et al. (2023). Dynamic retrieval augmented generation of
+ontologies using artificial intelligence (DRAGON-AI). \emph{arXiv}.
 \url{https://doi.org/10.48550/arXiv.2312.10904}
 
 \bibitem[\citeproctext]{ref-vanveenAdaptedLargeLanguage2024}
@@ -1070,15 +1145,15 @@ outperform medical experts in clinical text summarization. \emph{Nature
 Medicine}, 1--9. \url{https://doi.org/10.1038/s41591-024-02855-5}
 
 \bibitem[\citeproctext]{ref-weiLongformFactualityLarge2024}
-Wei, J., Yang, C., Song, X., Lu, Y., Hu, N., Huang, J., et al. (n.d.).
-Long-form factuality in large language models. Retrieved from
-\url{http://arxiv.org/abs/2403.18802}
+Wei, J., Yang, C., Song, X., Lu, Y., Hu, N., Huang, J., et al. (2024).
+Long-form factuality in large language models. \emph{arXiv}. Retrieved
+from \url{http://arxiv.org/abs/2403.18802}
 
 \bibitem[\citeproctext]{ref-zhangBiomedGPTUnifiedGeneralist2023}
 Zhang, K., Yu, J., Yan, Z., Liu, Y., Adhikarla, E., Fu, S., et al.
-(n.d.). BiomedGPT: A unified and generalist biomedical generative
+(2023). BiomedGPT: A unified and generalist biomedical generative
 pre-trained transformer for vision, language, and multimodal tasks.
-\url{https://doi.org/10.48550/arXiv.2305.17100}
+\emph{arXiv}. \url{https://doi.org/10.48550/arXiv.2305.17100}
 
 \end{CSLReferences}
 
@@ -1087,6 +1162,28 @@ pre-trained transformer for vision, language, and multimodal tasks.
 \subsection{Supplementary Materials}\label{supplementary-materials}
 
 \subsubsection{Supplementary Figures}\label{supplementary-figures}
+
+\phantomsection\label{cell-fig-consist-vs-ontLvl}
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics{manuscript_files/figure-pdf/fig-consist-vs-ontLvl-1.pdf}
+
+}
+
+\caption{\label{fig-consist-vs-ontLvl}Relationship between the
+consistency of GPT-4 annotations (using the stringent criterion) and the
+level of each phenotype within the HPO ontology (with the number of
+phenotypes in parentheses). Greater ontology levels (x-axis) indicate
+more specific phenotypes. The subtitle indicates summary statistics for
+the overall relationship between HPO level and the proportion of
+phenotypes that were annotated consistently. The p-values above each bar
+indicate whether the distribution of consistent/inconsistent
+annotations, within a given HPO level, significantly deviate from the
+expected null distribution.}
+
+\end{figure}%
 
 \phantomsection\label{cell-fig-severity-histo}
 \begin{figure}[H]
@@ -1117,14 +1214,48 @@ categories within each annotation type.}
 
 \end{figure}%
 
+\phantomsection\label{cell-fig-metric-corplot}
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics{manuscript_files/figure-pdf/fig-metric-corplot-1.pdf}
+
+}
+
+\caption{\label{fig-metric-corplot}Pearson correlations between each
+individual severity metric and the composite severity score
+(`severity\_score\_gpt').}
+
+\end{figure}%
+
+\phantomsection\label{cell-fig-severity-class}
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics{manuscript_files/figure-pdf/fig-severity-class-1.pdf}
+
+}
+
+\caption{\label{fig-severity-class}Distribution of the composite GPT-4
+severity score introduced in this paper (y-axis) by an approximation of
+the severity class system introduced Lazarin et al. (2014) (x-axis).
+While these are different schemes for ranking phenotype severity, there
+is a strong correspondence between them (see summary statistics in
+subtitle). The sample size (number of phenotypes) is shown in
+parentheses along the x-axis.}
+
+\end{figure}%
+
 \newpage{}
 
 \subsubsection{Supplementary Tables}\label{supplementary-tables}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1379}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0632}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.7989}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.6000}}@{}}
 
 \caption{\label{tbl-fas}Severity nnotations generated for GPT-4
 annotations for the HPO phenotype `Fetal akinesia sequence'
