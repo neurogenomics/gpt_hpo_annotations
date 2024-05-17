@@ -1,5 +1,5 @@
 ---
-title: Harnessing AI to annotate the severity of all phenotypic abnormalities within the Human Phenotype Ontology
+title: Harnessing generative AI to annotate the severity of all phenotypic abnormalities within the Human Phenotype Ontology
 author:
   - name: Kitty B Murphy
     orcid: 0000-0002-8669-3076
@@ -106,9 +106,8 @@ annot_melt <- HPOExplorer::gpt_annot_melt(res_coded = res_coded)
 ```
 
 ```{r gpt_annot_class, results='hide'}
-res_class <- HPOExplorer::gpt_annot_class(annot_coded = res_coded$annot_coded)
-res_class <- merge(res_class,
-                   res_coded$annot_weighted[,c("hpo_name","severity_score_gpt")])
+res_class <- HPOExplorer::gpt_annot_class(res_coded = res_coded)
+
 fig_severity_class <- ggstatsplot::ggbetweenstats(res_class,
                             x="severity_class", y="severity_score_gpt")
 fig_severity_class_dt <- MSTExplorer:::get_ggstatsplot_stats(fig_severity_class)
@@ -120,6 +119,12 @@ gpt_annot_plot_out <- HPOExplorer::gpt_annot_plot(
   keep_descendants = keep_descendants, 
   width = 10)
 ```
+
+```{r weights_dict}
+weights_dict <- eval(formals(gpt_annot_codify)$weights_dict)
+annotation_order <- gsub("_"," ",names(sort(unlist(weights_dict), decreasing = TRUE)))
+```
+
 
 ## Abstract
 
@@ -145,10 +150,7 @@ Here, we have used GPT-4 to systematically annotate the severity of `r n_ids_gpt
 #| fig-height: 6
 #| fig-width: 10
 
-# subset to clinical characteristics 
-annotation_order <- c("death", "intellectual disability", "impaired mobility", "blindness", 
-                      "congenital onset", "physical malformations", "sensory impairments", 
-                      "immunodeficiency", "cancer", "reduced fertility")
+# subset to clinical characteristics   
 occurr_df <- gpt_annot[,c("hpo_name",gsub(" ", "_", annotation_order)),with=FALSE]
 cols_of_interest <- names(occurr_df)[-1]
 # Create an empty dataframe to store the counts
@@ -391,83 +393,14 @@ Quantifying the severity of phenotypes can have important implications for diagn
 
 Based on these scores we evaluated the top 50 severe phenotypes. One of the most severe phenotype was `r shQuote(anenceph_dt$hpo_name)` (`r anenceph_dt$hpo_id`) with a composite severity score of `r round(anenceph_dt$severity_score_gpt, 1)`. Anencephaly is a birth defect where the baby is born without a portion of its brain and skull, often these babies are stillborn. In fact, many of the most severe phenotypes were related to developmental brain and neural tube defects. Comparison of the severity scores for each response, across the phenotype outcomes annotated, revealed consistent trends: as the response of the phenotype outcome increased (from never to always), the severity score also increased ([Supplementary Fig. @fig-severity-boxplot]). We also evaluated the severity score distribution by HPO branch and calculated the mean severity score using all phenotypes within each major HPO branch ([Fig. @fig-severity-histo]). The HPO branch with the greatest mean severity score was `r shQuote(unique(gpt_annot_plot_out$data$dat2$ancestor_name)[1])` (mean=`r round(unique(gpt_annot_plot_out$data$dat2$mean_severity_score_gpt)[1],1)`), followed by `r shQuote(unique(gpt_annot_plot_out$data$dat2$ancestor_name)[2])` (mean=`r round(unique(gpt_annot_plot_out$data$dat2$mean_severity_score_gpt)[2],1)`), which would include the highly ranked phenotypes seen in @fig-top-phenos.
 
-```{r severity_scoring}
-## code adapted from HPOExplorer::gpt_annot_plot()
-# get all descendants of the term phenotypic abnormality 
-keep_ont_levels=seq(3,17)
-#### Filter out ont levels ####
-annot_melt <- HPOExplorer::add_ancestor(annot_melt,
-                                        keep_descendants = keep_descendants)
-data.table::setorderv(annot_melt,"severity_score_gpt",-1)
-
-annot_melt <- HPOExplorer::add_ont_lvl(annot_melt, keep_ont_levels = keep_ont_levels)
-annot_melt$variable <- gsub("_", " ", annot_melt$variable)
-
-# get all unique phenotypes
-total_unique <- length(unique(annot_melt$hpo_id))
-
-# get the top N phenotypes
-top_n <- 15
-dat_top <- annot_melt[hpo_id %in% unique(annot_melt$hpo_id)[seq(top_n)]]
-
-# Get the bottom N phenotypes
-bottom_n <- 15
-dat_bottom <- annot_melt[hpo_id %in% unique(annot_melt$hpo_id)[seq(total_unique - bottom_n + 1, total_unique)]]
-
-# Define the range for selecting phenotypes from the middle
-start_index <- ceiling(total_unique / 2)  
-end_index <- start_index + 12
-
-# Get phenotypes from the middle
-dat_middle <- annot_melt[hpo_id %in% unique(annot_melt$hpo_id)[seq(start_index, end_index)]]
-
-# define labels
-dat_top$position <- "Top"
-dat_middle$position <- "Middle"
-dat_bottom$position <- "Bottom"
-
-dat_all <- rbind(dat_top, dat_middle, dat_bottom)
-dat_all$position <- factor(dat_all$position, levels=unique(dat_all$position))
-dat_all$variable <- factor(dat_all$variable, levels = annotation_order)
-```
-
 ```{r fig-top-phenos}
 #| label: fig-top-phenos
-#| fig-cap: Quantifying the severity of HPO phenotype annotations highlights the most impactful conditions. Heatmap of the top (n = 15), mid-range (n = 15), and bottom (n = 15) HPO phenotypes based on severity score. Severity scores were calculated by multiplying the numeric values assigned to each clinical characteristic according to @tbl-metric-weights. The average normalised score, representing overall phenotype severity on a 0-100 scale, was calculated by aggregating the multiplied values and normalising by the theoretical maximum severity score. The x-axis is scaled by the severity of the clinical characterisation.
-#| fig-height: 7.5
-#| fig-width: 8
+#| fig-cap: Quantifying the severity of HPO phenotype annotations highlights the most impactful conditions. Heatmap of 10 represetantive phenotypes from each severity class (Profound, Severe, Moderate, Mild) stratified by whether the phenotypes are often/always congenital (**a**-**b**) or rarely/never congenital (**c**-**d**). Continuous severity scores are shown as bars (**b**,**d**) and were calculated by multiplying the numeric values assigned to each clinical characteristic according to @tbl-metric-weights. The average normalised score, representing overall phenotype severity on a 0-100 scale, was calculated by aggregating the multiplied values and normalising by the theoretical maximum severity score. The x-axes show each of the clinical characteristics.
+#| fig-height: 10
+#| fig-width: 13
 
-p1 <- ggplot2::ggplot(data = dat_all,
-                      ggplot2::aes(x=variable, y=hpo_name, fill=value)) +
-  ggplot2::geom_tile(colour = "white", lwd = 0.5, linetype =1) +
-  ggplot2::scale_y_discrete(limits=rev) +
-  scale_fill_brewer(palette = "GnBu", direction = -1) +
-  ggplot2::theme_classic() +
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
-                 legend.position = 'right') +
-  labs(x = "Clinical characteristic",
-       y = "HPO phenotype",
-       fill = "Occurrence") +
-  ggplot2::facet_grid(position ~ ., scales = "free_y")
-
-p2 <- ggplot2::ggplot(data = dat_all,
-                      ggplot2::aes(x="severity_score_gpt", y=hpo_name,
-                                   fill=severity_score_gpt)) +
-  ggplot2::geom_tile() +
-  ggplot2::scale_y_discrete(limits=rev) +
-  scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = "reverse") +
-  ggplot2::labs(x=NULL, y=NULL, fill = "Severity\nscore") +
-  ggplot2::theme_void() +
-  guides(fill = guide_colorbar(reverse = TRUE)) +
-  ggplot2::theme(axis.text.y = ggplot2::element_blank(),
-                 axis.ticks.y = ggplot2::element_blank(),
-                 legend.position = 'right')
-
-p3 <- patchwork::wrap_plots(p1, p2, ncol = 2,
-                            widths = c(1,.2),
-                            guides = "collect")
-
-methods::show(p3)
+plot_top_phenos_out <- HPOExplorer::plot_top_phenos(res_class = res_class)
+plot_top_phenos_out$plot
 ```
 
 ### Severity classes
@@ -514,7 +447,7 @@ The creation and annotation of biomedical knowledge has traditionally relied on 
 
 Here, we introduce a novel framework to leverage the current best-in-class LLM, GPT-4 [@openaiGPT4TechnicalReport2024], to systematically annotate the severity of `r n_ids_gpt` phenotypic abnormalities within the HPO. By employing advanced AI capabilities, we have demonstrated the feasibility of automating this process, significantly enhancing efficiency without substantially compromising accuracy. Our validation approach yielded a high true positive rate exceeding `r floor(min(checks$true_pos_rate)*100)`% across the phenotypes tested. Furthermore, our approach can be readily adapted and scaled to accommodate the growing volume of phenotypic data.
 
-Throughout this study, we observed that GPT-4 was capable of reliably recovering deep semantic relationships from the medical domain, far beyond making superficial inferences based on lexical similarities. An excellent example of this is the phenotype 'Molar tooth sign on MRI' (`r res_coded$annot_weighted[hpo_name=='Molar tooth sign on MRI']$hpo_id`; severity score=`r res_coded$annot_weighted[hpo_name=='Molar tooth sign on MRI']$severity_score_gpt`), which GPT-4 annotated as causing intellectual disability. At first glance, we ourselves assumed this was a false positive as the term appeared to be related to dentition. However, upon further inspection we realised that molar tooth sign is in fact a pattern of abnormal brain morphology that happens to bear some resemblance to molar dentition when observed in radiological scans. This phenotype is a known sign of neurodevelopmental defects that can indeed cause severe intellectual disability [@gleesonMolarToothSign2004].
+Throughout this study, we observed that GPT-4 was capable of reliably recovering deep semantic relationships from the medical domain, far beyond making superficial inferences based on lexical similarities. An excellent example of this is the phenotype 'Molar tooth sign on MRI' (`r res_coded$annot_weighted[hpo_name=='Molar tooth sign on MRI']$hpo_id`; severity score=`r round(res_coded$annot_weighted[hpo_name=='Molar tooth sign on MRI']$severity_score_gpt,2)`), which GPT-4 annotated as causing intellectual disability. At first glance, we ourselves assumed this was a false positive as the term appeared to be related to dentition. However, upon further inspection we realised that molar tooth sign is in fact a pattern of abnormal brain morphology that happens to bear some resemblance to molar dentition when observed in radiological scans. This phenotype is a known sign of neurodevelopmental defects that can indeed cause severe intellectual disability [@gleesonMolarToothSign2004].
 
 In addition to rapidly synthesising and summarising vast amounts of information, LLMs can also be steered to provide justifications for each particular response. This makes LLMs amenable to direct interrogation as a means of recovering explainability, especially when designed to retain information about previous requests and interactions as they use these to iteratively improve and update their predictions [@janikAspectsHumanMemory2024]. This represents a categorical advance over traditional natural language processing models based on more shallow forms of statistical or machine learning (e.g. Term Frequency-Inverse Document Frequency [@jonesStatisticalInterpretationTerm1972], Word2vec [@mikolovEfficientEstimationWord2013]) which lack the ability to provide chains of causal reasoning to justify their predictions. This highlights the fundamental trade-off between simpler models with high explainability (the ability humans to understand the inner workings of the model) but low interpretability (the ability of humans to trace the decision process of the model, analogous to human 'reasoning'), and deeper more complex models with low explainability but high interpretability [@marcinkevicsInterpretabilityExplainabilityMachine2023].
 

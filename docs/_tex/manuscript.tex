@@ -164,7 +164,7 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
-  pdftitle={Harnessing AI to annotate the severity of all phenotypic abnormalities within the Human Phenotype Ontology},
+  pdftitle={Harnessing generative AI to annotate the severity of all phenotypic abnormalities within the Human Phenotype Ontology},
   pdfauthor={Kitty B Murphy; Brian M Schilder; Nathan G Skene},
   pdfkeywords={Ontology, Human Phenotype Ontology, Large Language
 Model, GPT-4, Artificial intelligence, Generative AI, Rare
@@ -181,8 +181,8 @@ disease, Automation, Medicine},
 \draftfalse
 
 \begin{document}
-\title{Harnessing AI to annotate the severity of all phenotypic
-abnormalities within the Human Phenotype Ontology}
+\title{Harnessing generative AI to annotate the severity of all
+phenotypic abnormalities within the Human Phenotype Ontology}
 
 \authors{Kitty B Murphy\affil{1,2}, Brian M Schilder\affil{1,2}, Nathan
 G Skene\affil{1,2}}
@@ -476,7 +476,7 @@ of its individual outcomes.
 
 Based on these scores we evaluated the top 50 severe phenotypes. One of
 the most severe phenotype was `Anencephaly' (HP:0002323) with a
-composite severity score of 52. Anencephaly is a birth defect where the
+composite severity score of 45. Anencephaly is a birth defect where the
 baby is born without a portion of its brain and skull, often these
 babies are stillborn. In fact, many of the most severe phenotypes were
 related to developmental brain and neural tube defects. Comparison of
@@ -487,8 +487,8 @@ increased (Supplementary Fig.~\ref{fig-severity-boxplot}). We also
 evaluated the severity score distribution by HPO branch and calculated
 the mean severity score using all phenotypes within each major HPO
 branch (Fig.~\ref{fig-severity-histo}). The HPO branch with the greatest
-mean severity score was `Abnormal cellular phenotype' (mean=19.6),
-followed by `Neoplasm' (mean=17.2), which would include the highly
+mean severity score was `Abnormal cellular phenotype' (mean=17),
+followed by `Neoplasm' (mean=15.2), which would include the highly
 ranked phenotypes seen in Figure~\ref{fig-top-phenos}.
 
 \phantomsection\label{cell-fig-top-phenos}
@@ -501,15 +501,18 @@ ranked phenotypes seen in Figure~\ref{fig-top-phenos}.
 }
 
 \caption{\label{fig-top-phenos}Quantifying the severity of HPO phenotype
-annotations highlights the most impactful conditions. Heatmap of the top
-(n = 15), mid-range (n = 15), and bottom (n = 15) HPO phenotypes based
-on severity score. Severity scores were calculated by multiplying the
-numeric values assigned to each clinical characteristic according to
+annotations highlights the most impactful conditions. Heatmap of 10
+represetantive phenotypes from each severity class (Profound, Severe,
+Moderate, Mild) stratified by whether the phenotypes are often/always
+congenital (\textbf{a}-\textbf{b}) or rarely/never congenital
+(\textbf{c}-\textbf{d}). Continuous severity scores are shown as bars
+(\textbf{b},\textbf{d}) and were calculated by multiplying the numeric
+values assigned to each clinical characteristic according to
 Table~\ref{tbl-metric-weights}. The average normalised score,
 representing overall phenotype severity on a 0-100 scale, was calculated
 by aggregating the multiplied values and normalising by the theoretical
-maximum severity score. The x-axis is scaled by the severity of the
-clinical characterisation.}
+maximum severity score. The x-axes show each of the clinical
+characteristics.}
 
 \end{figure}%
 
@@ -522,7 +525,7 @@ defined severity classed using a simple decision tree based on the
 individual severity annotations. We approximated this approach using our
 GPT-4 annotations. This categorical approach showed a strong degree of
 positive correspondence with the continuous severity score
-(\(\hat{\omega_{p}^2}\)=0.87, p\textless2.2e-308). In other words,
+(\(\hat{\omega_{p}^2}\)=0.88, p\textless2.2e-308). In other words,
 severity score increased with severity class level (mild \textless{}
 moderate \textless{} severe \textless{} profound) as expected. The
 distribution of severity classes is shown in
@@ -539,9 +542,8 @@ p=0). Some metrics drove the composite severity score more than other,
 which is a reflection of both our per-metric weighting scheme, response
 type frequencies, and the correlation structure between metrics.
 Overall, impaired mobility seemed to be the strongest driver of the
-composite severity score with a Pearson correlation of 0.6138757,
-followed by intellectual disability (r=0.6) and sensory impairments
-(r=0.54).
+composite severity score with a Pearson correlation of 0.6001824,
+followed by intellectual disability (r=0.59) and death (r=0.56).
 
 \subsection{Discussion}\label{discussion}
 
@@ -573,7 +575,7 @@ Throughout this study, we observed that GPT-4 was capable of reliably
 recovering deep semantic relationships from the medical domain, far
 beyond making superficial inferences based on lexical similarities. An
 excellent example of this is the phenotype `Molar tooth sign on MRI'
-(HP:0002419; severity score=30), which GPT-4 annotated as causing
+(HP:0002419; severity score=25.56), which GPT-4 annotated as causing
 intellectual disability. At first glance, we ourselves assumed this was
 a false positive as the term appeared to be related to dentition.
 However, upon further inspection we realised that molar tooth sign is in
@@ -608,7 +610,7 @@ their impact on patients. The methodology allowed us to transition from
 low-throughput qualitative assessments of severity (e.g. Lazarin et al.
 (2014)) to high-throughput quantitative assessments of severity. One of
 the most severe phenotypes in the HPO is `Fetal akinesia sequence' (FAS;
-HP:0001989, severity score= 50.7), and extremely rare condition that is
+HP:0001989, severity score= 43.9), and extremely rare condition that is
 almost always lethal. FAS is a complex, multi-system phenotype that can
 be caused by at least 24 different genetic disorders. Despite the
 complex and heterogeneous aetiology of this phenotype, GPT-4 was able to
@@ -873,8 +875,8 @@ Never (0)
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
+Death (6) & 18 & 12 & 6 & 0 \\
 Intellectual disability (5) & 15 & 10 & 5 & 0 \\
-Death (5) & 15 & 10 & 5 & 0 \\
 Impaired mobility (4) & 12 & 8 & 4 & 0 \\
 Blindness (4) & 12 & 8 & 4 & 0 \\
 Physical malformations (3) & 9 & 6 & 3 & 0 \\
