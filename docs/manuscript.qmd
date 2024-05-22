@@ -440,6 +440,31 @@ Xcor <- cor(ihme_merged[,unlist(metric_cols),with=FALSE], use="complete.obs")
 heatmaply::heatmaply(Xcor[metric_cols$IHME,metric_cols$GPT])
 ```
 
+### Congenital onset by HPO branch
+
+
+```{r gpt_annot_plot_branches}
+gpt_annot_plot_branches_out <- HPOExplorer::gpt_annot_plot_branches(
+  gpt_annot = gpt_annot, 
+  hpo = hpo, 
+  metric = "congenital_onset", 
+  fill_lab = "Congenital\nonset", 
+  show_plot = FALSE)
+top_congenital <- unique(gpt_annot_plot_branches_out$data[!is.na(congenital_onset),c("ancestor_name","proportion_always")])
+```
+
+```{r fig-congenital-branches}
+#| label: fig-congenital-branches
+#| fig-cap: Distribution of congenital onset across HPO branches. The y-axis shows the proportion of phenotypes that are always/often/rarely/never congenital. The x-axis shows the HPO branch, orderered from highest to lowest proportion of always congenital phenotypes.
+#| fig-height: 6
+#| fig-width: 6
+
+gpt_annot_plot_branches_out$plot
+```
+
+Next, we assessed the distribution of congenital onset across HPO branches ([Fig. @fig-congenital-branches]). We found that the `r top_congenital$ancestor_name[1]` branch contained the greatest proportion of phenotypes that were always congenital (`r round(top_congenital$proportion_always[1]*100,2)`%), followed by `r top_congenital$ancestor_name[2]` (`r round(top_congenital$proportion_always[2]*100,2)`%) and `r top_congenital$ancestor_name[3]` (`r round(top_congenital$proportion_always[3]*100,2)`%). This is concordant with the expectation that these phenotypes should largely be congenital. 
+The HPO branches with the least commonly congenital phenotypes were `r rev(top_congenital$ancestor_name)[1]` (`r round(rev(top_congenital$proportion_always)[1]*100,2)`%), `r rev(top_congenital$ancestor_name)[2]` (`r round(rev(top_congenital$proportion_always)[2]*100,2)`%), and `r rev(top_congenital$ancestor_name)[3]` (`r round(rev(top_congenital$proportion_always)[3]*100,2)`%). ['Constitutional symptom'](https://hpo.jax.org/app/browse/term/HP:0025142) is a fairly broad term defined as *'A symptom or manifestation indicating a systemic or general effect of a disease and that may affect the general well-being or status of an individual.'* Examples include 'Fatigue' 'Exercise intolerance', 'Hot flashes' and 'Sneeze'.
+
 
 ## Discussion
 
