@@ -200,72 +200,78 @@ Skene}{n.skene@imperial.ac.uk}
 
 \subsection{Abstract}\label{abstract}
 
-The Human Phenotype Ontology (HPO) has played a crucial role in
-defining, diagnosing, prognosing, and treating human diseases by
-providing a standardised framework for describing phenotypic
-abnormalities. However, documentation on the severity of each phenotype
-is currently very sparse, making systematic analyses and prioritisation
-of results challenging. With \textgreater17500 phenotypic abnormalities
-across \textgreater8600 rare diseases, manual curation of such
-phenotypic annotations by experts would be exceedingly labour-intensive
-and time-consuming. Leveraging advances in artificial intelligence, we
-employed the OpenAI GPT-4 large language model (LLM) to systematically
-annotate the severity of all phenotypic abnormalities in the HPO. First,
-we benchmarked the generative LLM annotations against ground-truth
-labels within the HPO (e.g.~phenotypes in the `Cancer' HPO branch were
-annotating as causing cancer by GPT-4). True positive recall rates
-across different annotations ranged from 89-100\% (mean=96\%), clearly
-demonstrating the ability of GPT-4 to automate the curation process with
-a high degree of fidelity. Using a novel approach, we developed a
-severity scoring system that incorporates both the nature of the
-phenotype outcome and the frequency of its occurrence. These severity
-metrics will enable efforts to systematically prioritise which human
-phenotypes are most detrimental to human health, and best targets for
-therapeutic intervention.
+There are thousands of human phenotypes which are linked to genetic
+variation. These range from the benign (white eyelashes) to the deadly
+(respiratory failure). The Human Phenotype Ontology has categorised all
+human phenotypic variation into an unified framework that defines the
+relationships between them (e.g.~missing arms and missing legs are both
+abnormalities of the limb). This has made it possible to perform
+phenome-wide analyses, e.g.~to prioritise which make the best candidates
+for gene therapies. However, there is currently limited metadata
+describing the effects / severity of these phenotypes. With
+\textgreater17500 phenotypic abnormalities across \textgreater8600 rare
+diseases, manual curation of such phenotypic annotations by experts
+would be exceedingly labour-intensive and time-consuming. Leveraging
+advances in artificial intelligence, we employed the OpenAI GPT-4 large
+language model (LLM) to systematically annotate the severity of all
+phenotypic abnormalities in the HPO. First, we benchmarked the
+generative LLM annotations against ground-truth labels within the HPO
+(e.g.~phenotypes in the `Cancer' HPO branch were annotating as causing
+cancer by GPT-4). True positive recall rates across different
+annotations ranged from 89-100\% (mean=96\%), clearly demonstrating the
+ability of GPT-4 to automate the curation process with a high degree of
+fidelity. Using a novel approach, we developed a severity scoring system
+that incorporates both the nature of the phenotype outcome and the
+frequency of its occurrence. These severity metrics will enable efforts
+to systematically prioritise which human phenotypes are most detrimental
+to human health, and best targets for therapeutic intervention.
 
 \subsection{Introduction}\label{introduction}
 
-Comprehensive annotation of phenotypic abnormalities is invaluable for
+Ontologies provide a common language with which to communicate concepts.
+In medicine, ontologies for phenotypic abnormalities are invaluable for
 defining, diagnosing, prognosing, and treating human disease. Since
-2008, the Human Phenotype Ontology (HPO) has been instrumental to this,
-by providing a standardised database for the description and analysis of
-human phenotypes (Gargano et al., 2024; Köhler et al., 2021). Through
-developing open community resources, the depth and breadth of the HPO
-has continued to expand and there are now \textgreater17500 phenotypic
-abnormalities across \textgreater8600 diseases, described. In recent
-years, the HPO has expanded its disease annotations so that each HPO
-term can have metadata including typical age of onset and frequency. In
-addition, there are the \emph{Clinical modifier} and \emph{Clinical
-course} subontologies, which contains terms to describe factors
-including severity, triggers, mortality and progression, respectively.
+2008, the Human Phenotype Ontology (HPO) has been instrumental in
+healthcare and biomedical research by providing a framework for
+comprehensively describing human phenotypes and the relationships
+between them (Gargano et al., 2024; Köhler et al., 2021). By expanding
+its depth and breadth over time, the HPO now contains \textgreater17500
+phenotypic abnormalities across \textgreater8600 diseases. Some HPO
+phenotypes also contain metadata annotations such typical age of onset,
+frequency, triggers, time course, mortality rate and typical severity.
 Describing the severity-related attributes of a disease is crucial for
-both research and clinical care of individuals with rare diseases. This
-includes enhancing diagnostic capabilities, as well as prioritising and
-guiding gene therapy trials.
+both research and clinical care of individuals with rare diseases. When
+researchers or clinicians are presented with phenotypes that fall
+outside of their expertise, resources to quickly and reliably retrieve
+summaries with additional relevant information about these phenotypes
+are essential. In the clinic, this can help in reaching a differential
+diagnosis or prioritising the treatment of some phenotypes over others.
+In research, this information is useful for prioritising targets for
+causal disease mechanisms, performing large-scale analyses of phenotypic
+data, and guiding funding agencies when assessing the potential impact
+and need for research in a given disease area. To date, the HPO has
+largely relied on manual curation by domain experts. While this approach
+can improve annotation quality and accuracy, it is both time-consuming
+and labour-intensive. As a result, less than 1\% of terms within the HPO
+contain metadata such as time course and severity.
 
-To date, the HPO has largely relied on manual curation by experts
-including clinicians, clinical geneticists and researchers. Although
-this approach ensures the quality and accuracy of the ontology, it is
-time-consuming and labour-intensive. As a result, less than 1\% of terms
-within the HPO have metadata pertaining to their features such as time
-course and severity. Artificial intelligence (AI) capabilities have
-advanced considerably in recent years, presenting new opportunities to
-integrate natural language processing technologies into assisting in the
-curation process. Specifically, there have recently been considerable
-advances in large language model (LLM) and their application to
-biomedical problems, in some cases performing as well or better than
-human clinicians on standardised medical exams and patient diagnosis
-tasks (Bolton et al., 2024; Cheng et al., 2023; Gu et al., 2021; Labrak
-et al., 2024; Luo et al., 2022; McDuff et al., 2023; O'Neil et al.,
-2024; Shin et al., 2020; Singhal, Azizi, et al., 2023, 2023; Singhal,
-Tu, et al., 2023; Van Veen et al., 2024; Zhang et al., 2023). Recent
-work has demonstrated that the Generative Pre-trained Transformer 4
-(GPT-4) foundation model (OpenAI et al., 2024), when combined with
-strategic prompt engineering, can outperform even specialist LLMs that
-are explicitly fine-tuned for biomedical tasks (Nori et al., 2023). In a
-landmark achievement, GPT-4 was the first LLM to surpass a score of 90\%
-in the United States Medical Licensing Examination (USML) (Nori et al.,
-2023).
+Artificial intelligence (AI) capabilities have advanced considerably in
+recent years, presenting new opportunities to integrate natural language
+processing technologies into assisting in the curation process.
+Specifically, there have recently been considerable advances in large
+language model (LLM) and their application to biomedical problems, in
+some cases performing as well or better than human clinicians on
+standardised medical exams and patient diagnosis tasks (Bolton et al.,
+2024; Cheng et al., 2023; Gu et al., 2021; Labrak et al., 2024; Luo et
+al., 2022; McDuff et al., 2023; O'Neil et al., 2024; Shin et al., 2020;
+Singhal, Azizi, et al., 2023, 2023; Singhal, Tu, et al., 2023; Van Veen
+et al., 2024; Zhang et al., 2023). Recent work has demonstrated that the
+Generative Pre-trained Transformer 4 (GPT-4) foundation model (OpenAI et
+al., 2024), when combined with strategic prompt engineering, can
+outperform even specialist LLMs that are explicitly fine-tuned for
+biomedical tasks (Nori et al., 2023). In a landmark achievement, GPT-4
+was the first LLM to surpass a score of 90\% in the United States
+Medical Licensing Examination (USML) (Nori et al., 2023).
 
 Here, we have used GPT-4 to systematically annotate the severity of
 17502 / 17548 (99.7\%) phenotypic abnormalities within the HPO. Our
@@ -286,15 +292,15 @@ tier 4. Standardised metrics of severity allow clinicians to quickly
 assess the urgency of treating a given phenotype, as well as prognosing
 what outcomes might be expected.
 
-793 phenotypes were annotated multiple times to evaluate the consistency
-of responses generated by GPT-4. For a subset of phenotypes with known
-expected annotations, true positive rates were calculated to assess
-recall. Additionally, based on the clinical characteristics and their
-occurrence, we have quantified the severity of each phenotype, providing
-an example of how these clinical characteristic annotations can be used
-to guide prioritisation of gene therapy trials. Ultimately, we hope that
-our resource will be of utility to those working in rare diseases, as
-well as the wider healthcare community.
+To evaluate the consistency of responses generated by GPT-4 793
+phenotypes were annotated multiple times. For a subset of phenotypes
+with known expected annotations, true positive rates were calculated to
+assess recall. Additionally, based on the clinical characteristics and
+their occurrence, we have quantified the severity of each phenotype,
+providing an example of how these clinical characteristic annotations
+can be used to guide prioritisation of gene therapy trials. Ultimately,
+we hope that our resource will be of utility to those working in rare
+diseases, as well as the wider healthcare community.
 
 \subsection{Results}\label{results}
 
@@ -333,8 +339,15 @@ malformations, blindness, sensory impairments, immunodeficiency, cancer,
 reduced fertility, and congenital onset. Through prompt design we found
 that the performance of GPT-4 improved when we incorporated a scale
 associated with each effect and required a justification for each
-response. For each effect, we asked about the likelihood of its
+response. For each effect, we asked about the frequency of its
 occurrence - whether it never, rarely, often, or always occurred.
+Framing the queries in this way served two purposes. First, this helped
+to constrain the responses of GPT-4 to a specific range of values,
+making answers more consistent and amenable to downstream data analysis.
+Second, it served to overcome one of the main limitations noted by
+Lazarin et al. (2014) as they did not collect information on how the
+frequency of each disease affected their decision making when generating
+severity annotations.
 
 Phenotype outcome occurrence varied across annotation categories.
 \textgreater50\% of phenotypes never caused blindness, sensory
@@ -343,11 +356,11 @@ disability. Only a minority of phenotypes (21.7\%) never had a
 congenital onset, which is expected as rare disorders tend to be early
 onset genetic conditions Fig.~\ref{fig-occurrence}.
 
-Less than 1\% of phenotype always directly resulted in death, such as
-`Stillbirth', `Anencephaly' and `Bilateral lung agenesis'. Only 71
-phenotypes were annotated as always causing death, while 9707 phenotypes
-were annotated as often or rarely causing death. 7880 phenotypes were
-annotated as never causing death. This included 34 unique forms of
+Less than 1\% of phenotypes always directly resulted in death (n=71),
+such as `Stillbirth', `Anencephaly' and `Bilateral lung agenesis'.
+Meanwhile, 9707 phenotypes were annotated as often or rarely causing
+death. 7880 phenotypes were annotated as never causing death. Examples
+of phenotypes that never cause death included 34 unique forms of
 syndactyly, a non-lethal condition that causes fused or webbed fingers
 (occurring 1 in 1,200--15,000 live births). While not life-threatening
 itself, syndactyly is a symptom of genetic disorders that can cause
@@ -360,24 +373,24 @@ diseases that cause lethality.
 \subsubsection{Annotation consistency and
 recall}\label{annotation-consistency-and-recall}
 
-To assess annotation consistency, 793 we queried GPT-4 with a subset of
-the HPO phenotypes multiple times. We employed two different metrics to
-determine the \emph{consistency rate}. The first, less stringent metric,
-defined consistency as the duplicate annotations being either `always'
-and `often', or `never' and `rarely'. The second, more stringent metric,
-required exact agreement in annotation occurrences, e.g.~`always' and
-`always'. For the less stringent metric, duplicated phenotypes were
-annotated consistently at a rate of at least 80\%, and for the more
-stringent metric, the lowest consistency rate was 57\% for congenital
-onset. An example of where annotations were inconsistent was for the HPO
-term `Acute leukaemia'. One time, GPT-4 annotated it as often causing
-impaired mobility, giving the justification that `weakness and fatigue
-from leukaemia and its treatment can impair mobility'. The other time,
-GPT-4 annotated it as rarely causing impaired mobility, giving the
-justification that `acute leukaemia rarely impairs mobility directly'.
-Despite specifying in the prompt for GPT-4 not to take into
-consideration indirect effects, this is an example of where it failed to
-do so.
+To assess annotation consistency, we queried GPT-4 with a subset of the
+HPO phenotypes multiple times (n=793 unique phenotypes). We employed two
+different metrics to determine the \emph{consistency rate}. The first,
+less stringent metric, defined consistency as the duplicate annotations
+being either `always' and `often', or `never' and `rarely'. The second,
+more stringent metric, required exact agreement in annotation
+occurrences, e.g.~`always' and `always'. For the less stringent metric,
+duplicated phenotypes were annotated consistently at a rate of at least
+80\%, and for the more stringent metric, the lowest consistency rate was
+57\% for congenital onset. An example of where annotations were
+inconsistent was for the HPO term `Acute leukaemia'. One time, GPT-4
+annotated it as often causing impaired mobility, giving the
+justification that `weakness and fatigue from leukaemia and its
+treatment can impair mobility'. The other time, GPT-4 annotated it as
+rarely causing impaired mobility, giving the justification that `acute
+leukaemia rarely impairs mobility directly'. Despite specifying in the
+prompt for GPT-4 not to take into consideration indirect effects, this
+is an example of where it failed to do so.
 
 We also reasoned that GPT-4 would be better able to give consistent
 answers for more specific phenotypes lower in the ontology, as they are
@@ -450,23 +463,27 @@ these scenarios provide a clear and interpretable benchmark for the
 model's performance. In addition, were numerous phenotypes with
 lexically non-obvious relationships to the clinical characteristic that
 were annotated correctly by GPT-4. For example, `Molar tooth sign on
-MRI' was correctly annotated as causing intellectual disability.
+MRI' (a neurodevelopmental pathology observed in radiological scans) was
+correctly annotated as causing intellectual disability.
 
 \subsubsection{Quantifying phenotypic
 severity}\label{quantifying-phenotypic-severity}
 
-Quantifying the severity of phenotypes can have important implications
-for diagnosis, prognosis, and treatment, for instance, guiding
-prioritisation of gene therapy trials for the most severe phenotypes.
-First, we created a dictionary to map each phenotype outcome
-(e.g.~blindness) and its response (always, often, rarely, never) to
-numeric values from 0-3. Then, the phenotype outcome values were
-multiplied by their associated response values. Importantly, the values
-reflected the severity of each outcome based on both the outcome itself
-and the frequency of the response. For instance, a phenotype always
-causing death would have a higher multiplied value than a phenotype
-rarely causing reduced fertility (see Table~\ref{tbl-metric-weights}).
-Next, we computed an average score for each phenotype by aggregating the
+While individual annotations are informative, we wanted to be able to
+distil the severity of each phenotype into a single score. Quantifying
+the overall severity of phenotypes can have important implications for
+diagnosis, prognosis, and treatment. It may also guide the
+prioritisation of gene therapy trials for phenotypes with the most
+severe outcomes and thus the most urgent need. Importantly, the values
+reflected the severity of each outcome based on both the type of outcome
+itself and its frequency within a particular phenotype. For instance, a
+phenotype always causing death would have a higher multiplied value than
+a phenotype often causing reduced fertility (see
+Table~\ref{tbl-metric-weights}). First, we created a dictionary to map
+each phenotype outcome (e.g.~blindness) and its frequency (always,
+often, rarely, never) to numeric values from 0-3. Then, the phenotype
+outcome values were multiplied by phenotype outcome weights. Next, we
+computed an average score for each phenotype by aggregating the
 multiplied values across all phenotype outcomes and then calculating the
 mean. This was then normalised by the theoretical maximum severity
 score, so that all phenotypes were on a 0-100 severity scale (where 100
@@ -512,7 +529,8 @@ Table~\ref{tbl-metric-weights}. The average normalised score,
 representing overall phenotype severity on a 0-100 scale, was calculated
 by aggregating the multiplied values and normalising by the theoretical
 maximum severity score. The x-axes show each of the clinical
-characteristics.}
+characteristics. All data for this figure, as well as justifications for
+each annotation, can be found in Table~\ref{tbl-annotations}.}
 
 \end{figure}%
 
@@ -584,6 +602,18 @@ Examples include `Fatigue' `Exercise intolerance', `Hot flashes' and
 
 \subsection{Discussion}\label{discussion}
 
+Phenotype severity annotations have utility across a wide variety of
+applications in both the clinic and research. In clinical settings,
+severity annotations can be used to prioritise the treatment of some
+phenotypes over others in patients with complex presentations, avoid
+administering contraindicated drugs, and prognosing potential health
+outcomes. In research settings, severity annotations can be used to
+identify phenotypes that have a large impact on patient outcomes and yet
+are currently understudied. They may also be used to help design new
+experiments and studies, or even provide new insights into the
+underlying aetiology of the disease by making expert-level summaries
+more immediately accessible to the wider research community.
+
 The creation and annotation of biomedical knowledge has traditionally
 relied on manual or semi-manual curation by human experts (Gargano et
 al., 2024; Köhler et al., 2021; Mungall et al., 2017; Ochoa et al.,
@@ -606,7 +636,15 @@ feasibility of automating this process, significantly enhancing
 efficiency without substantially compromising accuracy. Our validation
 approach yielded a high true positive rate exceeding 88\% across the
 phenotypes tested. Furthermore, our approach can be readily adapted and
-scaled to accommodate the growing volume of phenotypic data.
+scaled to accommodate the growing volume of phenotypic data. In total,
+the entire study cost \$296.27 in queries to the OpenAI API. While we do
+not have a direct comparison, this likely represents a extremely small
+fraction of the total costs of such a study if performed manually by
+human experts charging at an hourly rate. Even if all human annotations
+were provided on a volunteer basis, this would still require hundreds if
+not thousands of hours of cumulative manual human labour. Using our
+approach, severity annotations for the entire HPO can be generated
+automatically in a matter of several hours.
 
 Throughout this study, we observed that GPT-4 was capable of reliably
 recovering deep semantic relationships from the medical domain, far
@@ -669,13 +707,21 @@ language processing technologies in significantly contributing to the
 automation and refinement of data curation in biomedical research. These
 results have a large number of useful real-world applications, such as
 prioritising gene therapy candidates (Murphy et al., 2023) and guiding
-clinical decision-making in rare diseases. As the HPO continues to grow
-over time, this approach can easily be repeated to keep pace with the
-rapidly evolving biomedical landscape. Furthermore, this approach can be
-extended to produce different sets of annotations or be used with any
-other ontology. Additional use cases include gathering data on the
-prevalence of each phenotype to approximate their social and financial
-costs.
+clinical decision-making in rare diseases. It may also be used as tool
+to help inform policy decisions and funding allocation by healthcare or
+governmental institutions. This of course would need to be in
+consultation with subject matter medical experts, patients, advocates
+and biomedical ethicists before reaching a final decision. Nevertheless,
+access to succinct, interpretable, and semi-quantitative severity
+annotations may encourage key decision makers with limited time to
+review individual proposals to pay heed to phenotypes and diseases that
+would otherwise be overlooked. As the HPO and the broader literature
+continue to grow over time, our automated AI-based approach can easily
+be repeated to keep pace with the rapidly evolving biomedical landscape.
+Furthermore, it can be extended to produce different sets of annotations
+or be used with any other ontology. Additional use cases include
+gathering data on the prevalence of each phenotype to approximate their
+social and financial costs.
 
 One key limitation of our study is the fact that we did not explicitly
 interrogate GPT-4 to assess how the availability of treatments affected
@@ -695,6 +741,20 @@ treatment is provided, which may not always be the case for individuals
 or populations with access to less access to quality healthcare
 services. Future efforts could more explicitly ask GPT-4 whether the
 phenotype would cause death with no or suboptimal treatment.
+
+Another limitation with the present dataset is that phenotypes
+themselves can manifest with different degrees of severity, in the sense
+that they are more pronounced or intense. For example, sensitivity to
+light could range from a mild inconvenience to a severe disability that
+prevents the individual from leaving their home during the day. The
+effect of onset (beyond congenital vs.~non-congenital) and time course
+(acute, slowly progression, relapse-remitting) were also not explicitly
+considered. Finally, we did not ask GPT-4 to consider phenotypes as they
+present within particular diseases. For example, while the phenotype
+`Hypertension' may be mild to moderate in the general population and not
+present until middle-age, it can also present early in life as very
+severe in the context of a rare genetic disorder such as Liddle
+syndrome. Future work could explore these nuances in more detail.
 
 In addition to these technical challenges, there are multiple factors
 that need to be considered when trying to prioritise phenotypes for
@@ -760,12 +820,20 @@ performance of GPT-4 improved when we incorporated a scale associated
 with each effect and required a justification for each response. We
 asked how frequently the given phenotype directly causes each clinical
 characteristic - whether it never, rarely, often, or always occurred.
+This design helps to constrain the potential responses of GPT-4 and thus
+make it more amenable to machine-readable post-processing. It also
+serves to address one of its key limitations from the Lazarin et al.
+(2014) survey, namely the lack information on how clinical
+characteristic frequency affected the clinicians' severity annotations.
+Here, we can instead use the frequency values to generate more precise
+annotations and downstream severity ranking scores.
+
 Furthermore, our prompt design revealed that the optimal trade-off
 between the number of phenotypes and performance (in terms of producing
 the desired annotations, and adhering to the formatting requirements)
 was achieved when inputting no more than two or three phenotypes per
 prompt. An example prompt can be seen in Figure~\ref{fig-occurrence}.
-Only 2 phenotypes were included per prompt in order to 1) avoid
+Thus, only two phenotypes were included per prompt in order to 1) avoid
 exceeding per-query token limits, and 2) prevent the breakdown of GPT-4
 performance due to long-form text input, which is presently a known
 limitation common to many LLMs including GPT-4 (Wei et al., 2024).
@@ -1290,6 +1358,26 @@ parentheses along the x-axis.}
 \newpage{}
 
 \subsubsection{Supplementary Tables}\label{supplementary-tables}
+
+\begin{table}
+
+\caption{\label{tbl-annotations}Table of GPT-4 annotations for all Human
+Phenotype Ontology (HPO) phenotypes in Figure~\ref{fig-top-phenos}. For
+each phenotype, this includes the name of the phenotype (`hpo\_name'),
+the ID of the phenotype (`hpo\_id'), the frequency of each annotation
+(always, often, rarely, never), and the justification for each
+annotation ('\ldots\_justification'). These results can also be
+downloaded programmatically using the R function
+\texttt{HPOExplorer::gpt\_annot\_check}.}
+
+\centering{
+
+\href{https://github.com/neurogenomics/gpt_hpo_annotations/raw/master/data/top_phenos_annotations.csv.gz}{\textbf{Top
+phenotype annotations table}}
+
+}
+
+\end{table}%
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2000}}
