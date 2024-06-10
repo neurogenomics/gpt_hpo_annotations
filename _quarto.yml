@@ -12,13 +12,10 @@ format:
     toc: true
     comments:
       hypothesis: true
-  # docx: 
-  #   notebook-links: false
+#  docx: 
+#    notebook-links: false
   agu-pdf: 
     dpi: 200
     notebook-links: false
     header-includes:
       - \usepackage{annotate-equations}
-
-
-
