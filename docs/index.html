@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.4.553">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Kitty B Murphy">
 <meta name="author" content="Brian M Schilder">
 <meta name="author" content="Nathan G Skene">
-<meta name="dcterms.date" content="2026-03-18">
+<meta name="dcterms.date" content="2026-04-09">
 <meta name="keywords" content="Ontology, Human Phenotype Ontology, Large Language Model, GPT-4, Artificial intelligence, Generative AI, Rare disease, Automation, Medicine">
 
 <title>Using GPT-4 to annotate the severity of all phenotypic abnormalities within the Human Phenotype Ontology</title>
@@ -49,17 +49,15 @@ div.csl-indent {
 
 
 <script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a74871fe4945b66d259aafc266475145.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -70,7 +68,7 @@ div.csl-indent {
   });
 </script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -84,7 +82,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+      if (mathElements[i].tagName == "SPAN") {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -105,10 +103,10 @@ window.Quarto = {
 <meta name="citation_author" content="Kitty B Murphy">
 <meta name="citation_author" content="Brian M Schilder">
 <meta name="citation_author" content="Nathan G Skene">
-<meta name="citation_publication_date" content="2026-03-18">
-<meta name="citation_cover_date" content="2026-03-18">
+<meta name="citation_publication_date" content="2026-04-09">
+<meta name="citation_cover_date" content="2026-04-09">
 <meta name="citation_year" content="2026">
-<meta name="citation_online_date" content="2026-03-18">
+<meta name="citation_online_date" content="2026-04-09">
 <meta name="citation_language" content="en">
 <meta name="citation_journal_title" content="medRxiv">
 <meta name="citation_reference" content="citation_title=The human phenotype ontology in 2024: Phenotypes around the world;,citation_abstract=The Human Phenotype Ontology (HPO) is a widely used resource that comprehensively organizes and defines the phenotypic features of human disease, enabling computational inference and supporting genomic and phenotypic analyses through semantic similarity and machine learning algorithms. The HPO has widespread applications in clinical diagnostics and translational research, including genomic diagnostics, gene-disease discovery, and cohort analytics. In recent years, groups around the world have developed translations of the HPO from English to other languages, and the HPO browser has been internationalized, allowing users to view HPO term labels and in many cases synonyms and definitions in ten languages in addition to English. Since our last report, a total of 2239 new HPO terms and 49235 new HPO annotations were developed, many in collaboration with external groups in the fields of psychiatry, arthrogryposis, immunology and cardiology. The Medical Action Ontology (MAxO) is a new effort to model treatments and other measures taken for clinical management. Finally, the HPO consortium is contributing to efforts to integrate the HPO and the GA4GH Phenopacket Schema into electronic health records (EHRs) with the goal of more standardized and computable integration of rare disease data in EHRs.;,citation_author=Michael A Gargano;,citation_author=Nicolas Matentzoglu;,citation_author=Ben Coleman;,citation_author=Eunice B Addo-Lartey;,citation_author=Anna V Anagnostopoulos;,citation_author=Joel Anderton;,citation_author=Paul Avillach;,citation_author=Anita M Bagley;,citation_author=Eduard Bakštein;,citation_author=James P Balhoff;,citation_author=Gareth Baynam;,citation_author=Susan M Bello;,citation_author=Michael Berk;,citation_author=Holli Bertram;,citation_author=Somer Bishop;,citation_author=Hannah Blau;,citation_author=David F Bodenstein;,citation_author=Pablo Botas;,citation_author=Kaan Boztug;,citation_author=Jolana Čady;,citation_author=Tiffany J Callahan;,citation_author=Rhiannon Cameron;,citation_author=Seth J Carbon;,citation_author=Francisco Castellanos;,citation_author=J Harry Caufield;,citation_author=Lauren E Chan;,citation_author=Christopher G Chute;,citation_author=Jaime Cruz-Rojo;,citation_author=Noémi Dahan-Oliel;,citation_author=Jon R Davids;,citation_author=Maud Dieuleveult;,citation_author=Vinicius Souza;,citation_author=Bert B A Vries;,citation_author=Esther Vries;,citation_author=J Raymond DePaulo;,citation_author=Beata Derfalvi;,citation_author=Ferdinand Dhombres;,citation_author=Claudia Diaz-Byrd;,citation_author=Alexander J M Dingemans;,citation_author=Bruno Donadille;,citation_author=Michael Duyzend;,citation_author=Reem Elfeky;,citation_author=Shahim Essaid;,citation_author=Carolina Fabrizzi;,citation_author=Giovanna Fico;,citation_author=Helen V Firth;,citation_author=Yun Freudenberg-Hua;,citation_author=Janice M Fullerton;,citation_author=Davera L Gabriel;,citation_author=Kimberly Gilmour;,citation_author=Jessica Giordano;,citation_author=Fernando S Goes;,citation_author=Rachel Gore Moses;,citation_author=Ian Green;,citation_author=Matthias Griese;,citation_author=Tudor Groza;,citation_author=Weihong Gu;,citation_author=Julia Guthrie;,citation_author=Benjamin Gyori;,citation_author=Ada Hamosh;,citation_author=Marc Hanauer;,citation_author=Kateřina Hanušová;,citation_author=Yongqun Oliver He;,citation_author=Harshad Hegde;,citation_author=Ingo Helbig;,citation_author=Kateřina Holasová;,citation_author=Charles Tapley Hoyt;,citation_author=Shangzhi Huang;,citation_author=Eric Hurwitz;,citation_author=Julius O B Jacobsen;,citation_author=Xiaofeng Jiang;,citation_author=Lisa Joseph;,citation_author=Kamyar Keramatian;,citation_author=Bryan King;,citation_author=Katrin Knoflach;,citation_author=David A Koolen;,citation_author=Megan L Kraus;,citation_author=Carlo Kroll;,citation_author=Maaike Kusters;,citation_author=Markus S Ladewig;,citation_author=David Lagorce;,citation_author=Meng-Chuan Lai;,citation_author=Pablo Lapunzina;,citation_author=Bryan Laraway;,citation_author=David Lewis-Smith;,citation_author=Xiarong Li;,citation_author=Caterina Lucano;,citation_author=Marzieh Majd;,citation_author=Mary L Marazita;,citation_author=Victor Martinez-Glez;,citation_author=Toby H McHenry;,citation_author=Melvin G McInnis;,citation_author=Julie A McMurry;,citation_author=Michaela Mihulová;,citation_author=Caitlin E Millett;,citation_author=Philip B Mitchell;,citation_author=Veronika Moslerová;,citation_author=Kenji Narutomi;,citation_author=Shahrzad Nematollahi;,citation_author=Julian Nevado;,citation_author=Andrew A Nierenberg;,citation_author=Nikola Novák Čajbiková;,citation_author=John I Nurnberger;,citation_author=Soichi Ogishima;,citation_author=Daniel Olson;,citation_author=Abigail Ortiz;,citation_author=Harry Pachajoa;,citation_author=Guiomar Perez de Nanclares;,citation_author=Amy Peters;,citation_author=Tim Putman;,citation_author=Christina K Rapp;,citation_author=Ana Rath;,citation_author=Justin Reese;,citation_author=Lauren Rekerle;,citation_author=Angharad M Roberts;,citation_author=Suzy Roy;,citation_author=Stephan J Sanders;,citation_author=Catharina Schuetz;,citation_author=Eva C Schulte;,citation_author=Thomas G Schulze;,citation_author=Martin Schwarz;,citation_author=Katie Scott;,citation_author=Dominik Seelow;,citation_author=Berthold Seitz;,citation_author=Yiping Shen;,citation_author=Morgan N Similuk;,citation_author=Eric S Simon;,citation_author=Balwinder Singh;,citation_author=Damian Smedley;,citation_author=Cynthia L Smith;,citation_author=Jake T Smolinsky;,citation_author=Sarah Sperry;,citation_author=Elizabeth Stafford;,citation_author=Ray Stefancsik;,citation_author=Robin Steinhaus;,citation_author=Rebecca Strawbridge;,citation_author=Jagadish Chandrabose Sundaramurthi;,citation_author=Polina Talapova;,citation_author=Jair A Tenorio Castano;,citation_author=Pavel Tesner;,citation_author=Rhys H Thomas;,citation_author=Audrey Thurm;,citation_author=Marek Turnovec;,citation_author=Marielle E Gijn;,citation_author=Nicole A Vasilevsky;,citation_author=Markéta Vlčková;,citation_author=Anita Walden;,citation_author=Kai Wang;,citation_author=Ron Wapner;,citation_author=James S Ware;,citation_author=Addo A Wiafe;,citation_author=Samuel A Wiafe;,citation_author=Lisa D Wiggins;,citation_author=Andrew E Williams;,citation_author=Chen Wu;,citation_author=Margot J Wyrwoll;,citation_author=Hui Xiong;,citation_author=Nefize Yalin;,citation_author=Yasunori Yamamoto;,citation_author=Lakshmi N Yatham;,citation_author=Anastasia K Yocum;,citation_author=Allan H Young;,citation_author=Zafer Yüksel;,citation_author=Peter P Zandi;,citation_author=Andreas Zankl;,citation_author=Ignacio Zarante;,citation_author=Miroslav Zvolský;,citation_author=Sabrina Toro;,citation_author=Leigh C Carmody;,citation_author=Nomi L Harris;,citation_author=Monica C Munoz-Torres;,citation_author=Daniel Danis;,citation_author=Christopher J Mungall;,citation_author=Sebastian Köhler;,citation_author=Melissa A Haendel;,citation_author=Peter N Robinson;,citation_publication_date=2024-01;,citation_cover_date=2024-01;,citation_year=2024;,citation_issue=D1;,citation_volume=52;,citation_journal_title=Nucleic Acids Res.;">
@@ -145,9 +143,10 @@ window.Quarto = {
 <meta name="citation_reference" content="citation_title=Identification of cell type-specific gene targets underlying thousands of rare diseases and subtraits;,citation_author=Kitty B. Murphy;,citation_author=Robert Gordon-Smith;,citation_author=Jai Chapman;,citation_author=Momoko Otani;,citation_author=Brian M. Schilder;,citation_author=Nathan G. Skene;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_doi=10.1101/2023.02.13.23285820;,citation_language=en;,citation_journal_title=medRxiv;">
 <meta name="citation_reference" content="citation_title=Problems and solutions in calculating quality-adjusted life years (QALYs);,citation_author=Luis Prieto;,citation_author=José A Sacristán;,citation_publication_date=2003-12;,citation_cover_date=2003-12;,citation_year=2003;,citation_fulltext_html_url=https://www.ncbi.nlm.nih.gov/pmc/articles/PMC317370/;,citation_doi=10.1186/1477-7525-1-80;,citation_issn=1477-7525;,citation_volume=1;,citation_journal_title=Health and Quality of Life Outcomes;">
 <meta name="citation_reference" content="citation_title=Prenatal diagnosis and genetic analysis of fetal akinesia deformation sequence and multiple pterygium syndrome associated with neuromuscular junction disorders: A review;,citation_author=Chih-Ping Chen;,citation_publication_date=2012-03;,citation_cover_date=2012-03;,citation_year=2012;,citation_fulltext_html_url=https://www.sciencedirect.com/science/article/pii/S1028455912000058;,citation_issue=1;,citation_doi=10.1016/j.tjog.2012.01.004;,citation_issn=1028-4559;,citation_volume=51;,citation_journal_title=Taiwanese Journal of Obstetrics and Gynecology;">
+<meta name="citation_reference" content="citation_title=Endometriosis;,citation_author=Krina T Zondervan;,citation_author=Christian M Becker;,citation_author=Kaori Koga;,citation_author=Stacey A Missmer;,citation_author=Robert N Taylor;,citation_author=Paola Viganò;,citation_publication_date=2018-07;,citation_cover_date=2018-07;,citation_year=2018;,citation_issue=1;,citation_doi=10.1038/s41572-018-0008-5;,citation_volume=4;,citation_journal_title=Nat. Rev. Dis. Primers;">
 </head>
 
-<body class="quarto-light">
+<body>
 
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
@@ -203,7 +202,7 @@ window.Quarto = {
                 <div>
             <div class="quarto-title-meta-heading">Published</div>
             <div class="quarto-title-meta-contents">
-              <p class="date">March 18, 2026</p>
+              <p class="date">April 9, 2026</p>
             </div>
           </div>
           
@@ -264,7 +263,7 @@ window.Quarto = {
   </ul>
 <div class="quarto-alternate-notebooks"><h2>Notebooks</h2><ul><li><a href="manuscript-preview.html"><i class="bi bi-journal-code"></i>Article Notebook</a></li></ul></div></nav>
 </div>
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
 </div>
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
@@ -290,10 +289,10 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="annotating-the-hpo-using-gpt-4">Annotating the HPO using GPT-4</h3>
 <div id="cell-fig-occurrence" class="cell">
 <div class="cell-output-display">
-<div id="fig-occurrence" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-occurrence" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-occurrence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="manuscript_files/figure-html/fig-occurrence-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: GPT-4 was able to annotate all human phenotypes based on whether they are always/often/rarely/never associated with different clinical characteristics. a An example of the prompt input given to to GPT-4. The phenotypes listed in the second to last sentence (italicised) were changed to allow all HPO phenotypes to be annotated. b Stacked bar plot showing the proportion of the occurrence of each clinical characteristic across all annotated HPO phenotypes. The terms shown on the x-axis are the clinical characteristics for which GPT-4 was asked to determine whether each phenotype caused them."><img src="manuscript_files/figure-html/fig-occurrence-1.png" class="img-fluid figure-img" width="960"></a>
+<a href="manuscript_files/figure-html/fig-occurrence-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1"><img src="manuscript_files/figure-html/fig-occurrence-1.png" class="img-fluid figure-img" width="960"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-occurrence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: GPT-4 was able to annotate all human phenotypes based on whether they are always/often/rarely/never associated with different clinical characteristics. <strong>a</strong> An example of the prompt input given to to GPT-4. The phenotypes listed in the second to last sentence (<em>italicised</em>) were changed to allow all HPO phenotypes to be annotated. <strong>b</strong> Stacked bar plot showing the proportion of the occurrence of each clinical characteristic across all annotated HPO phenotypes. The terms shown on the x-axis are the clinical characteristics for which GPT-4 was asked to determine whether each phenotype caused them.
@@ -309,13 +308,13 @@ Figure&nbsp;1: GPT-4 was able to annotate all human phenotypes based on whether 
 <section id="annotation-consistency-and-recall" class="level3">
 <h3 class="anchored" data-anchor-id="annotation-consistency-and-recall">Annotation consistency and recall</h3>
 <p>To assess annotation consistency, we queried GPT-4 with a subset of the HPO phenotypes multiple times (n=793 unique phenotypes). This subset was randomly selected and matches the ontology level distribution of all the phenotypes tested (<a href="#fig-ontLvl-distribution" class="quarto-xref">Figure&nbsp;8</a>). We employed two different metrics to determine the <em>consistency rate</em>. The first, less stringent metric, defined consistency as the duplicate annotations being either ‘always’ and ‘often’, or ‘never’ and ‘rarely’. The second, more stringent metric, required exact agreement in annotation occurrences, e.g.&nbsp;‘always’ and ‘always’. For the less stringent metric, duplicated phenotypes were annotated consistently at a rate of at least 80%, and for the more stringent metric, the lowest consistency rate was 57% for congenital onset (<a href="#fig-checks" class="quarto-xref">Fig.&nbsp;2</a>a). An example of where annotations were inconsistent was for the HPO term ‘Acute leukaemia’. One time, GPT-4 annotated it as often causing impaired mobility, giving the justification that ‘weakness and fatigue from leukaemia and its treatment can impair mobility’. The other time, GPT-4 annotated it as rarely causing impaired mobility, giving the justification that ‘acute leukaemia rarely impairs mobility directly’. Despite specifying in the prompt for GPT-4 not to take into consideration indirect effects, this is an example of where it failed to do so. To investigate this further, clinical characteristic justifications were searched for terms indicating indirect causation (‘indirectly’, ‘does not directly’), identifying 4495 HPO terms. The majority (n=3516) were classified as ‘never’ directly causing the associated clinical characteristic, meaning that the indirect cause was not taken into account and only described in the justification. For example, “Obesity does not directly cause cancer, although it is a risk factor for various types of cancer. 1385 terms rarely caused the associated clinical characteristic. For example, “While this condition (Third degree atrioventricular block) does not directly cause intellectual disability, complications such as cardiac arrest and insufficient oxygen delivery to the brain can cause damage leading to cognitive impairments.” Only 20 phenotypes ‘often’ caused the associated clinical characteristic, for example, “Increased C-peptide level is often associated with insulinoma, a rare pancreatic tumor, but does not directly cause it.” 0 phenotypes ‘always’ caused the associated clinical characteristic, when taking into account indirect causes.To assess the impact of this indirect causation on severity scoring, all indirect causal terms were reassigned to ‘never’ and severity scores were recalculated. Although this resulted in a downward shift in raw severity scores, phenotype classifications into severity classes remained unchanged (<a href="#fig-indirect-effects" class="quarto-xref">Figure&nbsp;6</a>).</p>
-<p>We also reasoned that GPT-4 would be better able to give consistent answers for more specific phenotypes lower in the ontology, as they are more likely to have a single cause (Spearman’s rank correlation rho, estimate = -0.246, p = &lt;2e-16), <a href="#fig-genecounts-ontLvl" class="quarto-xref">Figure&nbsp;7</a>). We found that the stringent consistency rate did indeed significantly improve with greater HPO ontology depth (<span class="math inline">\(X_{Pearson}^2\)</span>=22.17, <span class="math inline">\(\hat{V}_{Cramer}\)</span>=0.03, p=0.05). See Supplementary <a href="#fig-consist-vs-ontLvl" class="quarto-xref">Figure&nbsp;9</a> for a visual representation of this relationship.</p>
+<p>We also reasoned that GPT-4 would be better able to give consistent answers for more specific phenotypes lower in the ontology, as they are more likely to have a single cause (Spearman’s rank correlation rho, estimate = -0.254, p = &lt;2e-16), <a href="#fig-genecounts-ontLvl" class="quarto-xref">Figure&nbsp;7</a>). We found that the stringent consistency rate did indeed significantly improve with greater HPO ontology depth (<span class="math inline">\(X_{Pearson}^2\)</span>=22.17, <span class="math inline">\(\hat{V}_{Cramer}\)</span>=0.03, p=0.05). See Supplementary <a href="#fig-consist-vs-ontLvl" class="quarto-xref">Figure&nbsp;9</a> for a visual representation of this relationship.</p>
 <div id="cell-fig-checks" class="cell">
 <div class="cell-output-display">
-<div id="fig-checks" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-checks" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-checks-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="manuscript_files/figure-html/fig-checks-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: GPT-4 annotations are consistent and accurate across annotations. a Barplot showing the annotation consistency within phenotypes that were annotated more than once. In the lenient metric, annotations were collapsed into two groups (‘always’/‘often’ and ‘never’/‘rarely’). For a given clinical characteristic within a given phenotype, if an annotation was always within the same group it was considered consistent. In the stringent metric, all four annotation categories were considered to be different from one another. Thus, annotations were only defined as consistent if they were all identical. The blue dashed line indicates the probability of two annotations being consistent by chance in the lenient metric (~1/2). The gold dashed line is the probability of two annotations being consistent by chance in the stringent metric (~1/4). b Bar plot of the true positive rate for each annotation. The labels above each bar indicate the number of phenotypes tested."><img src="manuscript_files/figure-html/fig-checks-1.png" class="img-fluid figure-img" width="576"></a>
+<a href="manuscript_files/figure-html/fig-checks-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2"><img src="manuscript_files/figure-html/fig-checks-1.png" class="img-fluid figure-img" width="576"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-checks-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: GPT-4 annotations are consistent and accurate across annotations. <strong>a</strong> Barplot showing the annotation consistency within phenotypes that were annotated more than once. In the lenient metric, annotations were collapsed into two groups (‘always’/‘often’ and ‘never’/‘rarely’). For a given clinical characteristic within a given phenotype, if an annotation was always within the same group it was considered consistent. In the stringent metric, all four annotation categories were considered to be different from one another. Thus, annotations were only defined as consistent if they were all identical. The blue dashed line indicates the probability of two annotations being consistent by chance in the lenient metric (~1/2). The gold dashed line is the probability of two annotations being consistent by chance in the stringent metric (~1/4). <strong>b</strong> Bar plot of the true positive rate for each annotation. The labels above each bar indicate the number of phenotypes tested.
@@ -323,20 +322,20 @@ Figure&nbsp;2: GPT-4 annotations are consistent and accurate across annotations.
 </figure>
 </div>
 </div>
-</div>
+<a class="quarto-notebook-link" id="nblink-2" href="manuscript-preview.html#cell-fig-checks">Source: Article Notebook</a></div>
 <p>In order to evaluate the validity of the annotations, we calculated a true positive rate. This involved identifying specific branches within the HPO that would contain phenotypes that would reliably indicate the presence of certain conditions. For instance, the phenotypes ‘Decreased fertility in females’ and ‘Decreased fertility in males’ should often or always cause reduced fertility. We observed an encouraging true positive rate exceeding 88% across in every clinical characteristic and achieving perfect recall (100%) in 5/9 characteristics (<a href="#fig-checks" class="quarto-xref">Fig.&nbsp;2</a>b).</p>
 <p>The lowest true positive rate was observed for physical malformations, with 88.5% recall across 87 HPO phenotypes. Some cases in which the GPT-4 annotations disagreed with the HPO ground truth included: ‘Angioma serpentinum’, ‘Nevus anemicus’, ‘Pulmonary arteriovenous fistulas’. In the case of ‘Angioma serpentinum’ it provided the justification that ‘No known association with physical malformations’. In another instance, GPT-4 noted that ‘Nevus anemicus’ is ‘Limited to hypopigmented skin patch; no other malformations.’. This indicates that while technically incorrect according to our predefined benchmarks, a case could in fact be made that mild skin conditions do not rise to the level of physical malformations.</p>
-<p>This high level of recall underscores the robustness of our annotations and the reliability of the HPO framework in capturing clinically relevant phenotypic information. However, we acknowledge that the number of testable true positive phenotypes for some of these categories are low, especially ‘blindness’ for which there is only 1 phenotype in the HPO (after excluding terms pertaining to colour or night blindness, as these are not typically classified as causes of complete blindness). Furthermore, some of the true positive phenotypes are lexically similar to the name of the clinical characteristic itself. In these cases, annotating ‘Severe intellectual disability’ as always causing intellectual disability is a relatively trivial task. Nevertheless, even these scenarios provide a clear and interpretable benchmark for the model’s performance. In addition, were numerous phenotypes with lexically non-obvious relationships to the clinical characteristic that were annotated correctly by GPT-4. For example, ‘Molar tooth sign on MRI’ (a neurodevelopmental pathology observed in radiological scans) was correctly annotated as causing intellectual disability.</p>
+<p>This high level of recall underscores the robustness of our annotations and the reliability of the HPO framework in capturing clinically relevant phenotypic information. However, we acknowledge that the number of testable true positive phenotypes for some of these categories are low, especially ‘blindness’ for which there is only 1 phenotype in the HPO (after excluding terms pertaining to colour or night blindness, as these are not typically classified as causes of complete blindness). Furthermore, some of the true positive phenotypes are lexically similar to the name of the clinical characteristic itself. In these cases, annotating ‘Severe intellectual disability’ as always causing intellectual disability is a relatively trivial task. Nevertheless, even these scenarios provide a clear and interpretable benchmark for the model’s performance. In addition, there were numerous phenotypes with lexically non-obvious relationships to the clinical characteristic that were annotated correctly by GPT-4. For example, ‘Molar tooth sign on MRI’ (a neurodevelopmental pathology observed in radiological scans) was correctly annotated as causing intellectual disability. While our annotations were not validated by human experts, this study was designed as a computational framework, with the primary aim of demonstrating what can be achieved at scale. Nevertheless, we acknowledge that LLM-generated annotations may carry systematic biases or inaccuracies. Future work could explore the incorporation of expert validation to further assess these and other outputs.</p>
 </section>
 <section id="quantifying-phenotypic-severity" class="level3">
 <h3 class="anchored" data-anchor-id="quantifying-phenotypic-severity">Quantifying phenotypic severity</h3>
 <p>While individual annotations are informative, we wanted to be able to distil the severity of each phenotype into a single score. Quantifying the overall severity of phenotypes can have important implications for diagnosis, prognosis, and treatment. It may also guide the prioritisation of gene therapy trials for phenotypes with the most severe clinical characteristics and thus the most urgent need. Importantly, the values reflected the severity of each clinical characteristic based on both the type of characteristic itself and its frequency within a particular phenotype. For instance, a phenotype always causing death would have a higher multiplied value than a phenotype often causing reduced fertility (see <a href="#tbl-metric-weights" class="quarto-xref">Table&nbsp;2</a>). First, we created a dictionary to map each clinical characteristic (e.g.&nbsp;blindness) and its frequency (always, often, rarely, never) to numeric values from 0-3. Then, the clinical characteristic values were multiplied by weights. Next, we computed an average score for each phenotype by aggregating the multiplied values across all clinical characteristics and then calculating the mean. This was then normalised by the theoretical maximum severity score, so that all phenotypes were on a 0-100 severity scale (where 100 is the most severe phenotype possible). This average normalised score represents the overall severity of the phenotype based on the severity of its individual clinical characteristics. <a href="#fig-severity-histo" class="quarto-xref">Figure&nbsp;3</a> illustrates the distribution of severity scores across HPO terms by branch, with ‘Abnormal cellular phenotype’ being the branch that contains phenotypes with the highest severity scores on average.</p>
 <div id="cell-fig-severity-histo" class="cell">
 <div class="cell-output-display">
-<div id="fig-severity-histo" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-severity-histo" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-severity-histo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="manuscript_files/figure-html/fig-severity-histo-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;3: Distribution of composite GPT-4 severity scores across HPO terms, grouped by branch. The figure shows the distribution of phenotypes for each severity score (ranging from 0 to 100) across HPO branches. The vertical line indicates the average severity score for each branch. The branch ‘Abnormal cellular phenotype’ contains the highest concentration of terms associated with the most severe clinical characteristics."><img src="manuscript_files/figure-html/fig-severity-histo-1.png" class="img-fluid figure-img" width="960"></a>
+<a href="manuscript_files/figure-html/fig-severity-histo-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-3" data-gallery="quarto-lightbox-gallery-3"><img src="manuscript_files/figure-html/fig-severity-histo-1.png" class="img-fluid figure-img" width="960"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-severity-histo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;3: Distribution of composite GPT-4 severity scores across HPO terms, grouped by branch. The figure shows the distribution of phenotypes for each severity score (ranging from 0 to 100) across HPO branches. The vertical line indicates the average severity score for each branch. The branch ‘Abnormal cellular phenotype’ contains the highest concentration of terms associated with the most severe clinical characteristics.
@@ -344,14 +343,14 @@ Figure&nbsp;3: Distribution of composite GPT-4 severity scores across HPO terms,
 </figure>
 </div>
 </div>
-</div>
+<a class="quarto-notebook-link" id="nblink-3" href="manuscript-preview.html#cell-fig-severity-histo">Source: Article Notebook</a></div>
 <p>Based on these scores we evaluated the top 50 severe phenotypes. One of the most severe phenotype was ‘Anencephaly’ (HP:0002323) with a composite severity score of 45. Anencephaly is a birth defect where the baby is born without a portion of its brain and skull, often these babies are stillborn. In fact, many of the most severe phenotypes were related to developmental brain and neural tube defects. Comparison of the severity scores for each response, across the clinical characteristics annotated, revealed consistent trends: as the response of the clinical characteristic increased (from never to always), the severity score also increased (<a href="#fig-severity-boxplot" class="quarto-xref">Supplementary Fig.&nbsp;10</a>). We also evaluated the severity score distribution by HPO branch and calculated the mean severity score using all phenotypes within each major HPO branch (<a href="#fig-severity-histo" class="quarto-xref">Fig.&nbsp;3</a>). The HPO branch with the greatest mean severity score was ‘Abnormal cellular phenotype’ (mean=17), followed by ‘Neoplasm’ (mean=16.7), which would include the highly ranked phenotypes seen in <a href="#fig-top-phenos" class="quarto-xref">Figure&nbsp;4</a>.</p>
 <div id="cell-fig-top-phenos" class="cell">
 <div class="cell-output-display">
-<div id="fig-top-phenos" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-top-phenos" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-top-phenos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="manuscript_files/figure-html/fig-top-phenos-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4: Quantifying the severity of HPO phenotype annotations highlights the most impactful conditions. Heatmap of 10 represetantive phenotypes from each severity class (Profound, Severe, Moderate, Mild) stratified by whether the phenotypes are often/always congenital (a-b) or rarely/never congenital (c-d). Continuous severity scores are shown as bars (b,d) and were calculated by multiplying the numeric values assigned to each clinical characteristic according to Table&nbsp;2. The average normalised score, representing overall phenotype severity on a 0-100 scale, was calculated by aggregating the multiplied values and normalising by the theoretical maximum severity score. The x-axes show each of the clinical characteristics. All data for this figure, as well as justifications for each annotation, can be found in Table&nbsp;3."><img src="manuscript_files/figure-html/fig-top-phenos-1.png" class="img-fluid figure-img" width="1248"></a>
+<a href="manuscript_files/figure-html/fig-top-phenos-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-4" data-gallery="quarto-lightbox-gallery-4"><img src="manuscript_files/figure-html/fig-top-phenos-1.png" class="img-fluid figure-img" width="1248"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-top-phenos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4: Quantifying the severity of HPO phenotype annotations highlights the most impactful conditions. Heatmap of 10 represetantive phenotypes from each severity class (Profound, Severe, Moderate, Mild) stratified by whether the phenotypes are often/always congenital <strong>(a-b)</strong> or rarely/never congenital <strong>(c-d)</strong>. Continuous severity scores are shown as bars <strong>(b,d)</strong> and were calculated by multiplying the numeric values assigned to each clinical characteristic according to <a href="#tbl-metric-weights" class="quarto-xref">Table&nbsp;2</a>. The average normalised score, representing overall phenotype severity on a 0-100 scale, was calculated by aggregating the multiplied values and normalising by the theoretical maximum severity score. The x-axes show each of the clinical characteristics. All data for this figure, as well as justifications for each annotation, can be found in <a href="#tbl-annotations" class="quarto-xref">Table&nbsp;3</a>.
@@ -359,7 +358,7 @@ Figure&nbsp;4: Quantifying the severity of HPO phenotype annotations highlights 
 </figure>
 </div>
 </div>
-</div>
+<a class="quarto-notebook-link" id="nblink-4" href="manuscript-preview.html#cell-fig-top-phenos">Source: Article Notebook</a></div>
 </section>
 <section id="severity-classes" class="level3">
 <h3 class="anchored" data-anchor-id="severity-classes">Severity classes</h3>
@@ -373,10 +372,10 @@ Figure&nbsp;4: Quantifying the severity of HPO phenotype annotations highlights 
 <h3 class="anchored" data-anchor-id="congenital-onset-by-hpo-branch">Congenital onset by HPO branch</h3>
 <div id="cell-fig-congenital-branches" class="cell">
 <div class="cell-output-display">
-<div id="fig-congenital-branches" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-congenital-branches" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-congenital-branches-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="manuscript_files/figure-html/fig-congenital-branches-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;5: Distribution of congenital onset across HPO branches. The y-axis shows the proportion of phenotypes that are always/often/rarely/never congenital. The x-axis shows the HPO branch, orderered from highest to lowest proportion of always congenital phenotypes."><img src="manuscript_files/figure-html/fig-congenital-branches-1.png" class="img-fluid figure-img" width="960"></a>
+<a href="manuscript_files/figure-html/fig-congenital-branches-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-5" data-gallery="quarto-lightbox-gallery-5"><img src="manuscript_files/figure-html/fig-congenital-branches-1.png" class="img-fluid figure-img" width="960"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-congenital-branches-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;5: Distribution of congenital onset across HPO branches. The y-axis shows the proportion of phenotypes that are always/often/rarely/never congenital. The x-axis shows the HPO branch, orderered from highest to lowest proportion of always congenital phenotypes.
@@ -384,7 +383,7 @@ Figure&nbsp;5: Distribution of congenital onset across HPO branches. The y-axis 
 </figure>
 </div>
 </div>
-</div>
+<a class="quarto-notebook-link" id="nblink-5" href="manuscript-preview.html#cell-fig-congenital-branches">Source: Article Notebook</a></div>
 <p>Next, we assessed the distribution of congenital onset across HPO branches (<a href="#fig-congenital-branches" class="quarto-xref">Fig.&nbsp;5</a>). We found that the Abnormality of prenatal development or birth branch contained the greatest proportion of phenotypes that were always congenital (70.15%), followed by Abnormality of prenatal development or birth (70.15%) and Abnormality of prenatal development or birth (70.15%). This is concordant with the expectation that these phenotypes should largely be congenital. The HPO branches with the least commonly congenital phenotypes were Constitutional symptom (0%), Constitutional symptom (0%), and Constitutional symptom (0%). <a href="https://hpo.jax.org/app/browse/term/HP:0025142">‘Constitutional symptom’</a> is a fairly broad term defined as <em>‘A symptom or manifestation indicating a systemic or general effect of a disease and that may affect the general well-being or status of an individual.’</em> Examples include ‘Fatigue’ ‘Exercise intolerance’, ‘Hot flashes’ and ‘Sneeze’.</p>
 </section>
 </section>
@@ -397,7 +396,7 @@ Figure&nbsp;5: Distribution of congenital onset across HPO branches. The y-axis 
 <p>In addition to rapidly synthesising and summarising vast amounts of information, LLMs can also be steered to provide justifications for each particular response. This makes LLMs amenable to direct interrogation as a means of recovering explainability, especially when designed to retain information about previous requests and interactions as they use these to iteratively improve and update their predictions <span class="citation" data-cites="janikAspectsHumanMemory2024">(<a href="#ref-janikAspectsHumanMemory2024" role="doc-biblioref">Janik 2024</a>)</span>. This represents a categorical advance over traditional natural language processing models based on more shallow forms of statistical or machine learning (e.g.&nbsp;Term Frequency-Inverse Document Frequency <span class="citation" data-cites="jonesStatisticalInterpretationTerm1972">(<a href="#ref-jonesStatisticalInterpretationTerm1972" role="doc-biblioref">Jones 1972</a>)</span>, Word2vec <span class="citation" data-cites="mikolovEfficientEstimationWord2013">(<a href="#ref-mikolovEfficientEstimationWord2013" role="doc-biblioref">Mikolov et al. 2013</a>)</span>) which lack the ability to provide chains of causal reasoning to justify their predictions. This highlights the fundamental trade-off between simpler models with high explainability (the ability humans to understand the inner workings of the model) but low interpretability (the ability of humans to trace the decision process of the model, analogous to human ‘reasoning’), and deeper more complex models with low explainability but high interpretability <span class="citation" data-cites="marcinkevicsInterpretabilityExplainabilityMachine2023">(<a href="#ref-marcinkevicsInterpretabilityExplainabilityMachine2023" role="doc-biblioref">Marcinkevičs and Vogt 2023</a>)</span>.</p>
 <p>A key contribution of our study is the introduction of a quantitative severity scoring system that integrates both the nature of the clinical characteristic and the frequency of its occurrence. By encoding the concept of severity in this way, we are able to prioritise phenotypes based on their impact on patients. The methodology allowed us to transition from low-throughput qualitative assessments of severity (e.g. <span class="citation" data-cites="Lazarin2014-rz">Lazarin et al. (<a href="#ref-Lazarin2014-rz" role="doc-biblioref">2014</a>)</span>) to high-throughput quantitative assessments of severity. One of the most severe phenotypes in the HPO is ‘Fetal akinesia sequence’ (FAS; HP:0001989, severity score= 43.9), and extremely rare condition that is almost always lethal. FAS is a complex, multi-system phenotype that can be caused by at least 24 different genetic disorders. Despite the complex and heterogeneous aetiology of this phenotype, GPT-4 was able to provide accurate annotations alongside explainable justifications for those annotations (see <a href="#tbl-fas" class="quarto-xref">Table&nbsp;4</a>). For example, this phenotype almost always results in death, either <em>in utero</em> or shortly after birth. Not only did GPT-4 correctly provide the annotation death as ‘always’, when asked whether FAS causes sensory impairments it provided the response ‘always’ with the justification ‘Fetal akinesia sequence typically results in severe sensory impairment due to neurodevelopmental disruption.’ Neurodevelopmental disruption is indeed a hallmark component of FAS (e.g.&nbsp;hydrocephalus, cerebellar hypoplasia) that causes severe impairments across multiple sensory systems <span class="citation" data-cites="chenPrenatalDiagnosisGenetic2012">(<a href="#ref-chenPrenatalDiagnosisGenetic2012" role="doc-biblioref">Chen 2012</a>)</span>. This demonstrates that GPT-4 was able to recover the correct chain of causality from phenotype to clinical characteristic.</p>
 <p>Our findings highlight the potential of this next generation of natural language processing technologies in significantly contributing to the automation and refinement of data curation in biomedical research. These results have a large number of useful real-world applications, such as prioritising gene therapy candidates <span class="citation" data-cites="murphyIdentificationCellTypespecific2023">(<a href="#ref-murphyIdentificationCellTypespecific2023" role="doc-biblioref">Murphy et al. 2023</a>)</span> and guiding clinical decision-making in rare diseases. It may also be used as tool to help inform policy decisions and funding allocation by healthcare or governmental institutions. This of course would need to be in consultation with subject matter medical experts, patients, advocates and biomedical ethicists before reaching a final decision. Nevertheless, access to succinct, interpretable, and semi-quantitative severity annotations may encourage key decision makers with limited time to review individual proposals to pay heed to phenotypes and diseases that would otherwise be overlooked. As the HPO and the broader literature continue to grow over time, our automated AI-based approach can easily be repeated to keep pace with the rapidly evolving biomedical landscape. Furthermore, it can be extended to produce different sets of annotations or be used with any other ontology. Additional use cases include gathering data on the prevalence of each phenotype to approximate their social and financial costs.</p>
-<p>One limitation of this study is that it did not test how GPT-4 considers treatment availability when making annotations. Some severe conditions, like syphilis or certain melanomas, are curable with early detection and modern healthcare. GPT-4 often linked outcomes to access and quality of care, describing some cancers as fatal unless caught early while noting others are rarely lethal if treatment is available. This suggests the model accounts for healthcare quality but not consistently. The study also did not capture differences in severity within the same phenotype, such as light sensitivity ranging from mild to disabling. Nor did it consider onset, disease course, or how phenotypes change in specific contexts, such as hypertension being mild in most people but severe in rare genetic disorders. These limitations extend beyond the annotations and to the construction of our severity score, which also doesn’t capture chronic burden versus lethality. These gaps highlight areas for future work.</p>
+<p>One limitation of this study is that it did not test how GPT-4 considers treatment availability when making annotations. Some severe conditions, like syphilis or certain melanomas, are curable with early detection and modern healthcare. GPT-4 often linked outcomes to access and quality of care, describing some cancers as fatal unless caught early while noting others are rarely lethal if treatment is available. This suggests the model accounts for healthcare quality but not consistently. The study also did not capture differences in severity within the same phenotype, such as light sensitivity ranging from mild to disabling. Nor did it consider onset, disease course, or how phenotypes change in specific contexts, such as hypertension being mild in most people but severe in rare genetic disorders. Other features relevant to severity, such as pain intensity and frequency, frequency of hospitalisations, lifetime burden, psychological functioning, and social functioning, were also not considered. A relevant example where such features would likely have been important in highlighting severity is endometriosis, defined as the growth of endometrial tissue outside the uterus. It affects approximately 10% of women of reproductive age and is associated with cyclical and chronic pelvic pain, infertility, and significant impairment of psychological and social functioning <span class="citation" data-cites="Zondervan2018-endometriosis">(<a href="#ref-Zondervan2018-endometriosis" role="doc-biblioref">Zondervan et al. 2018</a>)</span>. It may also require repeated surgical intervention and hospitalisation. While our approach was able to capture severity associated with infertility, the associated pain burden, psychological and social impact, and potential need for surgery and hospitalisation were not reflected. These limitations extend beyond the annotations to the construction of the severity score itself, and highlight important areas for future work.</p>
 <p>Therapeutic prioritization adds further challenges. Cost also shapes priorities, as some conditions require years of expensive care while others cause early death with little chance of intervention. Practical constraints must also be considered as long-term trials are difficult, whereas testing therapies that quickly reverse severe symptoms may yield faster results. These choices should involve ethicists, policymakers, advocacy groups, and families, with LLMs helping gather data at scale. While this study shows the promise of AI-driven phenotypic annotation, it also reveals risks of bias, gaps in severity scoring, and the need to factor in gene–environment interactions. Finally, a flurry of new LLMs continue to be released regularly. Here, we use GPT-4 as an example but note that our framework is equally applicable to most other LLMs. Future work should refine methods, add genomic and clinical data, and validate results to make AI a stronger tool in precision medicine.</p>
 <p>In conclusion, our study represents a significant step towards harnessing the power of AI to advance phenotypic annotation and severity assessment across all rare diseases. This resource aims to provide researchers and clinicians with actionable insights that can inform rare disease research and improve the lives of individuals affected by rare diseases.</p>
 </section>
@@ -411,14 +410,14 @@ Figure&nbsp;5: Distribution of congenital onset across HPO branches. The y-axis 
 <section id="calculating-the-true-positive-rate" class="level3">
 <h3 class="anchored" data-anchor-id="calculating-the-true-positive-rate">Calculating the true positive rate</h3>
 <div class="cell" data-tbl-colwidths="[40,40,20]">
-<div id="tbl-true-positives" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-colwidths="[40,40,20]">
+<div id="tbl-true-positives" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-true-positives-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: The HPO branches and their descendants used as true positives for each clinical characteristic.
 </figcaption>
 <div aria-describedby="tbl-true-positives-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<table class="cell caption-top table table-sm table-striped small">
+<table class="cell table table-sm table-striped small">
 <colgroup>
 <col style="width: 40%">
 <col style="width: 40%">
@@ -477,8 +476,8 @@ Table&nbsp;1: The HPO branches and their descendants used as true positives for 
 </div>
 </div>
 </figure>
-</div>
-</div>
+<a class="quarto-notebook-link" id="nblink-7" href="manuscript-preview.html#tbl-true-positives">Source: Article Notebook</a></div>
+<a class="quarto-notebook-link" id="nblink-6" href="manuscript-preview.html">Source: Article Notebook</a></div>
 <p>A true positive rate was calculated as a measure of the recall of the GPT-4 annotations. This was achieved by identifying specific branches within the HPO that would contain phenotypes that would reliably indicate the occurrence of certain clinical characteristics, and using all descendants of this HPO branch as true positives. For example, all descendants of the terms ‘Intellectual disability’ (HP:0001249) or ‘Mental deterioration’ (HP:0001268) should be annotated as always or often causing intellectual disability (<a href="#tbl-true-positives" class="quarto-xref">Table&nbsp;1</a>).</p>
 </section>
 <section id="quantifying-phenotypic-severity-1" class="level3">
@@ -499,14 +498,14 @@ Table&nbsp;1: The HPO branches and their descendants used as true positives for 
 <p><br>
 </p>
 <div class="cell">
-<div id="tbl-metric-weights" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<div id="tbl-metric-weights" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-metric-weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;2: Weighted scores for each clinical characteristic and GPT-4 response category.
 </figcaption>
 <div aria-describedby="tbl-metric-weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<table class="do-not-create-environment cell table table-sm table-striped small">
 <colgroup>
 <col style="width: 40%">
 <col style="width: 15%">
@@ -599,8 +598,8 @@ Table&nbsp;2: Weighted scores for each clinical characteristic and GPT-4 respons
 </div>
 </div>
 </figure>
-</div>
-</div>
+<a class="quarto-notebook-link" id="nblink-9" href="manuscript-preview.html#tbl-metric-weights">Source: Article Notebook</a></div>
+<a class="quarto-notebook-link" id="nblink-8" href="manuscript-preview.html">Source: Article Notebook</a></div>
 </section>
 <section id="severity-classes-1" class="level3">
 <h3 class="anchored" data-anchor-id="severity-classes-1">Severity classes</h3>
@@ -727,6 +726,9 @@ Wei, Jerry, Chengrun Yang, Xinying Song, Yifeng Lu, Nathan Hu, Jie Huang, Dustin
 <div id="ref-zhangBiomedGPTUnifiedGeneralist2023" class="csl-entry" role="listitem">
 Zhang, Kai, Jun Yu, Zhiling Yan, Yixin Liu, Eashan Adhikarla, Sunyang Fu, Xun Chen, et al. 2023. <span>“BiomedGPT: A Unified and Generalist Biomedical Generative Pre-Trained Transformer for Vision, Language, and Multimodal Tasks.”</span> <em>arXiv</em>. <a href="https://doi.org/10.48550/arXiv.2305.17100">https://doi.org/10.48550/arXiv.2305.17100</a>.
 </div>
+<div id="ref-Zondervan2018-endometriosis" class="csl-entry" role="listitem">
+Zondervan, Krina T, Christian M Becker, Kaori Koga, Stacey A Missmer, Robert N Taylor, and Paola Viganò. 2018. <span>“Endometriosis.”</span> <em>Nat. Rev. Dis. Primers</em> 4 (1): 9. <a href="https://doi.org/10.1038/s41572-018-0008-5">https://doi.org/10.1038/s41572-018-0008-5</a>.
+</div>
 </div>
 <div style="page-break-after: always;"></div>
 </section>
@@ -736,10 +738,10 @@ Zhang, Kai, Jun Yu, Zhiling Yan, Yixin Liu, Eashan Adhikarla, Sunyang Fu, Xun Ch
 <h3 class="anchored" data-anchor-id="supplementary-figures">Supplementary Figures</h3>
 <div id="cell-fig-indirect-effects" class="cell">
 <div class="cell-output-display">
-<div id="fig-indirect-effects" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-indirect-effects" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-indirect-effects-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="manuscript_files/figure-html/fig-indirect-effects-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;6: Impact of indirect effects on HPO phenotype severity classification. a Clinical characteristic justifications were searched for terms indicating indirect causation (‘indirectly’, ‘does not directly’). To assess the impact of this indirect causation on severity scoring, all indirect causal terms were reassigned to ‘never’ and severity scores were recalculated. b Phenotype classifications into severity classes remained unchanged between the original and recalculated severity scores."><img src="manuscript_files/figure-html/fig-indirect-effects-1.png" class="img-fluid figure-img" width="1152"></a>
+<a href="manuscript_files/figure-html/fig-indirect-effects-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-7" data-gallery="quarto-lightbox-gallery-7"><img src="manuscript_files/figure-html/fig-indirect-effects-1.png" class="img-fluid figure-img" width="1152"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-indirect-effects-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6: Impact of indirect effects on HPO phenotype severity classification. <strong>a</strong> Clinical characteristic justifications were searched for terms indicating indirect causation (‘indirectly’, ‘does not directly’). To assess the impact of this indirect causation on severity scoring, all indirect causal terms were reassigned to ‘never’ and severity scores were recalculated. <strong>b</strong> Phenotype classifications into severity classes remained unchanged between the original and recalculated severity scores.
@@ -747,13 +749,13 @@ Figure&nbsp;6: Impact of indirect effects on HPO phenotype severity classificati
 </figure>
 </div>
 </div>
-</div>
+<a class="quarto-notebook-link" id="nblink-10" href="manuscript-preview.html#cell-fig-indirect-effects">Source: Article Notebook</a></div>
 <div id="cell-fig-genecounts-ontLvl" class="cell">
 <div class="cell-output-display">
-<div id="fig-genecounts-ontLvl" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-genecounts-ontLvl" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-genecounts-ontLvl-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="manuscript_files/figure-html/fig-genecounts-ontLvl-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figure&nbsp;7: Relationship between ontology level and number of genes associated with each HPO term within that ontology. Lower ontology levels are associated with fewer genes."><img src="manuscript_files/figure-html/fig-genecounts-ontLvl-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="manuscript_files/figure-html/fig-genecounts-ontLvl-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-8" data-gallery="quarto-lightbox-gallery-8"><img src="manuscript_files/figure-html/fig-genecounts-ontLvl-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-genecounts-ontLvl-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;7: Relationship between ontology level and number of genes associated with each HPO term within that ontology. Lower ontology levels are associated with fewer genes.
@@ -761,13 +763,13 @@ Figure&nbsp;7: Relationship between ontology level and number of genes associate
 </figure>
 </div>
 </div>
-</div>
+<a class="quarto-notebook-link" id="nblink-11" href="manuscript-preview.html#cell-fig-genecounts-ontLvl">Source: Article Notebook</a></div>
 <div id="cell-fig-ontLvl-distribution" class="cell">
 <div class="cell-output-display">
-<div id="fig-ontLvl-distribution" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-ontLvl-distribution" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-ontLvl-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="manuscript_files/figure-html/fig-ontLvl-distribution-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Figure&nbsp;8: Distribution of the HPO ontology levels in all phenotypes tested and in the subset used to test annotation consistency."><img src="manuscript_files/figure-html/fig-ontLvl-distribution-1.png" class="img-fluid figure-img" width="672"></a>
+<a href="manuscript_files/figure-html/fig-ontLvl-distribution-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-9" data-gallery="quarto-lightbox-gallery-9"><img src="manuscript_files/figure-html/fig-ontLvl-distribution-1.png" class="img-fluid figure-img" width="672"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ontLvl-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;8: Distribution of the HPO ontology levels in all phenotypes tested and in the subset used to test annotation consistency.
@@ -775,13 +777,13 @@ Figure&nbsp;8: Distribution of the HPO ontology levels in all phenotypes tested 
 </figure>
 </div>
 </div>
-</div>
+<a class="quarto-notebook-link" id="nblink-12" href="manuscript-preview.html#cell-fig-ontLvl-distribution">Source: Article Notebook</a></div>
 <div id="cell-fig-consist-vs-ontLvl" class="cell">
 <div class="cell-output-display">
-<div id="fig-consist-vs-ontLvl" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-consist-vs-ontLvl" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-consist-vs-ontLvl-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="manuscript_files/figure-html/fig-consist-vs-ontLvl-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Figure&nbsp;9: Relationship between the consistency of GPT-4 clinical characterstic annotations (using the stringent criterion) and the level of each phenotype within the HPO ontology (with the number of phenotypes in parentheses). Greater ontology levels (x-axis) indicate more specific phenotypes. The subtitle indicates summary statistics for the overall relationship between HPO level and the proportion of phenotypes that were annotated consistently. The p-values above each bar indicate whether the distribution of consistent/inconsistent annotations, within a given HPO level, significantly deviate from the expected null distribution."><img src="manuscript_files/figure-html/fig-consist-vs-ontLvl-1.png" class="img-fluid figure-img" width="1152"></a>
+<a href="manuscript_files/figure-html/fig-consist-vs-ontLvl-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-10" data-gallery="quarto-lightbox-gallery-10"><img src="manuscript_files/figure-html/fig-consist-vs-ontLvl-1.png" class="img-fluid figure-img" width="1152"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-consist-vs-ontLvl-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;9: Relationship between the consistency of GPT-4 clinical characterstic annotations (using the stringent criterion) and the level of each phenotype within the HPO ontology (with the number of phenotypes in parentheses). Greater ontology levels (x-axis) indicate more specific phenotypes. The subtitle indicates summary statistics for the overall relationship between HPO level and the proportion of phenotypes that were annotated consistently. The p-values above each bar indicate whether the distribution of consistent/inconsistent annotations, within a given HPO level, significantly deviate from the expected null distribution.
@@ -789,13 +791,13 @@ Figure&nbsp;9: Relationship between the consistency of GPT-4 clinical characters
 </figure>
 </div>
 </div>
-</div>
+<a class="quarto-notebook-link" id="nblink-13" href="manuscript-preview.html#cell-fig-consist-vs-ontLvl">Source: Article Notebook</a></div>
 <div id="cell-fig-severity-boxplot" class="cell">
 <div class="cell-output-display">
-<div id="fig-severity-boxplot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-severity-boxplot" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-severity-boxplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="manuscript_files/figure-html/fig-severity-boxplot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Figure&nbsp;10: Boxplot showing the relationship between composite severity score (y-axis) and the frequency response categories within each clinical characteristic type."><img src="manuscript_files/figure-html/fig-severity-boxplot-1.png" class="img-fluid figure-img" width="768"></a>
+<a href="manuscript_files/figure-html/fig-severity-boxplot-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-11" data-gallery="quarto-lightbox-gallery-11"><img src="manuscript_files/figure-html/fig-severity-boxplot-1.png" class="img-fluid figure-img" width="768"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-severity-boxplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;10: Boxplot showing the relationship between composite severity score (y-axis) and the frequency response categories within each clinical characteristic type.
@@ -803,13 +805,13 @@ Figure&nbsp;10: Boxplot showing the relationship between composite severity scor
 </figure>
 </div>
 </div>
-</div>
+<a class="quarto-notebook-link" id="nblink-14" href="manuscript-preview.html#cell-fig-severity-boxplot">Source: Article Notebook</a></div>
 <div id="cell-fig-metric-corplot" class="cell">
 <div class="cell-output-display">
-<div id="fig-metric-corplot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-metric-corplot" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-metric-corplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="manuscript_files/figure-html/fig-metric-corplot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Figure&nbsp;11: Pearson correlations between each individual clinical characteristic severity metric and the composite severity score (‘severity_score_gpt’)."><img src="manuscript_files/figure-html/fig-metric-corplot-1.png" class="img-fluid figure-img" width="768"></a>
+<a href="manuscript_files/figure-html/fig-metric-corplot-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-12" data-gallery="quarto-lightbox-gallery-12"><img src="manuscript_files/figure-html/fig-metric-corplot-1.png" class="img-fluid figure-img" width="768"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-metric-corplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;11: Pearson correlations between each individual clinical characteristic severity metric and the composite severity score (‘severity_score_gpt’).
@@ -817,13 +819,13 @@ Figure&nbsp;11: Pearson correlations between each individual clinical characteri
 </figure>
 </div>
 </div>
-</div>
+<a class="quarto-notebook-link" id="nblink-15" href="manuscript-preview.html#cell-fig-metric-corplot">Source: Article Notebook</a></div>
 <div id="cell-fig-severity-class" class="cell">
 <div class="cell-output-display">
-<div id="fig-severity-class" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-severity-class" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-severity-class-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="manuscript_files/figure-html/fig-severity-class-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Figure&nbsp;12: Distribution of the composite GPT-4 severity score introduced in this paper (y-axis) by an approximation of the severity class system introduced @Lazarin2014-rz (x-axis). While these are different schemes for ranking phenotype severity, there is a strong correspondence between them (see summary statistics in subtitle). The sample size (number of phenotypes) is shown in parentheses along the x-axis."><img src="manuscript_files/figure-html/fig-severity-class-1.png" class="img-fluid figure-img" width="768"></a>
+<a href="manuscript_files/figure-html/fig-severity-class-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-13" data-gallery="quarto-lightbox-gallery-13"><img src="manuscript_files/figure-html/fig-severity-class-1.png" class="img-fluid figure-img" width="768"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-severity-class-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;12: Distribution of the composite GPT-4 severity score introduced in this paper (y-axis) by an approximation of the severity class system introduced <span class="citation" data-cites="Lazarin2014-rz">Lazarin et al. (<a href="#ref-Lazarin2014-rz" role="doc-biblioref">2014</a>)</span> (x-axis). While these are different schemes for ranking phenotype severity, there is a strong correspondence between them (see summary statistics in subtitle). The sample size (number of phenotypes) is shown in parentheses along the x-axis.
@@ -831,20 +833,20 @@ Figure&nbsp;12: Distribution of the composite GPT-4 severity score introduced in
 </figure>
 </div>
 </div>
-</div>
+<a class="quarto-notebook-link" id="nblink-16" href="manuscript-preview.html#cell-fig-severity-class">Source: Article Notebook</a></div>
 <div style="page-break-after: always;"></div>
 </section>
 <section id="supplementary-tables" class="level3">
 <h3 class="anchored" data-anchor-id="supplementary-tables">Supplementary Tables</h3>
 <div class="cell">
-<div id="tbl-annotations" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<div id="tbl-annotations" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-annotations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;3: GPT-4 clinical characteristic annotations for all HPO phenotypes in <a href="#fig-top-phenos" class="quarto-xref">Figure&nbsp;4</a>. For each phenotype, this includes the name of the phenotype (‘hpo_name’), the ID of the phenotype (‘hpo_id’), the frequency of each annotation (always, often, rarely, never), and the justification for each annotation (’…_justification’). These results can also be downloaded programmatically using the R function <code>HPOExplorer::gpt_annot_check</code>.
 </figcaption>
 <div aria-describedby="tbl-annotations-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<table class="cell caption-top table table-sm table-striped small">
+<table class="cell table table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: left;">Download</th>
@@ -859,17 +861,17 @@ Table&nbsp;3: GPT-4 clinical characteristic annotations for all HPO phenotypes i
 </div>
 </div>
 </figure>
-</div>
-</div>
+<a class="quarto-notebook-link" id="nblink-18" href="manuscript-preview.html#tbl-annotations">Source: Article Notebook</a></div>
+<a class="quarto-notebook-link" id="nblink-17" href="manuscript-preview.html">Source: Article Notebook</a></div>
 <div class="cell" data-tbl-colwidths="[20,20,60]">
-<div id="tbl-fas" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-colwidths="[20,20,60]">
+<div id="tbl-fas" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-fas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;4: Severity annotations generated for GPT-4 clinical characteristic annotations for the HPO phenotype ‘Fetal akinesia sequence’ (HP:000198).
 </figcaption>
 <div aria-describedby="tbl-fas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<table class="cell caption-top table table-sm table-striped small">
+<table class="cell table table-sm table-striped small">
 <colgroup>
 <col style="width: 20%">
 <col style="width: 20%">
@@ -943,78 +945,77 @@ Table&nbsp;4: Severity annotations generated for GPT-4 clinical characteristic a
 </div>
 </div>
 </figure>
-</div>
+<a class="quarto-notebook-link" id="nblink-20" href="manuscript-preview.html#tbl-fas">Source: Article Notebook</a></div>
+<a class="quarto-notebook-link" id="nblink-19" href="manuscript-preview.html">Source: Article Notebook</a></div>
+<div class="hidden" aria-hidden="true">
+<span class="glightbox-desc lightbox-desc-1">Figure&nbsp;1: GPT-4 was able to annotate all human phenotypes based on whether they are always/often/rarely/never associated with different clinical characteristics. <strong>a</strong> An example of the prompt input given to to GPT-4. The phenotypes listed in the second to last sentence (<em>italicised</em>) were changed to allow all HPO phenotypes to be annotated. <strong>b</strong> Stacked bar plot showing the proportion of the occurrence of each clinical characteristic across all annotated HPO phenotypes. The terms shown on the x-axis are the clinical characteristics for which GPT-4 was asked to determine whether each phenotype caused them.</span>
+<span class="glightbox-desc lightbox-desc-2">Figure&nbsp;2: GPT-4 annotations are consistent and accurate across annotations. <strong>a</strong> Barplot showing the annotation consistency within phenotypes that were annotated more than once. In the lenient metric, annotations were collapsed into two groups (‘always’/‘often’ and ‘never’/‘rarely’). For a given clinical characteristic within a given phenotype, if an annotation was always within the same group it was considered consistent. In the stringent metric, all four annotation categories were considered to be different from one another. Thus, annotations were only defined as consistent if they were all identical. The blue dashed line indicates the probability of two annotations being consistent by chance in the lenient metric (~1/2). The gold dashed line is the probability of two annotations being consistent by chance in the stringent metric (~1/4). <strong>b</strong> Bar plot of the true positive rate for each annotation. The labels above each bar indicate the number of phenotypes tested.</span>
+<span class="glightbox-desc lightbox-desc-3">Figure&nbsp;3: Distribution of composite GPT-4 severity scores across HPO terms, grouped by branch. The figure shows the distribution of phenotypes for each severity score (ranging from 0 to 100) across HPO branches. The vertical line indicates the average severity score for each branch. The branch ‘Abnormal cellular phenotype’ contains the highest concentration of terms associated with the most severe clinical characteristics.</span>
+<span class="glightbox-desc lightbox-desc-4">Figure&nbsp;4: Quantifying the severity of HPO phenotype annotations highlights the most impactful conditions. Heatmap of 10 represetantive phenotypes from each severity class (Profound, Severe, Moderate, Mild) stratified by whether the phenotypes are often/always congenital <strong>(a-b)</strong> or rarely/never congenital <strong>(c-d)</strong>. Continuous severity scores are shown as bars <strong>(b,d)</strong> and were calculated by multiplying the numeric values assigned to each clinical characteristic according to <a href="#tbl-metric-weights" class="quarto-xref">Table&nbsp;2</a>. The average normalised score, representing overall phenotype severity on a 0-100 scale, was calculated by aggregating the multiplied values and normalising by the theoretical maximum severity score. The x-axes show each of the clinical characteristics. All data for this figure, as well as justifications for each annotation, can be found in <a href="#tbl-annotations" class="quarto-xref">Table&nbsp;3</a>.</span>
+<span class="glightbox-desc lightbox-desc-5">Figure&nbsp;5: Distribution of congenital onset across HPO branches. The y-axis shows the proportion of phenotypes that are always/often/rarely/never congenital. The x-axis shows the HPO branch, orderered from highest to lowest proportion of always congenital phenotypes.</span>
+<span class="glightbox-desc lightbox-desc-7">Figure&nbsp;6: Impact of indirect effects on HPO phenotype severity classification. <strong>a</strong> Clinical characteristic justifications were searched for terms indicating indirect causation (‘indirectly’, ‘does not directly’). To assess the impact of this indirect causation on severity scoring, all indirect causal terms were reassigned to ‘never’ and severity scores were recalculated. <strong>b</strong> Phenotype classifications into severity classes remained unchanged between the original and recalculated severity scores.</span>
+<span class="glightbox-desc lightbox-desc-8">Figure&nbsp;7: Relationship between ontology level and number of genes associated with each HPO term within that ontology. Lower ontology levels are associated with fewer genes.</span>
+<span class="glightbox-desc lightbox-desc-9">Figure&nbsp;8: Distribution of the HPO ontology levels in all phenotypes tested and in the subset used to test annotation consistency.</span>
+<span class="glightbox-desc lightbox-desc-10">Figure&nbsp;9: Relationship between the consistency of GPT-4 clinical characterstic annotations (using the stringent criterion) and the level of each phenotype within the HPO ontology (with the number of phenotypes in parentheses). Greater ontology levels (x-axis) indicate more specific phenotypes. The subtitle indicates summary statistics for the overall relationship between HPO level and the proportion of phenotypes that were annotated consistently. The p-values above each bar indicate whether the distribution of consistent/inconsistent annotations, within a given HPO level, significantly deviate from the expected null distribution.</span>
+<span class="glightbox-desc lightbox-desc-11">Figure&nbsp;10: Boxplot showing the relationship between composite severity score (y-axis) and the frequency response categories within each clinical characteristic type.</span>
+<span class="glightbox-desc lightbox-desc-12">Figure&nbsp;11: Pearson correlations between each individual clinical characteristic severity metric and the composite severity score (‘severity_score_gpt’).</span>
+<span class="glightbox-desc lightbox-desc-13">Figure&nbsp;12: Distribution of the composite GPT-4 severity score introduced in this paper (y-axis) by an approximation of the severity class system introduced <span class="citation" data-cites="Lazarin2014-rz">Lazarin et al. (<a href="#ref-Lazarin2014-rz" role="doc-biblioref">2014</a>)</span> (x-axis). While these are different schemes for ranking phenotype severity, there is a strong correspondence between them (see summary statistics in subtitle). The sample size (number of phenotypes) is shown in parentheses along the x-axis.</span>
 </div>
 </section>
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{b_murphy2026,
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{b murphy2026,
   author = {B Murphy, Kitty and M Schilder, Brian and G Skene, Nathan},
   title = {Using {GPT-4} to Annotate the Severity of All Phenotypic
     Abnormalities Within the {Human} {Phenotype} {Ontology}},
-  date = {2026-03-18},
+  date = {2026-04-09},
   langid = {en}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-b_murphy2026" class="csl-entry quarto-appendix-citeas" role="listitem">
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-b murphy2026" class="csl-entry quarto-appendix-citeas" role="listitem">
 B Murphy, Kitty, Brian M Schilder, and Nathan G Skene. 2026.
 <span>“Using GPT-4 to Annotate the Severity of All Phenotypic
 Abnormalities Within the Human Phenotype Ontology.”</span> medRxiv.
-March 18, 2026.
+April 9, 2026.
 </div></div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-    const icon = "";
-    const anchorJS = new window.AnchorJS();
-    anchorJS.options = {
-      placement: 'right',
-      icon: icon
-    };
-    anchorJS.add('.anchored');
-    const isCodeAnnotation = (el) => {
-      for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {                     
-          return true;
-        }
-      }
-      return false;
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
     }
-    const onCopySuccess = function(e) {
-      // button target
-      const button = e.trigger;
-      // don't keep focus
-      button.blur();
-      // flash "checked"
-      button.classList.add('code-copy-button-checked');
-      var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
-      let tooltip;
-      if (window.bootstrap) {
-        button.setAttribute("data-bs-toggle", "tooltip");
-        button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
-        tooltip = new bootstrap.Tooltip(button, 
-          { trigger: "manual", 
-            customClass: "code-copy-button-tooltip",
-            offset: [0, -8]});
-        tooltip.show();    
-      }
-      setTimeout(function() {
-        if (tooltip) {
-          tooltip.hide();
-          button.removeAttribute("data-bs-title");
-          button.removeAttribute("data-bs-toggle");
-          button.removeAttribute("data-bs-placement");
-        }
-        button.setAttribute("title", currentTitle);
-        button.classList.remove('code-copy-button-checked');
-      }, 1000);
-      // clear code selection
-      e.clearSelection();
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
     }
-    const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
       for (const childEl of codeEl.children) {
         if (isCodeAnnotation(childEl)) {
           childEl.remove();
@@ -1022,184 +1023,184 @@ March 18, 2026.
       }
       return codeEl.innerText;
     }
-    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-      text: getTextToCopy
-    });
-    clipboard.on('success', onCopySuccess);
-    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-        text: getTextToCopy,
-        container: window.document.getElementById('quarto-embedded-source-code-modal')
-      });
-      clipboardModal.on('success', onCopySuccess);
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
     }
-      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
-      var isInternal = (href) => {
-          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
       }
-      // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-      for (var i=0; i<links.length; i++) {
-        const link = links[i];
-        if (!isInternal(link.href)) {
-          // undo the damage that might have been done by quarto-nav.js in the case of
-          // links that we want to consider external
-          if (link.dataset.originalHref !== undefined) {
-            link.href = link.dataset.originalHref;
-          }
-        }
-      }
-    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-      const config = {
-        allowHTML: true,
-        maxWidth: 500,
-        delay: 100,
-        arrow: false,
-        appendTo: function(el) {
-            return el.parentElement;
-        },
-        interactive: true,
-        interactiveBorder: 10,
-        theme: 'quarto',
-        placement: 'bottom-start',
-      };
-      if (contentFn) {
-        config.content = contentFn;
-      }
-      if (onTriggerFn) {
-        config.onTrigger = onTriggerFn;
-      }
-      if (onUntriggerFn) {
-        config.onUntrigger = onUntriggerFn;
-      }
-      window.tippy(el, config); 
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
-    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-    for (var i=0; i<noterefs.length; i++) {
-      const ref = noterefs[i];
-      tippyHover(ref, function() {
-        // use id or data attribute instead here
-        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-        try { href = new URL(href).hash; } catch {}
-        const id = href.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note) {
-          return note.innerHTML;
-        } else {
-          return "";
-        }
-      });
-    }
-    const xrefs = window.document.querySelectorAll('a.quarto-xref');
-    const processXRef = (id, note) => {
-      // Strip column container classes
-      const stripColumnClz = (el) => {
-        el.classList.remove("page-full", "page-columns");
-        if (el.children) {
-          for (const child of el.children) {
-            stripColumnClz(child);
-          }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
         }
       }
-      stripColumnClz(note)
-      if (id === null || id.startsWith('sec-')) {
-        // Special case sections, only their first couple elements
-        const container = document.createElement("div");
-        if (note.children && note.children.length > 2) {
-          container.appendChild(note.children[0].cloneNode(true));
-          for (let i = 1; i < note.children.length; i++) {
-            const child = note.children[i];
-            if (child.tagName === "P" && child.innerText === "") {
-              continue;
-            } else {
-              container.appendChild(child.cloneNode(true));
-              break;
-            }
-          }
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(container);
-          }
-          return container.innerHTML
-        } else {
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(note);
-          }
-          return note.innerHTML;
-        }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
       } else {
-        // Remove any anchor links if they are present
-        const anchorLink = note.querySelector('a.anchorjs-link');
-        if (anchorLink) {
-          anchorLink.remove();
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
         }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        if (note.classList.contains("callout")) {
-          return note.outerHTML;
-        } else {
-          return note.innerHTML;
-        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
       }
     }
-    for (var i=0; i<xrefs.length; i++) {
-      const xref = xrefs[i];
-      tippyHover(xref, undefined, function(instance) {
-        instance.disable();
-        let url = xref.getAttribute('href');
-        let hash = undefined; 
-        if (url.startsWith('#')) {
-          hash = url;
-        } else {
-          try { hash = new URL(url).hash; } catch {}
-        }
-        if (hash) {
-          const id = hash.replace(/^#\/?/, "");
-          const note = window.document.getElementById(id);
-          if (note !== null) {
-            try {
-              const html = processXRef(id, note.cloneNode(true));
-              instance.setContent(html);
-            } finally {
-              instance.enable();
-              instance.show();
-            }
-          } else {
-            // See if we can fetch this
-            fetch(url.split('#')[0])
-            .then(res => res.text())
-            .then(html => {
-              const parser = new DOMParser();
-              const htmlDoc = parser.parseFromString(html, "text/html");
-              const note = htmlDoc.getElementById(id);
-              if (note !== null) {
-                const html = processXRef(id, note);
-                instance.setContent(html);
-              } 
-            }).finally(() => {
-              instance.enable();
-              instance.show();
-            });
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
           }
         } else {
-          // See if we can fetch a full url (with no hash to target)
-          // This is a special case and we should probably do some content thinning / targeting
-          fetch(url)
+          // See if we can fetch this
+          fetch(url.split('#')[0])
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.querySelector('main.content');
+            const note = htmlDoc.getElementById(id);
             if (note !== null) {
-              // This should only happen for chapter cross references
-              // (since there is no id in the URL)
-              // remove the first header
-              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-                note.children[0].remove();
-              }
-              const html = processXRef(null, note);
+              const html = processXRef(id, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -1207,193 +1208,210 @@ March 18, 2026.
             instance.show();
           });
         }
-      }, function(instance) {
-      });
-    }
-        let selectedAnnoteEl;
-        const selectorForAnnotation = ( cell, annotation) => {
-          let cellAttr = 'data-code-cell="' + cell + '"';
-          let lineAttr = 'data-code-annotation="' +  annotation + '"';
-          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-          return selector;
-        }
-        const selectCodeLines = (annoteEl) => {
-          const doc = window.document;
-          const targetCell = annoteEl.getAttribute("data-target-cell");
-          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-          const lineIds = lines.map((line) => {
-            return targetCell + "-" + line;
-          })
-          let top = null;
-          let height = null;
-          let parent = null;
-          if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
-            }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
-            }
-            selectedAnnoteEl = annoteEl;
-          }
-        };
-        const unselectCodeLines = () => {
-          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-          elementsIds.forEach((elId) => {
-            const div = window.document.getElementById(elId);
-            if (div) {
-              div.remove();
-            }
-          });
-          selectedAnnoteEl = undefined;
-        };
-          // Handle positioning of the toggle
-      window.addEventListener(
-        "resize",
-        throttle(() => {
-          elRect = undefined;
-          if (selectedAnnoteEl) {
-            selectCodeLines(selectedAnnoteEl);
-          }
-        }, 10)
-      );
-      function throttle(fn, ms) {
-      let throttle = false;
-      let timer;
-        return (...args) => {
-          if(!throttle) { // first call gets through
-              fn.apply(this, args);
-              throttle = true;
-          } else { // all the others get throttled
-              if(timer) clearTimeout(timer); // cancel #2
-              timer = setTimeout(() => {
-                fn.apply(this, args);
-                timer = throttle = false;
-              }, ms);
-          }
-        };
-      }
-        // Attach click handler to the DT
-        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-        for (const annoteDlNode of annoteDls) {
-          annoteDlNode.addEventListener('click', (event) => {
-            const clickedEl = event.target;
-            if (clickedEl !== selectedAnnoteEl) {
-              unselectCodeLines();
-              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-              if (activeEl) {
-                activeEl.classList.remove('code-annotation-active');
-              }
-              selectCodeLines(clickedEl);
-              clickedEl.classList.add('code-annotation-active');
-            } else {
-              // Unselect the line
-              unselectCodeLines();
-              clickedEl.classList.remove('code-annotation-active');
-            }
-          });
-        }
-    const findCites = (el) => {
-      const parentEl = el.parentElement;
-      if (parentEl) {
-        const cites = parentEl.dataset.cites;
-        if (cites) {
-          return {
-            el,
-            cites: cites.split(' ')
-          };
-        } else {
-          return findCites(el.parentElement)
-        }
       } else {
-        return undefined;
-      }
-    };
-    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-    for (var i=0; i<bibliorefs.length; i++) {
-      const ref = bibliorefs[i];
-      const citeInfo = findCites(ref);
-      if (citeInfo) {
-        tippyHover(citeInfo.el, function() {
-          var popup = window.document.createElement('div');
-          citeInfo.cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
             }
-            popup.appendChild(citeDiv);
-          });
-          return popup.innerHTML;
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
         });
       }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","selector":".lightbox","loop":false,"openEffect":"zoom"});
+window.onload = () => {
+  lightboxQuarto.on('slide_before_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    const href = trigger.getAttribute('href');
+    if (href !== null) {
+      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+      if (imgEl !== null) {
+        const srcAttr = imgEl.getAttribute("src");
+        if (srcAttr && srcAttr.startsWith("data:")) {
+          slideConfig.href = srcAttr;
+        }
+      }
+    } 
+  });
+
+  lightboxQuarto.on('slide_after_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    if (window.Quarto?.typesetMath) {
+      window.Quarto.typesetMath(slideNode);
     }
   });
-  </script>
-</div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
-(function() {
-  let previousOnload = window.onload;
-  window.onload = () => {
-    if (previousOnload) {
-      previousOnload();
-    }
-    lightboxQuarto.on('slide_before_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      const href = trigger.getAttribute('href');
-      if (href !== null) {
-        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-        if (imgEl !== null) {
-          const srcAttr = imgEl.getAttribute("src");
-          if (srcAttr && srcAttr.startsWith("data:")) {
-            slideConfig.href = srcAttr;
-          }
-        }
-      } 
-    });
-  
-    lightboxQuarto.on('slide_after_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(slideNode);
-      }
-    });
-  
-  };
-  
-})();
+
+};
           </script>
 
 

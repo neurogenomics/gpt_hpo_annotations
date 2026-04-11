@@ -1,27 +1,25 @@
 % Options for packages loaded elsewhere
-% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
 ]{agujournal2019}
-\usepackage{xcolor}
+
 \usepackage{amsmath,amssymb}
-\setcounter{secnumdepth}{5}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math} % this also loads fontspec
+  \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
-\ifPDFTeX\else
-  % xetex/luatex font selection
+\ifPDFTeX\else  
+    % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -39,32 +37,22 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
-\makeatletter
 \ifx\paragraph\undefined\else
   \let\oldparagraph\paragraph
-  \renewcommand{\paragraph}{
-    \@ifstar
-      \xxxParagraphStar
-      \xxxParagraphNoStar
-  }
-  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
-  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
 \fi
 \ifx\subparagraph\undefined\else
   \let\oldsubparagraph\subparagraph
-  \renewcommand{\subparagraph}{
-    \@ifstar
-      \xxxSubParagraphStar
-      \xxxSubParagraphNoStar
-  }
-  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
-  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
-\makeatother
 
 
-\usepackage{longtable,booktabs,array}
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -76,21 +64,17 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
-  \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
-  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
-  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
-  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
-  \else\usebox{\pandoc@box}%
-  \fi%
-}
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 % Set default figure placement to htbp
+\makeatletter
 \def\fps@figure{htbp}
 \makeatother
-
-
 % definitions for citeproc citations
 \NewDocumentCommand\citeproctext{}{}
 \NewDocumentCommand\citeproc{mm}{%
@@ -124,18 +108,6 @@
 \newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
-
-
-
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-
-
-
- 
-
 
 \usepackage{url} %this package should fix any errors with URLs in refs.
 \usepackage{lineno}
@@ -184,9 +156,13 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
 \usepackage{bookmark}
+
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same}
+\urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
   pdftitle={Using GPT-4 to annotate the severity of all phenotypic abnormalities within the Human Phenotype Ontology},
   pdfauthor={Kitty B Murphy; Brian M Schilder; Nathan G Skene},
@@ -199,7 +175,6 @@ disease, Automation, Medicine},
   citecolor={Blue},
   urlcolor={Blue},
   pdfcreator={LaTeX via pandoc}}
-
 
 \journalname{medRxiv}
 
@@ -223,8 +198,7 @@ Skene}{n.skene@imperial.ac.uk}
 
 
 
-
-\section{Abstract}\label{abstract}
+\subsection{Abstract}\label{abstract}
 
 There are thousands of human phenotypes which are linked to genetic
 variation. These range from the benign (white eyelashes) to the deadly
@@ -258,7 +232,7 @@ severity metrics will enable efforts to systematically prioritise which
 human phenotypes are most detrimental to human health, and best targets
 for therapeutic intervention.
 
-\section{Introduction}\label{introduction}
+\subsection{Introduction}\label{introduction}
 
 Ontologies provide a common language with which to communicate concepts.
 In medicine, ontologies for phenotypic abnormalities are invaluable for
@@ -349,9 +323,9 @@ therapy trials. Ultimately, we hope that our resource will be of utility
 to those working in rare diseases, as well as the wider healthcare
 community.
 
-\section{Results}\label{results}
+\subsection{Results}\label{results}
 
-\subsection{Annotating the HPO using
+\subsubsection{Annotating the HPO using
 GPT-4}\label{annotating-the-hpo-using-gpt-4}
 
 \phantomsection\label{cell-fig-occurrence}
@@ -359,7 +333,7 @@ GPT-4}\label{annotating-the-hpo-using-gpt-4}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{manuscript_files/figure-pdf/fig-occurrence-1.pdf}}
+\includegraphics{manuscript_files/figure-pdf/fig-occurrence-1.pdf}
 
 }
 
@@ -416,7 +390,7 @@ cause death. This example highlights the model's ability to distinguish
 between phenotypes that directly cause lethality and those associated
 with diseases that do.
 
-\subsection{Annotation consistency and
+\subsubsection{Annotation consistency and
 recall}\label{annotation-consistency-and-recall}
 
 To assess annotation consistency, we queried GPT-4 with a subset of the
@@ -465,7 +439,7 @@ classes remained unchanged (Figure~\ref{fig-indirect-effects}).
 We also reasoned that GPT-4 would be better able to give consistent
 answers for more specific phenotypes lower in the ontology, as they are
 more likely to have a single cause (Spearman's rank correlation rho,
-estimate = -0.246, p = \textless2e-16),
+estimate = -0.254, p = \textless2e-16),
 Figure~\ref{fig-genecounts-ontLvl}). We found that the stringent
 consistency rate did indeed significantly improve with greater HPO
 ontology depth (\(X_{Pearson}^2\)=22.17, \(\hat{V}_{Cramer}\)=0.03,
@@ -477,7 +451,7 @@ visual representation of this relationship.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{manuscript_files/figure-pdf/fig-checks-1.pdf}}
+\includegraphics{manuscript_files/figure-pdf/fig-checks-1.pdf}
 
 }
 
@@ -534,13 +508,19 @@ to the name of the clinical characteristic itself. In these cases,
 annotating `Severe intellectual disability' as always causing
 intellectual disability is a relatively trivial task. Nevertheless, even
 these scenarios provide a clear and interpretable benchmark for the
-model's performance. In addition, were numerous phenotypes with
+model's performance. In addition, there were numerous phenotypes with
 lexically non-obvious relationships to the clinical characteristic that
 were annotated correctly by GPT-4. For example, `Molar tooth sign on
 MRI' (a neurodevelopmental pathology observed in radiological scans) was
-correctly annotated as causing intellectual disability.
+correctly annotated as causing intellectual disability. While our
+annotations were not validated by human experts, this study was designed
+as a computational framework, with the primary aim of demonstrating what
+can be achieved at scale. Nevertheless, we acknowledge that
+LLM-generated annotations may carry systematic biases or inaccuracies.
+Future work could explore the incorporation of expert validation to
+further assess these and other outputs.
 
-\subsection{Quantifying phenotypic
+\subsubsection{Quantifying phenotypic
 severity}\label{quantifying-phenotypic-severity}
 
 While individual annotations are informative, we wanted to be able to
@@ -574,7 +554,7 @@ contains phenotypes with the highest severity scores on average.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{manuscript_files/figure-pdf/fig-severity-histo-1.pdf}}
+\includegraphics{manuscript_files/figure-pdf/fig-severity-histo-1.pdf}
 
 }
 
@@ -611,7 +591,7 @@ seen in Figure~\ref{fig-top-phenos}.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{manuscript_files/figure-pdf/fig-top-phenos-1.pdf}}
+\includegraphics{manuscript_files/figure-pdf/fig-top-phenos-1.pdf}
 
 }
 
@@ -632,7 +612,7 @@ Table~\ref{tbl-annotations}.}
 
 \end{figure}%
 
-\subsection{Severity classes}\label{severity-classes}
+\subsubsection{Severity classes}\label{severity-classes}
 
 While the continuous severity score is a helpful metric, there may be
 some use cases where a categorical classification of severity is more
@@ -647,7 +627,7 @@ moderate \textless{} severe \textless{} profound) as expected. The
 distribution of severity classes is shown in
 Figure~\ref{fig-severity-class}.
 
-\subsection{Correlations between clinical characteristic severity
+\subsubsection{Correlations between clinical characteristic severity
 metrics}\label{correlations-between-clinical-characteristic-severity-metrics}
 
 We found that some clinical characteristic severity metrics were
@@ -664,7 +644,7 @@ and death (r=0.56). This is driven by the greater number of phenotypes
 `always' causing impaired mobility (422), compared with, for instance,
 death (66), and intellectual disability (64).
 
-\subsection{Congenital onset by HPO
+\subsubsection{Congenital onset by HPO
 branch}\label{congenital-onset-by-hpo-branch}
 
 \phantomsection\label{cell-fig-congenital-branches}
@@ -672,7 +652,7 @@ branch}\label{congenital-onset-by-hpo-branch}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{manuscript_files/figure-pdf/fig-congenital-branches-1.pdf}}
+\includegraphics{manuscript_files/figure-pdf/fig-congenital-branches-1.pdf}
 
 }
 
@@ -701,7 +681,7 @@ that may affect the general well-being or status of an individual.'}
 Examples include `Fatigue' `Exercise intolerance', `Hot flashes' and
 `Sneeze'.
 
-\section{Discussion}\label{discussion}
+\subsection{Discussion}\label{discussion}
 
 Phenotype severity annotations have utility across a wide variety of
 applications in both the clinic and research. In clinical settings,
@@ -838,10 +818,22 @@ also did not capture differences in severity within the same phenotype,
 such as light sensitivity ranging from mild to disabling. Nor did it
 consider onset, disease course, or how phenotypes change in specific
 contexts, such as hypertension being mild in most people but severe in
-rare genetic disorders. These limitations extend beyond the annotations
-and to the construction of our severity score, which also doesn't
-capture chronic burden versus lethality. These gaps highlight areas for
-future work.
+rare genetic disorders. Other features relevant to severity, such as
+pain intensity and frequency, frequency of hospitalisations, lifetime
+burden, psychological functioning, and social functioning, were also not
+considered. A relevant example where such features would likely have
+been important in highlighting severity is endometriosis, defined as the
+growth of endometrial tissue outside the uterus. It affects
+approximately 10\% of women of reproductive age and is associated with
+cyclical and chronic pelvic pain, infertility, and significant
+impairment of psychological and social functioning (Zondervan et al.,
+2018). It may also require repeated surgical intervention and
+hospitalisation. While our approach was able to capture severity
+associated with infertility, the associated pain burden, psychological
+and social impact, and potential need for surgery and hospitalisation
+were not reflected. These limitations extend beyond the annotations to
+the construction of the severity score itself, and highlight important
+areas for future work.
 
 Therapeutic prioritization adds further challenges. Cost also shapes
 priorities, as some conditions require years of expensive care while
@@ -865,9 +857,9 @@ researchers and clinicians with actionable insights that can inform rare
 disease research and improve the lives of individuals affected by rare
 diseases.
 
-\section{Methods}\label{methods}
+\subsection{Methods}\label{methods}
 
-\subsection{Annotating the HPO using OpenAI
+\subsubsection{Annotating the HPO using OpenAI
 GPT-4}\label{annotating-the-hpo-using-openai-gpt-4}
 
 We wrote a Python script to iteratively query GPT-4 via the OpenAI
@@ -902,13 +894,13 @@ exceeding per-query token limits, and 2) prevent the breakdown of GPT-4
 performance due to long-form text input, which is presently a known
 limitation common to many LLMs including GPT-4 (Wei et al., 2024).
 
-\subsection{Calculating the true positive
+\subsubsection{Calculating the true positive
 rate}\label{calculating-the-true-positive-rate}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4000}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4000}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2000}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4000}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2000}}@{}}
 
 \caption{\label{tbl-true-positives}The HPO branches and their
 descendants used as true positives for each clinical characteristic.}
@@ -952,7 +944,7 @@ descendants of the terms `Intellectual disability' (HP:0001249) or
 `Mental deterioration' (HP:0001268) should be annotated as always or
 often causing intellectual disability (Table~\ref{tbl-true-positives}).
 
-\subsection{Quantifying phenotypic
+\subsubsection{Quantifying phenotypic
 severity}\label{quantifying-phenotypic-severity-1}
 
 The GPT-4 generated clinical characteristic occurrences were converted
@@ -1024,11 +1016,11 @@ Let us denote:
 \hfill\break
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.4000}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1571}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1571}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1429}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.4000}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1571}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1571}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1429}}@{}}
 
 \caption{\label{tbl-metric-weights}Weighted scores for each clinical
 characteristic and GPT-4 response category.}
@@ -1064,7 +1056,7 @@ Congenital onset (1) & 3 & 2 & 1 & 0 \\
 
 \end{longtable}
 
-\subsection{Severity classes}\label{severity-classes-1}
+\subsubsection{Severity classes}\label{severity-classes-1}
 
 The decision tree algorithm used in Lazarin et al. (2014) was adapted
 here for use with the GPT-4 clinical characteristic annotations. This
@@ -1087,7 +1079,7 @@ mapped to more than one class, only the most severe class was used. This
 procedure is implemented within the function
 \texttt{HPOExplorer::gpt\_annot\_class}.
 
-\subsection{Correlations between clinical characteristic severity
+\subsubsection{Correlations between clinical characteristic severity
 metrics}\label{correlations-between-clinical-characteristic-severity-metrics-1}
 
 To assess the correlation structure between each clinical characteristic
@@ -1098,7 +1090,7 @@ metric values. The correlation matrix was visualised using a heatmap,
 with the colour intensity representing the strength of the correlation
 (Figure~\ref{fig-metric-corplot}).
 
-\section{Data and code availability
+\subsection{Data and code availability
 statement}\label{data-and-code-availability-statement}
 
 All code and data used in this study are available on GitHub at:
@@ -1115,21 +1107,21 @@ A fully reproducible version of this Quarto manuscript can be found at:
 
 \url{https://github.com/neurogenomics/gpt_hpo_annotations/blob/master/manuscript.qmd}
 
-\section{Acknowledgements}\label{acknowledgements}
+\subsection{Acknowledgements}\label{acknowledgements}
 
 We would like to thank members of the Monarch Initiative for their
 insight and feedback throughout this project. In particular, Peter
 Robinson.
 
-\subsection{Funding}\label{funding}
+\subsubsection{Funding}\label{funding}
 
 This work was supported by a UK Dementia Research Institute (UK DRI)
 Future Leaders Fellowship {[}MR/T04327X/1{]} and the UK DRI which
 receives its funding from UK DRI Ltd, funded by the UK Medical Research
 Council, Alzheimer's Society and Alzheimer's Research UK.
 
-\section*{References}\label{references}
-\addcontentsline{toc}{section}{References}
+\subsection*{References}\label{references}
+\addcontentsline{toc}{subsection}{References}
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
@@ -1329,20 +1321,25 @@ Zhang, K., Yu, J., Yan, Z., Liu, Y., Adhikarla, E., Fu, S., et al.
 pre-trained transformer for vision, language, and multimodal tasks.
 \emph{arXiv}. \url{https://doi.org/10.48550/arXiv.2305.17100}
 
+\bibitem[\citeproctext]{ref-Zondervan2018-endometriosis}
+Zondervan, K. T., Becker, C. M., Koga, K., Missmer, S. A., Taylor, R.
+N., \& Viganò, P. (2018). Endometriosis. \emph{Nat. Rev. Dis. Primers},
+\emph{4}(1), 9. \url{https://doi.org/10.1038/s41572-018-0008-5}
+
 \end{CSLReferences}
 
 \newpage{}
 
-\section{Supplementary Materials}\label{supplementary-materials}
+\subsection{Supplementary Materials}\label{supplementary-materials}
 
-\subsection{Supplementary Figures}\label{supplementary-figures}
+\subsubsection{Supplementary Figures}\label{supplementary-figures}
 
 \phantomsection\label{cell-fig-indirect-effects}
 \begin{figure}[H]
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{manuscript_files/figure-pdf/fig-indirect-effects-1.pdf}}
+\includegraphics{manuscript_files/figure-pdf/fig-indirect-effects-1.pdf}
 
 }
 
@@ -1362,7 +1359,7 @@ between the original and recalculated severity scores.}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{manuscript_files/figure-pdf/fig-genecounts-ontLvl-1.pdf}}
+\includegraphics{manuscript_files/figure-pdf/fig-genecounts-ontLvl-1.pdf}
 
 }
 
@@ -1377,7 +1374,7 @@ ontology. Lower ontology levels are associated with fewer genes.}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{manuscript_files/figure-pdf/fig-ontLvl-distribution-1.pdf}}
+\includegraphics{manuscript_files/figure-pdf/fig-ontLvl-distribution-1.pdf}
 
 }
 
@@ -1392,7 +1389,7 @@ annotation consistency.}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{manuscript_files/figure-pdf/fig-consist-vs-ontLvl-1.pdf}}
+\includegraphics{manuscript_files/figure-pdf/fig-consist-vs-ontLvl-1.pdf}
 
 }
 
@@ -1414,7 +1411,7 @@ significantly deviate from the expected null distribution.}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{manuscript_files/figure-pdf/fig-severity-boxplot-1.pdf}}
+\includegraphics{manuscript_files/figure-pdf/fig-severity-boxplot-1.pdf}
 
 }
 
@@ -1429,7 +1426,7 @@ categories within each clinical characteristic type.}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{manuscript_files/figure-pdf/fig-metric-corplot-1.pdf}}
+\includegraphics{manuscript_files/figure-pdf/fig-metric-corplot-1.pdf}
 
 }
 
@@ -1444,7 +1441,7 @@ severity score (`severity\_score\_gpt').}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{manuscript_files/figure-pdf/fig-severity-class-1.pdf}}
+\includegraphics{manuscript_files/figure-pdf/fig-severity-class-1.pdf}
 
 }
 
@@ -1460,10 +1457,10 @@ parentheses along the x-axis.}
 
 \newpage{}
 
-\subsection{Supplementary Tables}\label{supplementary-tables}
+\subsubsection{Supplementary Tables}\label{supplementary-tables}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 0\tabcolsep) * \real{1.0000}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{1.0000}}@{}}
 
 \caption{\label{tbl-annotations}GPT-4 clinical characteristic
 annotations for all HPO phenotypes in Figure~\ref{fig-top-phenos}. For
@@ -1490,9 +1487,9 @@ phenotype annotations table} \\
 \end{longtable}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.6000}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.6000}}@{}}
 
 \caption{\label{tbl-fas}Severity annotations generated for GPT-4
 clinical characteristic annotations for the HPO phenotype `Fetal
@@ -1537,7 +1534,6 @@ disorder. \\
 Ontlvl & 6 & NA \\
 
 \end{longtable}
-
 
 
 

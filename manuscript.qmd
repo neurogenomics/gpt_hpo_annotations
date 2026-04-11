@@ -504,7 +504,7 @@ lowest_recall_dt <- checks$annot[get(lowest_recall)=="never" & hpo_id %in% query
 
 The lowest true positive rate was observed for `r gsub("_"," ",lowest_recall)`, with `r round(checks$true_pos_rate[[lowest_recall]]*100,1)`% recall across `r checks$true_pos_count[[lowest_recall]]` HPO phenotypes. Some cases in which the GPT-4 annotations disagreed with the HPO ground truth included: `r paste(shQuote(head(lowest_recall_dt$hpo_name, 6)), collapse=", ")`. In the case of `r shQuote(lowest_recall_dt$hpo_name[1])` it provided the justification that `r shQuote(lowest_recall_dt$physical_malformations_justification[1])`. In another instance, GPT-4 noted that `r shQuote(lowest_recall_dt$hpo_name[2])` is `r shQuote(lowest_recall_dt$physical_malformations_justification[2])`. This indicates that while technically incorrect according to our predefined benchmarks, a case could in fact be made that mild skin conditions do not rise to the level of physical malformations.
 
-This high level of recall underscores the robustness of our annotations and the reliability of the HPO framework in capturing clinically relevant phenotypic information. However, we acknowledge that the number of testable true positive phenotypes for some of these categories are low, especially `r shQuote(names(checks$checkable_count)[checks$checkable_count==min(checks$checkable_count)])` for which there is only `r min(checks$checkable_count)` phenotype in the HPO (after excluding terms pertaining to colour or night blindness, as these are not typically classified as causes of complete blindness). Furthermore, some of the true positive phenotypes are lexically similar to the name of the clinical characteristic itself. In these cases, annotating 'Severe intellectual disability' as always causing intellectual disability is a relatively trivial task. Nevertheless, even these scenarios provide a clear and interpretable benchmark for the model's performance. In addition, were numerous phenotypes with lexically non-obvious relationships to the clinical characteristic that were annotated correctly by GPT-4. For example, 'Molar tooth sign on MRI' (a neurodevelopmental pathology observed in radiological scans) was correctly annotated as causing intellectual disability.
+This high level of recall underscores the robustness of our annotations and the reliability of the HPO framework in capturing clinically relevant phenotypic information. However, we acknowledge that the number of testable true positive phenotypes for some of these categories are low, especially `r shQuote(names(checks$checkable_count)[checks$checkable_count==min(checks$checkable_count)])` for which there is only `r min(checks$checkable_count)` phenotype in the HPO (after excluding terms pertaining to colour or night blindness, as these are not typically classified as causes of complete blindness). Furthermore, some of the true positive phenotypes are lexically similar to the name of the clinical characteristic itself. In these cases, annotating 'Severe intellectual disability' as always causing intellectual disability is a relatively trivial task. Nevertheless, even these scenarios provide a clear and interpretable benchmark for the model's performance. In addition, there were numerous phenotypes with lexically non-obvious relationships to the clinical characteristic that were annotated correctly by GPT-4. For example, 'Molar tooth sign on MRI' (a neurodevelopmental pathology observed in radiological scans) was correctly annotated as causing intellectual disability. While our annotations were not validated by human experts, this study was designed as a computational framework, with the primary aim of demonstrating what can be achieved at scale. Nevertheless, we acknowledge that LLM-generated annotations may carry systematic biases or inaccuracies. Future work could explore the incorporation of expert validation to further assess these and other outputs.
 
 ### Quantifying phenotypic severity
 
@@ -744,7 +744,7 @@ A key contribution of our study is the introduction of a quantitative severity s
 
 Our findings highlight the potential of this next generation of natural language processing technologies in significantly contributing to the automation and refinement of data curation in biomedical research. These results have a large number of useful real-world applications, such as prioritising gene therapy candidates [@murphyIdentificationCellTypespecific2023] and guiding clinical decision-making in rare diseases. It may also be used as tool to help inform policy decisions and funding allocation by healthcare or governmental institutions. This of course would need to be in consultation with subject matter medical experts, patients, advocates and biomedical ethicists before reaching a final decision. Nevertheless, access to succinct, interpretable, and semi-quantitative severity annotations may encourage key decision makers with limited time to review individual proposals to pay heed to phenotypes and diseases that would otherwise be overlooked. As the HPO and the broader literature continue to grow over time, our automated AI-based approach can easily be repeated to keep pace with the rapidly evolving biomedical landscape. Furthermore, it can be extended to produce different sets of annotations or be used with any other ontology. Additional use cases include gathering data on the prevalence of each phenotype to approximate their social and financial costs.
 
-One limitation of this study is that it did not test how GPT-4 considers treatment availability when making annotations. Some severe conditions, like syphilis or certain melanomas, are curable with early detection and modern healthcare. GPT-4 often linked outcomes to access and quality of care, describing some cancers as fatal unless caught early while noting others are rarely lethal if treatment is available. This suggests the model accounts for healthcare quality but not consistently. The study also did not capture differences in severity within the same phenotype, such as light sensitivity ranging from mild to disabling. Nor did it consider onset, disease course, or how phenotypes change in specific contexts, such as hypertension being mild in most people but severe in rare genetic disorders. These limitations extend beyond the annotations and to the construction of our severity score, which also doesn't capture chronic burden versus lethality. These gaps highlight areas for future work.
+One limitation of this study is that it did not test how GPT-4 considers treatment availability when making annotations. Some severe conditions, like syphilis or certain melanomas, are curable with early detection and modern healthcare. GPT-4 often linked outcomes to access and quality of care, describing some cancers as fatal unless caught early while noting others are rarely lethal if treatment is available. This suggests the model accounts for healthcare quality but not consistently. The study also did not capture differences in severity within the same phenotype, such as light sensitivity ranging from mild to disabling. Nor did it consider onset, disease course, or how phenotypes change in specific contexts, such as hypertension being mild in most people but severe in rare genetic disorders. Other features relevant to severity, such as pain intensity and frequency, frequency of hospitalisations, lifetime burden, psychological functioning, and social functioning, were also not considered. A relevant example where such features would likely have been important in highlighting severity is endometriosis, defined as the growth of endometrial tissue outside the uterus. It affects approximately 10% of women of reproductive age and is associated with cyclical and chronic pelvic pain, infertility, and significant impairment of psychological and social functioning [@Zondervan2018-endometriosis]. It may also require repeated surgical intervention and hospitalisation. While our approach was able to capture severity associated with infertility, the associated pain burden, psychological and social impact, and potential need for surgery and hospitalisation were not reflected. These limitations extend beyond the annotations to the construction of the severity score itself, and highlight important areas for future work.
 
 Therapeutic prioritization adds further challenges. Cost also shapes priorities, as some conditions require years of expensive care while others cause early death with little chance of intervention. Practical constraints must also be considered as long-term trials are difficult, whereas testing therapies that quickly reverse severe symptoms may yield faster results. These choices should involve ethicists, policymakers, advocacy groups, and families, with LLMs helping gather data at scale. While this study shows the promise of AI-driven phenotypic annotation, it also reveals risks of bias, gaps in severity scoring, and the need to factor in gene–environment interactions. Finally, a flurry of new LLMs continue to be released regularly. Here, we use GPT-4 as an example but note that our framework is equally applicable to most other LLMs. Future work should refine methods, add genomic and clinical data, and validate results to make AI a stronger tool in precision medicine.
 
@@ -938,22 +938,26 @@ gene_counts_ontLvl %>%
 #| fig-width: 7
 #| 
 p <- combined_data %>%
-  filter(!is.na(ontLvl)) %>%
-  ggplot(aes(x=ontLvl)) +
-  geom_histogram(data = . %>% filter(group == "All phenotypes"),
-                 aes(y=after_stat(density), fill = "All phenotypes"),
-                 alpha=0.6, binwidth=1, color="#e9ecef") +
-  geom_freqpoly(data = . %>% filter(group == "Test set (n=793)"),
-                aes(y=after_stat(density), color = "Test set (n=793)"),
-                binwidth=1, linewidth=1) +
-  scale_fill_manual(name = "", values = c("All phenotypes" = "#69b3a2")) +
-  scale_color_manual(name = "", values = c("Test set (n=793)" = "#404080")) +
-  guides(
-    fill  = guide_legend(override.aes = list(fill="#69b3a2", color="#69b3a2", linetype=0)),
-    color = guide_legend(override.aes = list(color="#404080", fill=NA))
-  ) +
-  theme_minimal() +
-  labs(x="ontLvl", y="density", fill="", color="")
+    filter(!is.na(ontLvl)) %>%
+    ggplot(aes(x=ontLvl)) +
+    geom_histogram(data = . %>% filter(group == "All phenotypes"),
+                   aes(y=after_stat(density), fill = "All phenotypes"),
+                   alpha=0.6, binwidth=1, color="#e9ecef") +
+    geom_text(data = . %>% filter(group == "Test set (n=793)") %>%
+                  count(ontLvl),
+              aes(x=ontLvl, y=0, label=n),
+              vjust=-0.5, size=3, inherit.aes=FALSE) +
+    geom_freqpoly(data = . %>% filter(group == "Test set (n=793)"),
+                  aes(y=after_stat(density), color = "Test set (n=793)"),
+                  binwidth=1, linewidth=1, alpha=0.5) +
+    scale_fill_manual(name = "", values = c("All phenotypes" = "#69b3a2")) +
+    scale_color_manual(name = "", values = c("Test set (n=793)" = "#404080")) +
+    guides(
+        fill  = guide_legend(override.aes = list(fill="#69b3a2", color="#69b3a2", linetype=0)),
+        color = guide_legend(override.aes = list(color="#404080", fill=NA))
+    ) +
+    theme_minimal() +
+    labs(x="ontLvl", y="density", fill="", color="")
 
 print(p)
 ```
